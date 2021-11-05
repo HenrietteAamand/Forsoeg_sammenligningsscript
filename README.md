@@ -1,0 +1,1 @@
+# Forsoeg_sammenligningsscript
