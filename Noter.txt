@@ -1,0 +1,12 @@
+Teste:
+- testet filereader
+- testtet tidskorrigeringen
+- testet extract_hrmpro
+
+Implementere:
+  1) Extract_maxrefdes 
+  2) Extract_empatica
+     2.1) Indlæs filer på god måde
+     2.2) Lav timestamps
+     2.3) Tidskorrigering
+  3) Extract_forerunner

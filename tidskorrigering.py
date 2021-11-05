@@ -1,9 +1,10 @@
 import datetime, time
+from typing import List
 class tidskorrigering_class:
     def __init__(self, absolute_time, sensor_count_at_absolute_time ) -> None:
         self.birthtime_sensor = absolute_time-sensor_count_at_absolute_time
 
-    def hrm_pro(self, list_of_data, timelim_begin, timelim_end):
+    def hrm_pro(self, list_of_data: list, timelim_begin: int, timelim_end: int):
         list_splitted_data = []
         timecorrected_list = []
         i = -3
