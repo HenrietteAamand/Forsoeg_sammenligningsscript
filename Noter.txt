@@ -14,3 +14,5 @@ Implementere:
 
 Andet:
   1) Allign alle navne på filer
+
+  'C:/Users/hah/Documents/VISUAL_STUDIO_CODE/Forsoeg_sammenligningsscript/Data/Testperson1/Raaobservationer/Testperson_1_Fase_1_Stilhed_maxdata.csv'

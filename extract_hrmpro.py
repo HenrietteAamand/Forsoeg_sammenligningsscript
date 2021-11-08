@@ -1,24 +1,28 @@
 
 
-from filreader import filereader_class
+from filereader import filereader_class
 from tidskorrigering import tidskorrigering_class
 from Calculate_RR_class import *
 
 
-class extract_hrmpro_classs():
+class extract_hrmpro_class():
     def __init__(self, filereader: filereader_class, tidskorrigering: tidskorrigering_class) -> None:
         self.filereader = filereader
         self.tidkorr = tidskorrigering
         self.rr_calculator = Caculate_rr_class()
+        self.read_from_file = True
+        self.lines_splitted = []
 
     def extract(self, testpersonnummer : int, timelim_begin: int, timelim_end : int, ):
-        lines_from_file = self.filereader.read_HRMpro(testpersonnummer)
-        lines_splitted = self.tidkorr.hrm_pro(lines_from_file, timelim_begin, timelim_end)
+        if(self.read_from_file):
+            lines_from_file = self.filereader.read_HRMpro(testpersonnummer)
+            self.lines_splitted = self.tidkorr.hrm_pro(lines_from_file, timelim_begin, timelim_end)
+            self.read_from_file = False
 
         oldtogglebit = 0
         # I den hexadecimale streng udtrækkes hver byte og gemmes i et dictionary sammen med den udregnede tid
         self.New_list_with_logged_values_as_dictionay = []
-        for sensordata in lines_splitted:
+        for sensordata in self.lines_splitted:
             dictionary_with_hex ={} 
             if len(sensordata) == 3:
                 if 'Rx' in sensordata[1]:
@@ -55,4 +59,7 @@ class extract_hrmpro_classs():
         for measurement in self.New_list_with_logged_values_as_dictionay:
             hr.append(int(measurement["hr"],16))
         return(hr)
+
+    def set_read_from_file_bool(self, value : bool):
+        self.read_from_file = value
 

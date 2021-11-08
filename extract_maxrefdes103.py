@@ -14,8 +14,8 @@ class extract_maxrefdes103_class():
         """
         data_list_of_dict = self.filereader.read_maxrefdes_Raa_observationer(testpersonnummer, fasenummer)
 
-        # self.first_time = str(datetime.datetime.now().date().strftime("%d/%m/%y")) + " " + data_list_of_dict[1501]['timestmp'] #Vi tager ved index 1501 fordi det svarer til at fjerne det første minut, hvor data er utilregnelige
-        # self.last_time = str(datetime.datetime.now().date().strftime("%d/%m/%y")) + " " + data_list_of_dict[len(data_list_of_dict)-1]['timestmp']
+        self.first_time = str(datetime.datetime.now().date().strftime("%d/%m/%y")) + " " + data_list_of_dict[1501]['timestmp'] #Vi tager ved index 1501 fordi det svarer til at fjerne det første minut, hvor data er utilregnelige
+        self.last_time = str(datetime.datetime.now().date().strftime("%d/%m/%y")) + " " + data_list_of_dict[len(data_list_of_dict)-1]['timestmp']
         
         self.hr_list = []
         self.rr_list = []
@@ -24,12 +24,13 @@ class extract_maxrefdes103_class():
         i = 0
         for row in data_list_of_dict:
             if i > 1500:
-                self.hr_list.append(int(round(row["hr"])))
+                self.hr_list.append(int(round(float(row["hr"]))))
                 self.timestamp_list.append(row["timestmp"])
-                if row["rr5"] != "0.0": #Hvis rr er lig 0, så vil jeg ikke gemme data
-                    rr_korr = float("{:.1f}".format(0.96*float(row["rr5"]))) #korrigerer med den faktor vi fandt i excel
+                if row["rr"] != "0.0": #Hvis rr er lig 0, så vil jeg ikke gemme data
+                    rr_korr = float("{:.1f}".format(0.96*float(row["rr"]))) #korrigerer med den faktor vi fandt i excel
                     self.rr_list.append(rr_korr)
             i +=1
+        print("Done extracting MAXREFDES103")
 
     def get_rr(self):
         """Metoden er en standard get-metode, der returnerer alle RR-intervaller
@@ -48,13 +49,13 @@ class extract_maxrefdes103_class():
         return self.hr_list
 
     def get_first_timestamp(self):
-        my_datetime = datetime.datetime.strptime(self.timestamp_list[0], '%d/%m/%y %H:%M:%S.%f')
-        absolute_time = int((time.mktime(my_datetime.timetuple())*1000))
+        first_datetime = datetime.datetime.strptime(self.first_time, '%d/%m/%y %H:%M:%S.%f')
+        absolute_time = int((time.mktime(first_datetime.timetuple())*1000))
         return absolute_time
 
     def get_last_timestamp(self):
-        my_datetime = datetime.datetime.strptime(self.timestamp[len(self.timestamp)-1], '%d/%m/%y %H:%M:%S.%f')
-        absolute_time = int("{:.0f}".format(time.mktime(my_datetime.timetuple())*1000))
+        last_datetime = datetime.datetime.strptime(self.last_time, '%d/%m/%y %H:%M:%S.%f')
+        absolute_time = int("{:.0f}".format(time.mktime(last_datetime.timetuple())*1000))
         return absolute_time
 
     def get_fs(self):

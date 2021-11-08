@@ -1,10 +1,9 @@
 import csv, os.path
 
 class filereader_class:
-    def __init__(self, path, filename) -> None:
+    def __init__(self, path, filename = "") -> None:
         self.path = path
         self.filename = filename
-        pass    
         
     def read_HRMpro(self, testpersonnummer: int):
         """Metoden læser data fra den logfil, der genereres når man bruger SimulANT+ til at læse data der sendes fra en Garmin(R) ANT+ sensor. 
@@ -19,7 +18,7 @@ class filereader_class:
         hrmpro_path = self.path + "/Testperson_" + str(testpersonnummer) + "/SimulANT+ Logs - HRM-Pro/"
         filename = "Heart Rate Display ANT Messages.txt"
         fullpath = hrmpro_path + filename
-        
+        #print(fullpath)
         file = open(fullpath, 'r')
         lines_From_Logfile = file.readlines()
         return lines_From_Logfile
@@ -50,12 +49,14 @@ class filereader_class:
         faser = ["Stilhed", "Statisk", "Dynamisk"]
 
         while(i<3):
-            maxrefdes_path = self.path + "/Testperson" + str(testpersonnummer) + "/Raaobservationer/Testperson_" + str(testpersonnummer) + "_Fase_" + str(fasenummer) + "_" + faser[i] + "_maxdata.csv"
+            maxrefdes_path = self.path + "/Testperson" + str(testpersonnummer) + "/Raaobservationer/Testperson_" + str(testpersonnummer) + "_Fase_" + str(fasenummer) + "_" + faser[i] + "_observationer.csv"
             if(os.path.exists(maxrefdes_path)):
                 i = 3
                 csv_file_original =  open(maxrefdes_path, mode='r')
+                #print(maxrefdes_path)
                 lines_as_dict = csv.DictReader(csv_file_original, delimiter = ',')
                 lines_as_dict = list(lines_as_dict)
                 csv_file_original.close()
                 return lines_as_dict
+            i+= 1
     
