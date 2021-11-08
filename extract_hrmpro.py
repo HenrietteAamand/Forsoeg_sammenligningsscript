@@ -18,7 +18,7 @@ class extract_hrmpro_class():
             lines_from_file = self.filereader.read_HRMpro(testpersonnummer)
             self.lines_splitted = self.tidkorr.hrm_pro(lines_from_file, timelim_begin, timelim_end)
             self.read_from_file = False
-
+        self.hr_list = []
         oldtogglebit = 0
         # I den hexadecimale streng udtrækkes hver byte og gemmes i et dictionary sammen med den udregnede tid
         self.New_list_with_logged_values_as_dictionay = []
@@ -27,6 +27,7 @@ class extract_hrmpro_class():
             if len(sensordata) == 3:
                 if 'Rx' in sensordata[1]:
                     temporary_List = sensordata[2][1:-2].split('][')
+                    self.hr_list.append(temporary_List[7])
                     if(oldtogglebit != temporary_List[6]): #Yderligere gemmes kun data, når der har været et nyt 'heart-beat-event svarende til at hr_count er blevet en større
                         dictionary_with_hex["b0"] = temporary_List[0]
                         dictionary_with_hex["b1"] = temporary_List[1]
@@ -44,7 +45,7 @@ class extract_hrmpro_class():
         self.list_of_rr_and_time = self.rr_calculator.rr_4(self.New_list_with_logged_values_as_dictionay)
         return self.list_of_rr_and_time
 
-    def get_rr(self, given_delay): #given_delay sættes, hvis der ønskes at manipulere med længden af HRM_pro rr værierne
+    def get_rr(self, given_delay = 0): #given_delay sættes, hvis der ønskes at manipulere med længden af HRM_pro rr værierne
         # Modificerer rr-værdierne ved at udtrække rr værdier uden tiden.
         rr = []
         if len(self.list_of_rr_and_time) > 0:
@@ -55,10 +56,10 @@ class extract_hrmpro_class():
         return rr
     
     def get_hr(self):
-        hr = []
-        for measurement in self.New_list_with_logged_values_as_dictionay:
-            hr.append(int(measurement["hr"],16))
-        return(hr)
+        hr_list = []
+        for hr in self.hr_list: #self.New_list_with_logged_values_as_dictionay:
+            hr_list.append(int(hr,16))
+        return(hr_list)
 
     def set_read_from_file_bool(self, value : bool):
         self.read_from_file = value
