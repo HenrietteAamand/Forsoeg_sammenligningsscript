@@ -10,3 +10,7 @@ Implementere:
      2.2) Lav timestamps
      2.3) Tidskorrigering
   3) Extract_forerunner
+
+
+Andet:
+  1) Allign alle navne på filer
