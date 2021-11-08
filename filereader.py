@@ -42,8 +42,8 @@ class filereader_class:
             lines_from_logfile (list<string>): Returnerer en liste med strings svarende til hver linje i logfilen
         """
         empatica_path = self.path + "/Testperson_" + str(testpersonnummer) + "/Empatica/" + datatype + ".csv"
-        file =  open(empatica_path, mode='r')
-        lines_from_logfile = file.readlines()
+        file =  open(empatica_path, mode='r', newline='')
+        lines_from_logfile = list(csv.reader(file)) #file.readlines()
         file.close()
         return lines_from_logfile
     

@@ -13,7 +13,7 @@ class extract_hrmpro_class():
         self.read_from_file = True
         self.lines_splitted = []
 
-    def extract(self, testpersonnummer : int, timelim_begin: int, timelim_end : int, ):
+    def extract(self, testpersonnummer : int, timelim_begin: int, timelim_end : int):
         if(self.read_from_file):
             lines_from_file = self.filereader.read_HRMpro(testpersonnummer)
             self.lines_splitted = self.tidkorr.hrm_pro(lines_from_file, timelim_begin, timelim_end)

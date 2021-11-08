@@ -20,8 +20,16 @@ class tidskorrigering_class:
     def forerunner(self):
         pass
 
-    def empatica(self):
-        pass
+    def empatica(self, data_list : list, timelim_begin: int, timelim_end : int, datatype : str):
+        return_list = []
+        for data in data_list:
+            if(data['time'] >= timelim_begin and data['time'] <= timelim_end):
+                return_list.append(data[datatype])
+            if(data['time'] > timelim_end):
+                break
+        return return_list
+
+        
 
     def get_timestamp_garmin(self, current_count):
         current_absolute_time = self.birthtime_sensor+current_count
