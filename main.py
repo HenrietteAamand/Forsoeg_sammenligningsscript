@@ -32,6 +32,9 @@ while(counter <=antal_testpersoner):
         counter += 1
         fasenummer = 1
         Dict_with_obs[counter] = {}
+        hrm_pro.set_read_from_file_bool(True)
+        #Empatica
+        #Forerunner
 
 counter = 1
 

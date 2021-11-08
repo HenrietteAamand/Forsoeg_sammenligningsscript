@@ -31,8 +31,21 @@ class filereader_class:
         lines_From_Logfile = file.readlines()
         return lines_From_Logfile
 
-    def read_empatica(self, timestamp_begin, timestamp_end):
-        pass
+    def read_empatica(self, testpersonnummer: int,datatype: str):
+        """Metoden indlæser data fra den ønskede empatica logfil.
+
+        Args:
+            testpersonnummer (int): Nummeret på testpersonen
+            datatype (str): Initialerne for det data der skal indlæses. Muligheder: ACC, BVP, EDA, HR, IBI, tags og TEMP
+
+        Returns:
+            lines_from_logfile (list<string>): Returnerer en liste med strings svarende til hver linje i logfilen
+        """
+        empatica_path = self.path + "/Testperson_" + str(testpersonnummer) + "/Empatica/" + datatype + ".csv"
+        file =  open(empatica_path, mode='r')
+        lines_from_logfile = file.readlines()
+        file.close()
+        return lines_from_logfile
     
 
     def read_maxrefdes_Raa_observationer(self, testpersonnummer: int, fasenummer: int):
