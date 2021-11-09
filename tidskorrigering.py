@@ -13,12 +13,22 @@ class tidskorrigering_class:
                 list_splitted_data.append(line.split(':'))
                 list_splitted_data[i][0] = self.get_timestamp_garmin(int(list_splitted_data[i][0]))
                 if(list_splitted_data[i][0] >= timelim_begin and list_splitted_data[i][0] <= timelim_end):
-                    timecorrected_list.append(list_splitted_data[i]) # Jeg er lidt i tvivl om dette rent faktisk tiæføjer hele linjen
+                    timecorrected_list.append(list_splitted_data[i])
             i += 1
         return timecorrected_list
 
-    def forerunner(self):
-        pass
+    def forerunner(self, list_of_data: list, timelim_begin: int, timelim_end: int):
+        list_splitted_data = []
+        timecorrected_list = []
+        i = -3
+        for line in list_of_data:
+            if(i >= 0):
+                list_splitted_data.append(line.split(':'))
+                list_splitted_data[i][0] = self.get_timestamp_garmin(int(list_splitted_data[i][0]))
+                if(list_splitted_data[i][0] >= timelim_begin and list_splitted_data[i][0] <= timelim_end):
+                    timecorrected_list.append(list_splitted_data[i])
+            i += 1
+        return timecorrected_list
 
     def empatica(self, data_list : list, timelim_begin: int, timelim_end : int, datatype : str):
         return_list = []

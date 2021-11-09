@@ -24,7 +24,7 @@ class filereader_class:
         return lines_From_Logfile
 
     def read_forerunner(self, testpersonnummer: int):
-        forerunner_path = self.path + "/Testperson_" + str(testpersonnummer) + "/SimulANT+ Logs - HRM-Pro/"
+        forerunner_path = self.path + "/Testperson_" + str(testpersonnummer) + "/SimulANT+ Logs - forerunner/"
         filename = "Heart Rate Display ANT Messages.txt"
         fullpath = forerunner_path + filename
         file = open(fullpath, 'r')
