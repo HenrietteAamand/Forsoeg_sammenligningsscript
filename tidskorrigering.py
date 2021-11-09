@@ -2,9 +2,25 @@ import datetime, time
 from typing import List
 class tidskorrigering_class:
     def __init__(self, absolute_time, sensor_count_at_absolute_time ) -> None:
+        """Initieringsmetoden skal bruges til at specificere et kendt Unixtimestamp til et kendt sensorcount. 
+
+        Args:
+            absolute_time (int): Unix timestamp til det specificerede sensorcount
+            sensor_count_at_absolute_time (int): Sensorcunt til det kendte Unix timestamp
+        """
         self.birthtime_sensor = absolute_time-sensor_count_at_absolute_time
 
     def hrm_pro(self, list_of_data: list, timelim_begin: int, timelim_end: int):
+        """Ud fra en liste med data, hvor der også skal indgå tidsværdier, tidskorrigeres ud fra de givbne grænseværdier
+
+        Args:
+            list_of_data (list<string>): Listen ideholder alle dataværdier som strings på formen: "81809671 : Rx: [04][00][EC][6F][DC][74][A4][38] [description]"
+            timelim_begin (int): Grænseværdien for den første måling der skal medtages, inklusiv denne værdi
+            timelim_end (int): Grænseværdien for den sidste måling der skal medtages, inklusiv denne værdi
+
+        Returns:
+            list<array[]>: Der returneres en liste, der udelukkende indeholder værdier inden for det angivne tidsinterval, begge grænseværdier inklusiv. Listen indeholder arrays på formen [1636471068000, ' Rx', ' [04][00][6E][A2][14][A5][B6][5B]\n']. Her er sensorcpunt altså korrigeret til en tidsværdi med dags dato
+        """
         list_splitted_data = []
         timecorrected_list = []
         i = -3
@@ -18,6 +34,16 @@ class tidskorrigering_class:
         return timecorrected_list
 
     def forerunner(self, list_of_data: list, timelim_begin: int, timelim_end: int):
+        """Ud fra en liste med data, hvor der også skal indgå tidsværdier, tidskorrigeres ud fra de givbne grænseværdier
+
+        Args:
+            list_of_data (list<string>): Listen ideholder alle dataværdier som strings på formen: "81809671 : Rx: [04][00][EC][6F][DC][74][A4][38] [description]"
+            timelim_begin (int): Grænseværdien for den første måling der skal medtages, inklusiv denne værdi
+            timelim_end (int): Grænseværdien for den sidste måling der skal medtages, inklusiv denne værdi
+
+        Returns:
+            list<array[]>: Der returneres en liste, der udelukkende indeholder værdier inden for det angivne tidsinterval, begge grænseværdier inklusiv. Listen indeholder arrays på formen [1636471068000, ' Rx', ' [04][00][6E][A2][14][A5][B6][5B]\n']. Her er sensorcpunt altså korrigeret til en tidsværdi med dags dato
+        """
         list_splitted_data = []
         timecorrected_list = []
         i = -3
@@ -31,6 +57,17 @@ class tidskorrigering_class:
         return timecorrected_list
 
     def empatica(self, data_list : list, timelim_begin: int, timelim_end : int, datatype : str):
+        """Ud fra en liste med data, hvor der også skal indgå tidsværdier, tidskorrigeres ud fra de givne grænseværdier
+
+        Args:
+            data_list (list<Dict>): Listen ideholder alle dataværdier som et dictionary med 2 keys, hvoraf den ene skal være 'time', mens den sidste specificers gennem parametren 'datatype'
+            timelim_begin (int): Grænseværdien for den første måling der skal medtages, inklusiv denne værdi
+            timelim_end (int): Grænseværdien for den sidste måling der skal medtages, inklusiv denne værdi
+            datatype (str): Specificere den sidste key, eks 'rr' eller 'hr'
+
+        Returns:
+            list<float>: Der returneres en liste med floats, der udelukkende indeholder værdier inden for det angivne tidsinterval, begge grænseværdier inklusiv. Listen indeholder de data der er specificeret via datatype parametren
+        """
         return_list = []
         for data in data_list:
             if(data['time'] >= timelim_begin and data['time'] <= timelim_end):
@@ -39,9 +76,15 @@ class tidskorrigering_class:
                 break
         return return_list
 
-        
+    def get_timestamp_garmin(self, current_count: int):
+        """Metoden ændre garmins sensorcount til et UNIX timestamp med dags dato. Klokkeslettet beregnes ud fra Et kendt unix timestamp til et specifikt sensorcount, og dette specificeres gennem initierings metoden
 
-    def get_timestamp_garmin(self, current_count):
+        Args:
+            current_count (int): Current count er det sensorcount der findes i logfilen som det første tal, eks 81809671 i logentrien "81809671 : Rx: [04][00][EC][6F][DC][74][A4][38] [description]"
+
+        Returns:
+            int : Der returneres et UNIX timestamp med dags dato som dato.
+        """
         current_absolute_time = self.birthtime_sensor+current_count
         tid_forkert_dato = str(datetime.datetime.now().date().strftime("%d/%m/%y")) + " " + str(datetime.datetime.fromtimestamp(current_absolute_time/1000).strftime('%H:%M:%S.%f'))
         my_datetime = datetime.datetime.strptime(tid_forkert_dato, '%d/%m/%y %H:%M:%S.%f')

@@ -10,8 +10,14 @@ class extract_empatica_class():
         self.hr_full_timeperiod = []
         self.rr_full_timeperiod = []
 
-
     def extract(self, testpersonnummer: int, timelim_begin: int, timelim_end : int):
+        """Metoden udtrækker HR og IBI. Det er også via denne metode der tidskorrigeres, så tidsintervallerne kan sammenlignes på tværs af sensorer
+
+        Args:
+            testpersonnummer (int): nummeret på den testperson man er ved at udtrække data fra. Bruges i filereader
+            timelim_begin (int): Tidspunktet hvorfra der skal gemmes data. Dette er det første tidspunkt i Maxrefdes103 data grundet forsøgets opsætning.
+            timelim_end (int): Tidspunktet, hvor man ikke længere skal bruge data
+        """
         if(self.read_from_file):
             data_list_hr = self.filereader.read_empatica(testpersonnummer, "HR").copy()
             data_list_rr = self.filereader.read_empatica(testpersonnummer, "IBI").copy()
@@ -49,16 +55,39 @@ class extract_empatica_class():
         self.rr_list = self.tidkorr.empatica(self.rr_full_timeperiod, timelim_begin, timelim_end, 'rr').copy()
 
     def get_hr(self):
+        """En standard get-metode der returnerer hr
+
+        Returns:
+            list<float>: Hr returneres som en liste med floats
+        """
         return self.hr_list
         
-
     def get_rr(self):
+        """En standard get-metode der returnerer rr
+
+        Returns:
+            list<float>: Rr returneres som en liste med floats
+        """
         return self.rr_list
 
     def set_read_from_file_bool(self, value : bool):
+        """ Denne bool bruges til at fortælle extract_empatic metoden, at nu skal der indlæses data fra en ny testperson. 
+            Dette er implementeret for at data kun indlæses en gang pr. testperson, og ikke 3 gange svarende til de 3 faser
+        
+        Args:
+            value (bool): True hvis vi skal i gang med en ny testperson, False hvis vi er i gang med samme testperson, men bare fase 2 og 3
+        """
         self.read_from_file = value
 
     def correct_absolute(self, absolute : str):
+        """Metoden ændre timestamp på ematica data. Alle timestams omregnes til dags dato. 
+
+        Args:
+            absolute (str): Tidspunktet for den første måling. Dette er givet som det første i logfilerne fra empatica
+
+        Returns:
+            int: Der returneres en tid med dags dato, men hvor klokkeslettet er bevaret. Tiden returneres som UNIX tid
+        """
         absolute_int = int(round(float(absolute)))
         my_datetime = datetime.datetime.fromtimestamp(absolute_int).strftime('%d/%m/%y %H:%M:%S.%f')
         #print("Empatica: " + my_datetime)

@@ -1,5 +1,13 @@
 class Caculate_rr_class:
     def rr_0(self, Values_in_Hex_List): 
+        """Metode til at udtrække RR fra SimulANT+ datapage 0. Bruges eksempelvis ved Garmin Foreunner 45
+
+        Args:
+            Values_in_Hex_List (list<string>): Indputparameteren er en liste med alle de værdier der ønskes at beregnes RR og HR på
+
+        Returns:
+            List<Dict>: Der returneres en liste med et dictionary med 2 keys, nemlig 'time' og 'rr'
+        """
         old_time = 0
         new_time = 0
         first_time = True
@@ -33,6 +41,14 @@ class Caculate_rr_class:
         return listOfRR
 
     def rr_4(self, Values_in_Hex_List): #Brug 4, fordi det giver altid de rigtige data modsat datapage 0. 
+        """Metode til at udtrække RR fra SimulANT+ datapage 4 Bruges eksempelvis vi Garmin HRM-pro.
+
+        Args:
+            Values_in_Hex_List (list<string>): Indputparameteren er en liste med alle de værdier der ønskes at beregnes RR og HR på
+
+        Returns:
+            List<Dict>: Der returneres en liste med et dictionary med 2 keys, nemlig 'time' og 'rr'
+        """
         # Defnerer tomme variabler til senere brug
         old_time = 0
         new_time = 0

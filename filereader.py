@@ -7,7 +7,7 @@ class filereader_class:
         
     def read_HRMpro(self, testpersonnummer: int):
         """Metoden læser data fra den logfil, der genereres når man bruger SimulANT+ til at læse data der sendes fra en Garmin(R) ANT+ sensor. 
-           Der indlæses en liste, hvor hver plads i listen indeholder en linjje fra logfilen på formen '81722734 : Rx: [00][FF][FF][FF][86][02][9F][38]'
+           Der indlæses en liste, hvor hver plads i listen indeholder en linje fra logfilen på formen '81809171 : Rx: [04][00][88][6B][EC][6F][A3][39]', svarende til datapage 4
 
         Args:
             testpersonnummer (int): nummer på testpersonnumer fra forøget. Bruges til at åbne den rigtige fil tilhørende den rigtige person. 
@@ -24,6 +24,15 @@ class filereader_class:
         return lines_From_Logfile
 
     def read_forerunner(self, testpersonnummer: int):
+        """Metoden læser data fra den logfil, der genereres når man bruger SimulANT+ til at læse data der sendes fra en Garmin(R) ANT+ sensor. 
+           Der indlæses en liste, hvor hver plads i listen indeholder en linjje fra logfilen på formen '81722734 : Rx: [00][FF][FF][FF][86][02][9F][38]'
+
+        Args:
+            testpersonnummer (int): nummer på testpersonnumer fra forøget. Bruges til at åbne den rigtige fil tilhørende den rigtige person. 
+
+        Returns:
+            lines_from_logfile (list<string>): Returnerer en liste med strings svarende til hver linje i logfilen
+        """
         forerunner_path = self.path + "/Testperson_" + str(testpersonnummer) + "/SimulANT+ Logs - forerunner/"
         filename = "Heart Rate Display ANT Messages.txt"
         fullpath = forerunner_path + filename
@@ -47,7 +56,6 @@ class filereader_class:
         file.close()
         return lines_from_logfile
     
-
     def read_maxrefdes_Raa_observationer(self, testpersonnummer: int, fasenummer: int):
         """Metoden læser data ind fra de rå onservationer, hvor der kan udtrækkes både RR, hr, timestamps m.v. Data indlæses som en .csv fil, og indlses inds i et dictionary
 

@@ -14,6 +14,14 @@ class extract_hrmpro_class():
         self.lines_splitted = []
 
     def extract(self, testpersonnummer : int, timelim_begin: int, timelim_end : int):
+        """Metoden udtrækker HR og RR. Det er også via denne metode der tidskorrigeres, så tidsintervallerne kan sammenlignes på tværs af sensorer
+            RR-værdierne virker dog til at være presset sammen, som om der mangler en værdi. Dette kan skyldes, at nogle gange fejler en pakke (82286937 : Rx fail)
+
+        Args:
+            testpersonnummer (int): nummeret på den testperson man er ved at udtrække data fra. Bruges i filereader
+            timelim_begin (int): Tidspunktet hvorfra der skal gemmes data. Dette er det første tidspunkt i Maxrefdes103 data grundet forsøgets opsætning.
+            timelim_end (int): Tidspunktet, hvor man ikke længere skal bruge data
+        """
         if(self.read_from_file):
             lines_from_file = self.filereader.read_HRMpro(testpersonnummer)
             self.lines_splitted = self.tidkorr.hrm_pro(lines_from_file, timelim_begin, timelim_end)
@@ -45,7 +53,12 @@ class extract_hrmpro_class():
         self.list_of_rr_and_time = self.rr_calculator.rr_4(self.New_list_with_logged_values_as_dictionay)
         return self.list_of_rr_and_time
 
-    def get_rr(self, given_delay = 0): #given_delay sættes, hvis der ønskes at manipulere med længden af HRM_pro rr værierne
+    def get_rr(self):
+        """ Metoden returnerer en liste med rr-værdier.
+
+        Returns:
+            List<float>: Rr returneres som en liste med floats
+        """
         # Modificerer rr-værdierne ved at udtrække rr værdier uden tiden.
         rr = []
         if len(self.list_of_rr_and_time) > 0:
@@ -56,11 +69,22 @@ class extract_hrmpro_class():
         return rr
     
     def get_hr(self):
+        """ Metoden returnerer en liste med Hr-værdier.
+
+        Returns:
+            List<float>: Hr returneres som en liste med floats
+        """
         hr_list = []
         for hr in self.hr_list: #self.New_list_with_logged_values_as_dictionay:
             hr_list.append(int(hr,16))
         return(hr_list)
 
     def set_read_from_file_bool(self, value : bool):
+        """ Denne bool bruges til at fortælle extract_empatic metoden, at nu skal der indlæses data fra en ny testperson. 
+            Dette er implementeret for at data kun indlæses en gang pr. testperson, og ikke 3 gange svarende til de 3 faser
+        
+        Args:
+            value (bool): True hvis vi skal i gang med en ny testperson, False hvis vi er i gang med samme testperson, men bare fase 2 og 3
+        """
         self.read_from_file = value
 

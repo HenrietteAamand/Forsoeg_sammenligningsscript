@@ -49,11 +49,21 @@ class extract_maxrefdes103_class():
         return self.hr_list
 
     def get_first_timestamp(self):
+        """Metoen returnerer et timestamp, der er korrigeret til dags dato, men med det korrekte tidspunkt
+
+        Returns:
+            int: Timestamp returneres som unix time, altså af typen int
+        """
         first_datetime = datetime.datetime.strptime(self.first_time, '%d/%m/%y %H:%M:%S.%f')
         absolute_time = int((time.mktime(first_datetime.timetuple())*1000))
         return absolute_time
 
     def get_last_timestamp(self):
+        """Metoen returnerer et timestamp, der er korrigeret til dags dato, men med det korrekte tidspunkt
+
+        Returns:
+            int: Timestamp returneres som unix time, altså af typen int
+        """
         last_datetime = datetime.datetime.strptime(self.last_time, '%d/%m/%y %H:%M:%S.%f')
         absolute_time = int("{:.0f}".format(time.mktime(last_datetime.timetuple())*1000))
         return absolute_time
