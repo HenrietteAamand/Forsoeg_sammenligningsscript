@@ -6,7 +6,7 @@ class plotter_class():
     def __init__(self) -> None:
         pass
 
-    def plot_hr(self, maxrefdes, fs_maxrefdes = 25, hrm_pro = [], forerunner = [], fs_garmin = 4, empatica = [], fs_empatica = 1, fasenummer = 0, testpersonnummer = 0, show_bool = True):
+    def plot_hr(self, maxrefdes = [], fs_maxrefdes = 25, hrm_pro = [], forerunner = [], fs_garmin = 4, empatica = [], fs_empatica = 1, fasenummer = 0, testpersonnummer = 0, show_bool = True):
         # Deltatider
         delta_tid_maxrefdes = 1/fs_maxrefdes
         delta_tid_garmin = 1/fs_garmin
@@ -30,10 +30,20 @@ class plotter_class():
         plt.plot(tidsakse_hrmpro, hrm_pro, label = 'HRM-Pro')
         plt.plot(tidsakse_forerunner, forerunner, label = 'Forerunner 45')
         plt.legend(loc = 'upper right')
+        plt.title("Hr-values for 4 sensors")
     
         plt.show(block = show_bool)
         #plt.close(1)
 
 
-    def plot_rr(self, maxrefdes, hrm_pro = [], forerunner = [], empatica = [], fasenummer = 0, testpersonnummer = 0):
+    def plot_rr(self, maxrefdes = [], hrm_pro = [], forerunner = [], empatica = [], fasenummer = 0, testpersonnummer = 0, show_bool = True):
+        plt.figure(1)
+        plt.plot(maxrefdes, label = 'MAXREFDES103')
+        plt.plot(empatica, label = 'empatica')
+        plt.plot(hrm_pro, label = 'HRM-Pro')
+        plt.plot(forerunner, label = 'Forerunner 45')
+        plt.legend(loc = 'upper right')
+        plt.title("RR-values for 4 sensors")
+    
+        plt.show(block = show_bool)
         pass

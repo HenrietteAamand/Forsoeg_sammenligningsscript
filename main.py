@@ -1,4 +1,4 @@
-import filereader, extract_hrmpro, extract_maxrefdes103, tidskorrigering, extract_empatica
+import filereader, extract_hrmpro, extract_maxrefdes103, tidskorrigering, extract_empatica, datetime
 from plotter import plotter_class
 
 path = "C:/Users/hah/Documents/VISUAL_STUDIO_CODE/Forsoeg_sammenligningsscript/Data"
@@ -19,15 +19,25 @@ while(counter <=antal_testpersoner):
     testpersonnummer = counter
     maxrefdes103.extract(testpersonnummer,fasenummer)
     timelim_begin = maxrefdes103.get_first_timestamp()
+    my_datetime = datetime.datetime.fromtimestamp(timelim_begin/1000).strftime('%d/%m/%y %H:%M:%S.%f')
+    #print("Maxrefdes103: " + my_datetime)
     timelim_end = maxrefdes103.get_last_timestamp()
     hrm_pro.extract(testpersonnummer,timelim_begin=timelim_begin, timelim_end=timelim_end)
     empatica.extract(testpersonnummer,timelim_begin, timelim_end)
-
     Dict_with_obs[counter]['Hr_Maxrefdes103_' + str(fasenummer)] = maxrefdes103.get_hr()
     Dict_with_obs[counter]['RR_Maxrefdes103_' + str(fasenummer)] = maxrefdes103.get_rr()
     Dict_with_obs[counter]["Hr_Hrmpro_" + str(fasenummer)] = hrm_pro.get_hr()
     Dict_with_obs[counter]["RR_Hrmpro_" + str(fasenummer)] = hrm_pro.get_rr()
     Dict_with_obs[counter]["Hr_empatica_" + str(fasenummer)] =empatica.get_hr()
+    Dict_with_obs[counter]["RR_empatica_" + str(fasenummer)] =empatica.get_rr()
+    
+    delta_time = timelim_end-timelim_begin
+    sum_maxrefdes = sum(Dict_with_obs[counter]['RR_Maxrefdes103_' + str(fasenummer)])
+    sum_hrmpro = sum(Dict_with_obs[counter]["RR_Hrmpro_" + str(fasenummer)])
+    sum_empatica = sum(Dict_with_obs[counter]["RR_empatica_" + str(fasenummer)])
+
+    print("Deltatid = " + str(delta_time) + ", maxrefdes differens = " + str(delta_time - sum_maxrefdes) + ", HRM-Pro differens = " + str(delta_time - sum_hrmpro) + ", Empatica differens = " + str(delta_time - sum_empatica))
+
     # Dictionary_with_all_observations[str(counter)]["Hr_forerunner_" + str(fasenummer)] = maxrefdes103.get_hr()
     fasenummer += 1
     if(fasenummer > 3):
@@ -41,6 +51,13 @@ while(counter <=antal_testpersoner):
 
 counter = 1
 
-plotter.plot_hr(maxrefdes= Dict_with_obs[counter]['Hr_Maxrefdes103_1'], hrm_pro=Dict_with_obs[counter]['Hr_Hrmpro_1'], empatica=Dict_with_obs[counter]['Hr_empatica_1'])
+while(counter <= antal_testpersoner):
+    plotter.plot_hr(maxrefdes= Dict_with_obs[counter]['Hr_Maxrefdes103_1'], hrm_pro=Dict_with_obs[counter]['Hr_Hrmpro_1'], empatica=Dict_with_obs[counter]['Hr_empatica_1'])
+    plotter.plot_hr(maxrefdes= Dict_with_obs[counter]['Hr_Maxrefdes103_2'], hrm_pro=Dict_with_obs[counter]['Hr_Hrmpro_2'], empatica=Dict_with_obs[counter]['Hr_empatica_2'])
+    plotter.plot_hr(maxrefdes= Dict_with_obs[counter]['Hr_Maxrefdes103_3'], hrm_pro=Dict_with_obs[counter]['Hr_Hrmpro_3'], empatica=Dict_with_obs[counter]['Hr_empatica_3'])
+    plotter.plot_rr(maxrefdes= Dict_with_obs[counter]['RR_Maxrefdes103_1'], hrm_pro=Dict_with_obs[counter]['RR_Hrmpro_1'], empatica=Dict_with_obs[counter]['RR_empatica_1'])
+    plotter.plot_rr(maxrefdes= Dict_with_obs[counter]['RR_Maxrefdes103_2'], hrm_pro=Dict_with_obs[counter]['RR_Hrmpro_2'], empatica=Dict_with_obs[counter]['RR_empatica_2'])
+    plotter.plot_rr(maxrefdes= Dict_with_obs[counter]['RR_Maxrefdes103_3'], hrm_pro=Dict_with_obs[counter]['RR_Hrmpro_3'], empatica=Dict_with_obs[counter]['RR_empatica_3'])
+    counter += 1
 
 
