@@ -30,7 +30,6 @@ class extract_maxrefdes103_class():
                     rr_korr = float("{:.1f}".format(0.96*float(row["rr"]))) #korrigerer med den faktor vi fandt i excel
                     self.rr_list.append(rr_korr)
             i +=1
-        print("Done extracting MAXREFDES103")
 
     def get_rr(self):
         """Metoden er en standard get-metode, der returnerer alle RR-intervaller

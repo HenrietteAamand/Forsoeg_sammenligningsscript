@@ -1,0 +1,266 @@
+*** New Session***
+04-11-2021 09:02:37
+Product Name: HRM-pro
+315184828 : Received Capabilities page
+315201562 : Received Battery Status page
+315201812 : Received Battery Status page
+315202062 : Received Battery Status page
+315202312 : Received Battery Status page
+315235062 : Received Cumulative Operating Time page
+315235312 : Received Cumulative Operating Time page
+315235546 : Received Cumulative Operating Time page
+315235796 : Received Cumulative Operating Time page
+315251812 : Received Manufacturer ID page
+315252046 : Received Manufacturer ID page
+315252296 : Received Manufacturer ID page
+315252546 : Received Manufacturer ID page
+315268796 : Received Product ID page
+315269046 : Received Product ID page
+315269296 : Received Product ID page
+315280625 : Searching for master device...
+315282093 : Connected to master device (3564/225)
+315285796 : Received Capabilities page
+315286046 : Received Capabilities page
+315302296 : Received Battery Status page
+315302546 : Received Battery Status page
+315335546 : Received Cumulative Operating Time page
+315335781 : Received Cumulative Operating Time page
+315336031 : Received Cumulative Operating Time page
+315336281 : Received Cumulative Operating Time page
+315352281 : Received Manufacturer ID page
+315352531 : Received Manufacturer ID page
+315352781 : Received Manufacturer ID page
+315353031 : Received Manufacturer ID page
+315369031 : Received Product ID page
+315369281 : Received Product ID page
+315369531 : Received Product ID page
+315369765 : Received Product ID page
+315385781 : Received Capabilities page
+315386031 : Received Capabilities page
+315386265 : Received Capabilities page
+315386515 : Received Capabilities page
+315402531 : Received Battery Status page
+315402765 : Received Battery Status page
+315403015 : Received Battery Status page
+315403265 : Received Battery Status page
+315436015 : Received Cumulative Operating Time page
+315436265 : Received Cumulative Operating Time page
+315436515 : Received Cumulative Operating Time page
+315436750 : Received Cumulative Operating Time page
+315452765 : Received Manufacturer ID page
+315453015 : Received Manufacturer ID page
+315453250 : Received Manufacturer ID page
+315453500 : Received Manufacturer ID page
+315469515 : Received Product ID page
+315469765 : Received Product ID page
+315470000 : Received Product ID page
+315470250 : Received Product ID page
+315486250 : Received Capabilities page
+315486500 : Received Capabilities page
+315486750 : Received Capabilities page
+315487000 : Received Capabilities page
+315503250 : Received Battery Status page
+315503500 : Received Battery Status page
+315503750 : Received Battery Status page
+315536500 : Received Cumulative Operating Time page
+315536750 : Received Cumulative Operating Time page
+315536984 : Received Cumulative Operating Time page
+315537234 : Received Cumulative Operating Time page
+315553250 : Received Manufacturer ID page
+315553484 : Received Manufacturer ID page
+315553734 : Received Manufacturer ID page
+315553984 : Received Manufacturer ID page
+315569984 : Received Product ID page
+315570484 : Received Product ID page
+315586734 : Received Capabilities page
+315586984 : Received Capabilities page
+315587234 : Received Capabilities page
+315587468 : Received Capabilities page
+315603484 : Received Battery Status page
+315603734 : Received Battery Status page
+315603968 : Received Battery Status page
+315604218 : Received Battery Status page
+315636968 : Received Cumulative Operating Time page
+315637218 : Received Cumulative Operating Time page
+315637718 : Received Cumulative Operating Time page
+315653718 : Received Manufacturer ID page
+315653968 : Received Manufacturer ID page
+315654218 : Received Manufacturer ID page
+315654453 : Received Manufacturer ID page
+315670718 : Received Product ID page
+315670953 : Received Product ID page
+315671203 : Received Product ID page
+315687218 : Received Capabilities page
+315687468 : Received Capabilities page
+315687703 : Received Capabilities page
+315687953 : Received Capabilities page
+315703953 : Received Battery Status page
+315704203 : Received Battery Status page
+315704453 : Received Battery Status page
+315737453 : Received Cumulative Operating Time page
+315737703 : Received Cumulative Operating Time page
+315737953 : Received Cumulative Operating Time page
+315738187 : Received Cumulative Operating Time page
+315754203 : Received Manufacturer ID page
+315754453 : Received Manufacturer ID page
+315754687 : Received Manufacturer ID page
+315770953 : Received Product ID page
+315771187 : Received Product ID page
+315771437 : Received Product ID page
+315771687 : Received Product ID page
+315787687 : Received Capabilities page
+315787937 : Received Capabilities page
+315788187 : Received Capabilities page
+315788437 : Received Capabilities page
+315804437 : Received Battery Status page
+315804687 : Received Battery Status page
+315804937 : Received Battery Status page
+315805171 : Received Battery Status page
+315837937 : Received Cumulative Operating Time page
+315838171 : Received Cumulative Operating Time page
+315838421 : Received Cumulative Operating Time page
+315838671 : Received Cumulative Operating Time page
+315854671 : Received Manufacturer ID page
+315855171 : Received Manufacturer ID page
+315855421 : Received Manufacturer ID page
+315871421 : Received Product ID page
+315871671 : Received Product ID page
+315871921 : Received Product ID page
+315872156 : Received Product ID page
+315888171 : Received Capabilities page
+315888421 : Received Capabilities page
+315888671 : Received Capabilities page
+315888906 : Received Capabilities page
+315904921 : Received Battery Status page
+315905171 : Received Battery Status page
+315905406 : Received Battery Status page
+315905656 : Received Battery Status page
+315938406 : Received Cumulative Operating Time page
+315938656 : Received Cumulative Operating Time page
+315938906 : Received Cumulative Operating Time page
+315955156 : Received Manufacturer ID page
+315955406 : Received Manufacturer ID page
+315955656 : Received Manufacturer ID page
+315955890 : Received Manufacturer ID page
+315971906 : Received Product ID page
+315972156 : Received Product ID page
+315972390 : Received Product ID page
+315988656 : Received Capabilities page
+315988890 : Received Capabilities page
+315989140 : Received Capabilities page
+315989390 : Received Capabilities page
+316005390 : Received Battery Status page
+316005640 : Received Battery Status page
+316005890 : Received Battery Status page
+316006140 : Received Battery Status page
+316038890 : Received Cumulative Operating Time page
+316039375 : Received Cumulative Operating Time page
+316039625 : Received Cumulative Operating Time page
+316055640 : Received Manufacturer ID page
+316055875 : Received Manufacturer ID page
+316056125 : Received Manufacturer ID page
+316056375 : Received Manufacturer ID page
+316072625 : Received Product ID page
+316072875 : Received Product ID page
+316073125 : Received Product ID page
+316089125 : Received Capabilities page
+316089625 : Received Capabilities page
+316089875 : Received Capabilities page
+316105875 : Received Battery Status page
+316106125 : Received Battery Status page
+316106375 : Received Battery Status page
+316106609 : Received Battery Status page
+316139375 : Received Cumulative Operating Time page
+316139609 : Received Cumulative Operating Time page
+316139859 : Received Cumulative Operating Time page
+316140109 : Received Cumulative Operating Time page
+316156359 : Received Manufacturer ID page
+316156609 : Received Manufacturer ID page
+316156859 : Received Manufacturer ID page
+316172859 : Received Product ID page
+316173109 : Received Product ID page
+316173359 : Received Product ID page
+316173593 : Received Product ID page
+316189609 : Received Capabilities page
+316189859 : Received Capabilities page
+316190093 : Received Capabilities page
+316190343 : Received Capabilities page
+316206359 : Received Battery Status page
+316206593 : Received Battery Status page
+316206843 : Received Battery Status page
+316207093 : Received Battery Status page
+316239843 : Received Cumulative Operating Time page
+316240343 : Received Cumulative Operating Time page
+316240578 : Received Cumulative Operating Time page
+316256593 : Received Manufacturer ID page
+316256843 : Received Manufacturer ID page
+316257078 : Received Manufacturer ID page
+316257328 : Received Manufacturer ID page
+316273578 : Received Product ID page
+316273828 : Received Product ID page
+316274078 : Received Product ID page
+316290078 : Received Capabilities page
+316290328 : Received Capabilities page
+316290578 : Received Capabilities page
+316290828 : Received Capabilities page
+316306828 : Received Battery Status page
+316307078 : Received Battery Status page
+316307328 : Received Battery Status page
+316307578 : Received Battery Status page
+316340328 : Received Cumulative Operating Time page
+316340578 : Received Cumulative Operating Time page
+316340812 : Received Cumulative Operating Time page
+316341062 : Received Cumulative Operating Time page
+316357078 : Received Manufacturer ID page
+316357312 : Received Manufacturer ID page
+316357562 : Received Manufacturer ID page
+316357812 : Received Manufacturer ID page
+316373812 : Received Product ID page
+316374062 : Received Product ID page
+316374312 : Received Product ID page
+316374562 : Received Product ID page
+316390562 : Received Capabilities page
+316390812 : Received Capabilities page
+316391062 : Received Capabilities page
+316391296 : Received Capabilities page
+316407312 : Received Battery Status page
+316407562 : Received Battery Status page
+316407796 : Received Battery Status page
+316408046 : Received Battery Status page
+316440796 : Received Cumulative Operating Time page
+316441046 : Received Cumulative Operating Time page
+316441296 : Received Cumulative Operating Time page
+316441546 : Received Cumulative Operating Time page
+316457546 : Received Manufacturer ID page
+316457796 : Received Manufacturer ID page
+316458046 : Received Manufacturer ID page
+316458296 : Received Manufacturer ID page
+316474546 : Received Product ID page
+316474796 : Received Product ID page
+316475031 : Received Product ID page
+316491046 : Received Capabilities page
+316491296 : Received Capabilities page
+316491531 : Received Capabilities page
+316491781 : Received Capabilities page
+316507796 : Received Battery Status page
+316508031 : Received Battery Status page
+316508281 : Received Battery Status page
+316541281 : Received Cumulative Operating Time page
+316541531 : Received Cumulative Operating Time page
+316541781 : Received Cumulative Operating Time page
+316542015 : Received Cumulative Operating Time page
+316558281 : Received Manufacturer ID page
+316558515 : Received Manufacturer ID page
+316558765 : Received Manufacturer ID page
+316574781 : Received Product ID page
+316575015 : Received Product ID page
+316575265 : Received Product ID page
+316575515 : Received Product ID page
+316591515 : Received Capabilities page
+316591765 : Received Capabilities page
+316592015 : Received Capabilities page
+316592265 : Received Capabilities page
+316608265 : Received Battery Status page
+316608515 : Received Battery Status page
+316608765 : Received Battery Status page
+316609000 : Received Battery Status page

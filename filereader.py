@@ -67,10 +67,11 @@ class filereader_class:
             list<Dict>: Der returneres en liste med dictionaries. Der er følgende entries i dictionariet: timestmp,smpleCnt,grnCnt,led2,led3,grn2Cnt,irCnt,redCnt,accelX,accelY,accelZ,hr,rr,rrsecure,spo2. Timestamp angives som et klokkeslet uden dato 
         """
         i = 0
-        faser = ["Stilhed", "Statisk", "Dynamisk"]
+        faser = ["Baseline","Stilhed", "Statisk", "Dynamisk"]
 
-        while(i<3):
-            maxrefdes_path = self.path + "/Testperson" + str(testpersonnummer) + "/Raaobservationer/Testperson_" + str(testpersonnummer) + "_Fase_" + str(fasenummer) + "_" + faser[i] + "_observationer.csv"
+        for i in range(len(faser)):
+            #maxrefdes_path = self.path + "/Testperson" + str(testpersonnummer) + "/Raaobservationer/Testperson_" + str(testpersonnummer) + "_Fase_" + str(fasenummer) + "_" + faser[i] + "_observationer.csv"
+            maxrefdes_path = self.path + "/Raaobservationer/Testperson_" + str(testpersonnummer) + "_Fase_" + str(fasenummer) + "_" + faser[i] + "_observationer.csv"
             if(os.path.exists(maxrefdes_path)):
                 i = 3
                 csv_file_original =  open(maxrefdes_path, mode='r')
@@ -79,5 +80,4 @@ class filereader_class:
                 lines_as_dict = list(lines_as_dict)
                 csv_file_original.close()
                 return lines_as_dict
-            i+= 1
     

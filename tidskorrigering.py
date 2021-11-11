@@ -10,7 +10,7 @@ class tidskorrigering_class:
         """
         self.birthtime_sensor = absolute_time-sensor_count_at_absolute_time
 
-    def hrm_pro(self, list_of_data: list, timelim_begin: int, timelim_end: int):
+    def hrm_pro(self, list_of_data1: list, timelim_begin: int, timelim_end: int):
         """Ud fra en liste med data, hvor der også skal indgå tidsværdier, tidskorrigeres ud fra de givbne grænseværdier
 
         Args:
@@ -21,15 +21,20 @@ class tidskorrigering_class:
         Returns:
             list<array[]>: Der returneres en liste, der udelukkende indeholder værdier inden for det angivne tidsinterval, begge grænseværdier inklusiv. Listen indeholder arrays på formen [1636471068000, ' Rx', ' [04][00][6E][A2][14][A5][B6][5B]\n']. Her er sensorcpunt altså korrigeret til en tidsværdi med dags dato
         """
+        list_of_data = list_of_data1.copy()
         list_splitted_data = []
         timecorrected_list = []
         i = -3
         for line in list_of_data:
             if(i >= 0):
                 list_splitted_data.append(line.split(':'))
-                list_splitted_data[i][0] = self.get_timestamp_garmin(int(list_splitted_data[i][0]))
+                current_count = int(list_splitted_data[i][0])
+                new_absolute_time = self.get_timestamp_garmin(current_count)
+                list_splitted_data[i][0] = new_absolute_time
                 if(list_splitted_data[i][0] >= timelim_begin and list_splitted_data[i][0] <= timelim_end):
                     timecorrected_list.append(list_splitted_data[i])
+                if(list_splitted_data[i][0] > timelim_end):
+                    break
             i += 1
         return timecorrected_list
 

@@ -1,0 +1,265 @@
+*** New Session***
+09-11-2021 15:00:54
+Product Name: HRM-Pro
+22610687 : Received Cumulative Operating Time page
+22610937 : Received Cumulative Operating Time page
+22611187 : Received Cumulative Operating Time page
+22611437 : Received Cumulative Operating Time page
+22627437 : Received Manufacturer ID page
+22627687 : Received Manufacturer ID page
+22627937 : Received Manufacturer ID page
+22628171 : Received Manufacturer ID page
+22644437 : Received Product ID page
+22644671 : Received Product ID page
+22644921 : Received Product ID page
+22660937 : Received Capabilities page
+22661171 : Received Capabilities page
+22661421 : Received Capabilities page
+22661671 : Received Capabilities page
+22677671 : Received Battery Status page
+22677921 : Received Battery Status page
+22678171 : Received Battery Status page
+22711171 : Received Cumulative Operating Time page
+22711421 : Received Cumulative Operating Time page
+22711656 : Received Cumulative Operating Time page
+22711906 : Received Cumulative Operating Time page
+22727921 : Received Manufacturer ID page
+22728156 : Received Manufacturer ID page
+22728406 : Received Manufacturer ID page
+22728656 : Received Manufacturer ID page
+22744656 : Received Product ID page
+22744906 : Received Product ID page
+22745156 : Received Product ID page
+22745406 : Received Product ID page
+22761406 : Received Capabilities page
+22761656 : Received Capabilities page
+22761906 : Received Capabilities page
+22762140 : Received Capabilities page
+22778156 : Received Battery Status page
+22778406 : Received Battery Status page
+22778640 : Received Battery Status page
+22778890 : Received Battery Status page
+22811656 : Received Cumulative Operating Time page
+22811890 : Received Cumulative Operating Time page
+22812140 : Received Cumulative Operating Time page
+22812390 : Received Cumulative Operating Time page
+22828390 : Received Manufacturer ID page
+22828640 : Received Manufacturer ID page
+22829140 : Received Manufacturer ID page
+22845140 : Received Product ID page
+22845390 : Received Product ID page
+22845640 : Received Product ID page
+22861890 : Received Capabilities page
+22862140 : Received Capabilities page
+22862375 : Received Capabilities page
+22862625 : Received Capabilities page
+22878640 : Received Battery Status page
+22878875 : Received Battery Status page
+22879125 : Received Battery Status page
+22879375 : Received Battery Status page
+22912125 : Received Cumulative Operating Time page
+22912375 : Received Cumulative Operating Time page
+22912625 : Received Cumulative Operating Time page
+22912859 : Received Cumulative Operating Time page
+22928875 : Received Manufacturer ID page
+22929125 : Received Manufacturer ID page
+22929359 : Received Manufacturer ID page
+22945625 : Received Product ID page
+22945859 : Received Product ID page
+22946109 : Received Product ID page
+22962609 : Received Capabilities page
+22962859 : Received Capabilities page
+22963109 : Received Capabilities page
+22979109 : Received Battery Status page
+22979359 : Received Battery Status page
+22979609 : Received Battery Status page
+22979859 : Received Battery Status page
+23012609 : Received Cumulative Operating Time page
+23012859 : Received Cumulative Operating Time page
+23013093 : Received Cumulative Operating Time page
+23013343 : Received Cumulative Operating Time page
+23029359 : Received Manufacturer ID page
+23029593 : Received Manufacturer ID page
+23029843 : Received Manufacturer ID page
+23030093 : Received Manufacturer ID page
+23046093 : Received Product ID page
+23046343 : Received Product ID page
+23046593 : Received Product ID page
+23046843 : Received Product ID page
+23062843 : Received Capabilities page
+23063093 : Received Capabilities page
+23063578 : Received Capabilities page
+23079593 : Received Battery Status page
+23079843 : Received Battery Status page
+23080078 : Received Battery Status page
+23113078 : Received Cumulative Operating Time page
+23113328 : Received Cumulative Operating Time page
+23113578 : Received Cumulative Operating Time page
+23113828 : Received Cumulative Operating Time page
+23129828 : Received Manufacturer ID page
+23130078 : Received Manufacturer ID page
+23130328 : Received Manufacturer ID page
+23130578 : Received Manufacturer ID page
+23146578 : Received Product ID page
+23146828 : Received Product ID page
+23147062 : Received Product ID page
+23147312 : Received Product ID page
+23163328 : Received Capabilities page
+23163562 : Received Capabilities page
+23163812 : Received Capabilities page
+23164062 : Received Capabilities page
+23180078 : Received Battery Status page
+23180312 : Received Battery Status page
+23180562 : Received Battery Status page
+23180812 : Received Battery Status page
+23213562 : Received Cumulative Operating Time page
+23213812 : Received Cumulative Operating Time page
+23214062 : Received Cumulative Operating Time page
+23214296 : Received Cumulative Operating Time page
+23230312 : Received Manufacturer ID page
+23230562 : Received Manufacturer ID page
+23230796 : Received Manufacturer ID page
+23231046 : Received Manufacturer ID page
+23247062 : Received Product ID page
+23247296 : Received Product ID page
+23247546 : Received Product ID page
+23263796 : Received Capabilities page
+23264046 : Received Capabilities page
+23264546 : Received Capabilities page
+23280546 : Received Battery Status page
+23280796 : Received Battery Status page
+23281046 : Received Battery Status page
+23281281 : Received Battery Status page
+23314046 : Received Cumulative Operating Time page
+23314281 : Received Cumulative Operating Time page
+23314531 : Received Cumulative Operating Time page
+23314781 : Received Cumulative Operating Time page
+23330781 : Received Manufacturer ID page
+23331031 : Received Manufacturer ID page
+23331281 : Received Manufacturer ID page
+23331531 : Received Manufacturer ID page
+23347531 : Received Product ID page
+23347781 : Received Product ID page
+23348031 : Received Product ID page
+23348281 : Received Product ID page
+23364281 : Received Capabilities page
+23364531 : Received Capabilities page
+23364781 : Received Capabilities page
+23381031 : Received Battery Status page
+23381281 : Received Battery Status page
+23381765 : Received Battery Status page
+23414765 : Received Cumulative Operating Time page
+23415015 : Received Cumulative Operating Time page
+23415265 : Received Cumulative Operating Time page
+23431265 : Received Manufacturer ID page
+23431515 : Received Manufacturer ID page
+23431765 : Received Manufacturer ID page
+23432000 : Received Manufacturer ID page
+23448015 : Received Product ID page
+23448265 : Received Product ID page
+23448500 : Received Product ID page
+23448750 : Received Product ID page
+23464765 : Received Capabilities page
+23465000 : Received Capabilities page
+23465500 : Received Capabilities page
+23481500 : Received Battery Status page
+23481750 : Received Battery Status page
+23482000 : Received Battery Status page
+23482250 : Received Battery Status page
+23515000 : Received Cumulative Operating Time page
+23515250 : Received Cumulative Operating Time page
+23515500 : Received Cumulative Operating Time page
+23531750 : Received Manufacturer ID page
+23532000 : Received Manufacturer ID page
+23532234 : Received Manufacturer ID page
+23532484 : Received Manufacturer ID page
+23548500 : Received Product ID page
+23548734 : Received Product ID page
+23548984 : Received Product ID page
+23565234 : Received Capabilities page
+23565484 : Received Capabilities page
+23565734 : Received Capabilities page
+23565984 : Received Capabilities page
+23581984 : Received Battery Status page
+23582234 : Received Battery Status page
+23582484 : Received Battery Status page
+23615484 : Received Cumulative Operating Time page
+23615718 : Received Cumulative Operating Time page
+23615968 : Received Cumulative Operating Time page
+23616218 : Received Cumulative Operating Time page
+23632218 : Received Manufacturer ID page
+23632468 : Received Manufacturer ID page
+23632718 : Received Manufacturer ID page
+23632968 : Received Manufacturer ID page
+23648968 : Received Product ID page
+23649218 : Received Product ID page
+23649468 : Received Product ID page
+23665718 : Received Capabilities page
+23665968 : Received Capabilities page
+23666218 : Received Capabilities page
+23666453 : Received Capabilities page
+23682718 : Received Battery Status page
+23682953 : Received Battery Status page
+23683203 : Received Battery Status page
+23715953 : Received Cumulative Operating Time page
+23716203 : Received Cumulative Operating Time page
+23716453 : Received Cumulative Operating Time page
+23716703 : Received Cumulative Operating Time page
+23732703 : Received Manufacturer ID page
+23732953 : Received Manufacturer ID page
+23733203 : Received Manufacturer ID page
+23749453 : Received Product ID page
+23749703 : Received Product ID page
+23749937 : Received Product ID page
+23766203 : Received Capabilities page
+23766437 : Received Capabilities page
+23766687 : Received Capabilities page
+23766937 : Received Capabilities page
+23782937 : Received Battery Status page
+23783187 : Received Battery Status page
+23783437 : Received Battery Status page
+23783687 : Received Battery Status page
+23816437 : Received Cumulative Operating Time page
+23816687 : Received Cumulative Operating Time page
+23816937 : Received Cumulative Operating Time page
+23817171 : Received Cumulative Operating Time page
+23833187 : Received Manufacturer ID page
+23833437 : Received Manufacturer ID page
+23833671 : Received Manufacturer ID page
+23833921 : Received Manufacturer ID page
+23849937 : Received Product ID page
+23850171 : Received Product ID page
+23850421 : Received Product ID page
+23850671 : Received Product ID page
+23866671 : Received Capabilities page
+23866921 : Received Capabilities page
+23867421 : Received Capabilities page
+23883421 : Received Battery Status page
+23883921 : Received Battery Status page
+23884156 : Received Battery Status page
+23916921 : Received Cumulative Operating Time page
+23917156 : Received Cumulative Operating Time page
+23917406 : Received Cumulative Operating Time page
+23917656 : Received Cumulative Operating Time page
+23933656 : Received Manufacturer ID page
+23933906 : Received Manufacturer ID page
+23934156 : Received Manufacturer ID page
+23934406 : Received Manufacturer ID page
+23950406 : Received Product ID page
+23950906 : Received Product ID page
+23951140 : Received Product ID page
+23967156 : Received Capabilities page
+23967406 : Received Capabilities page
+23967890 : Received Capabilities page
+23983906 : Received Battery Status page
+23984390 : Received Battery Status page
+23984640 : Received Battery Status page
+24017640 : Received Cumulative Operating Time page
+24017890 : Received Cumulative Operating Time page
+24018140 : Received Cumulative Operating Time page
+24034140 : Received Manufacturer ID page
+24034390 : Received Manufacturer ID page
+24034875 : Received Manufacturer ID page
+24051140 : Received Product ID page
+24051375 : Received Product ID page
+24051625 : Received Product ID page

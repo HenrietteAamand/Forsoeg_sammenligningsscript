@@ -23,9 +23,9 @@ class extract_hrmpro_class():
             timelim_end (int): Tidspunktet, hvor man ikke længere skal bruge data
         """
         if(self.read_from_file):
-            lines_from_file = self.filereader.read_HRMpro(testpersonnummer)
-            self.lines_splitted = self.tidkorr.hrm_pro(lines_from_file, timelim_begin, timelim_end)
+            self.lines_from_file = self.filereader.read_HRMpro(testpersonnummer)
             self.read_from_file = False
+        self.lines_splitted = self.tidkorr.hrm_pro(self.lines_from_file, timelim_begin, timelim_end)
         self.hr_list = []
         oldtogglebit = 0
         # I den hexadecimale streng udtrækkes hver byte og gemmes i et dictionary sammen med den udregnede tid
@@ -35,8 +35,12 @@ class extract_hrmpro_class():
             if len(sensordata) == 3:
                 if 'Rx' in sensordata[1]:
                     temporary_List = sensordata[2][1:-2].split('][')
-                    self.hr_list.append(temporary_List[7])
-                    if(oldtogglebit != temporary_List[6]): #Yderligere gemmes kun data, når der har været et nyt 'heart-beat-event svarende til at hr_count er blevet en større
+                    if(temporary_List[0][2] == '0'):
+                        self.hr_list.append('3C')
+                    elif(temporary_List[0][2] == '4'):    
+                        self.hr_list.append(temporary_List[7])
+                    newTogglebit = int(temporary_List[6],16)
+                    if(oldtogglebit != newTogglebit): #Yderligere gemmes kun data, når der har været et nyt 'heart-beat-event svarende til at hr_count er blevet en større
                         dictionary_with_hex["b0"] = temporary_List[0]
                         dictionary_with_hex["b1"] = temporary_List[1]
                         dictionary_with_hex["b2"] = temporary_List[2]
@@ -46,8 +50,10 @@ class extract_hrmpro_class():
                         dictionary_with_hex["hr_count"] = temporary_List[6]
                         dictionary_with_hex["hr"] = temporary_List[7]
                         dictionary_with_hex["time"] = sensordata[0]
+                        if(oldtogglebit != newTogglebit-1):
+                            self.New_list_with_logged_values_as_dictionay.append(dictionary_with_hex)     
                         self.New_list_with_logged_values_as_dictionay.append(dictionary_with_hex)
-                    oldtogglebit = temporary_List[6]
+                    oldtogglebit = int(temporary_List[6],16)
         
         #Bruger data page 4 til at omregne til RR-værdier
         self.list_of_rr_and_time = self.rr_calculator.rr_4(self.New_list_with_logged_values_as_dictionay)
@@ -65,7 +71,8 @@ class extract_hrmpro_class():
             for dict in self.list_of_rr_and_time:
                 rr.append(dict['rr'])
         else:
-            print("please extract rr data with the extract_rr_values-method before getting the rr-values in a separate list")
+            #print("please extract rr data with the extract_rr_values-method before getting the rr-values in a separate list")
+            pass
         return rr
     
     def get_hr(self):

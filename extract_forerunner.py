@@ -33,7 +33,7 @@ class extract_forerunner_class():
                 if 'Rx' in sensordata[1]:
                     temporary_List = sensordata[2][1:-2].split('][')
                     self.hr_list.append(temporary_List[7])
-                    if(oldtogglebit != temporary_List[6]): #Yderligere gemmes kun data, når der har været et nyt 'heart-beat-event svarende til at hr_count er blevet en større
+                    if(oldtogglebit != temporary_List[6] and temporary_List[0][2] == '0'): #Yderligere gemmes kun data, når der har været et nyt 'heart-beat-event svarende til at hr_count er blevet en større
                         dictionary_with_hex["b0"] = temporary_List[0]
                         dictionary_with_hex["b1"] = temporary_List[1]
                         dictionary_with_hex["b2"] = temporary_List[2]
@@ -62,7 +62,8 @@ class extract_forerunner_class():
             for dict in self.list_of_rr_and_time:
                 rr_list.append(dict['rr'])
         else:
-            print("please extract rr data with the extract_rr_values-method before getting the rr-values in a separate list")
+            #print("please extract rr data with the extract_rr_values-method before getting the rr-values in a separate list")
+            pass
         return rr_list
     
     def get_hr(self):

@@ -1,0 +1,225 @@
+*** New Session***
+10-11-2021 09:04:42
+Product Name: HRM-Pro
+87622296 : Received Manufacturer ID page
+87622531 : Received Manufacturer ID page
+87622781 : Received Manufacturer ID page
+87623031 : Received Manufacturer ID page
+87639031 : Received Product ID page
+87639531 : Received Product ID page
+87639781 : Received Product ID page
+87655781 : Received Capabilities page
+87656031 : Received Capabilities page
+87656281 : Received Capabilities page
+87656515 : Received Capabilities page
+87672531 : Received Battery Status page
+87672781 : Received Battery Status page
+87673265 : Received Battery Status page
+87706031 : Received Cumulative Operating Time page
+87706265 : Received Cumulative Operating Time page
+87706515 : Received Cumulative Operating Time page
+87706765 : Received Cumulative Operating Time page
+87722765 : Received Manufacturer ID page
+87723015 : Received Manufacturer ID page
+87723265 : Received Manufacturer ID page
+87723515 : Received Manufacturer ID page
+87739515 : Received Product ID page
+87739765 : Received Product ID page
+87740015 : Received Product ID page
+87740250 : Received Product ID page
+87756265 : Received Capabilities page
+87756515 : Received Capabilities page
+87756750 : Received Capabilities page
+87757000 : Received Capabilities page
+87773015 : Received Battery Status page
+87773250 : Received Battery Status page
+87773500 : Received Battery Status page
+87773750 : Received Battery Status page
+87806500 : Received Cumulative Operating Time page
+87806750 : Received Cumulative Operating Time page
+87807000 : Received Cumulative Operating Time page
+87807234 : Received Cumulative Operating Time page
+87823250 : Received Manufacturer ID page
+87823500 : Received Manufacturer ID page
+87823734 : Received Manufacturer ID page
+87823984 : Received Manufacturer ID page
+87840484 : Received Product ID page
+87840734 : Received Product ID page
+87856734 : Received Capabilities page
+87856984 : Received Capabilities page
+87857484 : Received Capabilities page
+87873484 : Received Battery Status page
+87873734 : Received Battery Status page
+87873984 : Received Battery Status page
+87874234 : Received Battery Status page
+87906984 : Received Cumulative Operating Time page
+87907234 : Received Cumulative Operating Time page
+87907468 : Received Cumulative Operating Time page
+87907718 : Received Cumulative Operating Time page
+87923734 : Received Manufacturer ID page
+87923968 : Received Manufacturer ID page
+87924218 : Received Manufacturer ID page
+87924468 : Received Manufacturer ID page
+87940468 : Received Product ID page
+87940718 : Received Product ID page
+87940968 : Received Product ID page
+87941218 : Received Product ID page
+87957218 : Received Capabilities page
+87957718 : Received Capabilities page
+87957953 : Received Capabilities page
+87974218 : Received Battery Status page
+87974453 : Received Battery Status page
+87974703 : Received Battery Status page
+88007453 : Received Cumulative Operating Time page
+88007703 : Received Cumulative Operating Time page
+88008203 : Received Cumulative Operating Time page
+88024203 : Received Manufacturer ID page
+88024453 : Received Manufacturer ID page
+88024937 : Received Manufacturer ID page
+88040953 : Received Product ID page
+88041203 : Received Product ID page
+88041437 : Received Product ID page
+88041687 : Received Product ID page
+88057703 : Received Capabilities page
+88057953 : Received Capabilities page
+88058187 : Received Capabilities page
+88058437 : Received Capabilities page
+88074453 : Received Battery Status page
+88074687 : Received Battery Status page
+88074937 : Received Battery Status page
+88075187 : Received Battery Status page
+88108187 : Received Cumulative Operating Time page
+88108437 : Received Cumulative Operating Time page
+88108671 : Received Cumulative Operating Time page
+88124687 : Received Manufacturer ID page
+88124937 : Received Manufacturer ID page
+88125171 : Received Manufacturer ID page
+88141921 : Received Product ID page
+88142171 : Received Product ID page
+88158171 : Received Capabilities page
+88158421 : Received Capabilities page
+88158671 : Received Capabilities page
+88158921 : Received Capabilities page
+88175171 : Received Battery Status page
+88175421 : Received Battery Status page
+88175656 : Received Battery Status page
+88208421 : Received Cumulative Operating Time page
+88208656 : Received Cumulative Operating Time page
+88208906 : Received Cumulative Operating Time page
+88209156 : Received Cumulative Operating Time page
+88225171 : Received Manufacturer ID page
+88225406 : Received Manufacturer ID page
+88225656 : Received Manufacturer ID page
+88225906 : Received Manufacturer ID page
+88242156 : Received Product ID page
+88242406 : Received Product ID page
+88242656 : Received Product ID page
+88258656 : Received Capabilities page
+88275406 : Received Battery Status page
+88275656 : Received Battery Status page
+88276140 : Received Battery Status page
+88298062 : Searching for master device...
+88300625 : Connected to master device (43084/65)
+88321796 : Received Manufacturer ID page
+88322281 : Received Manufacturer ID page
+88322531 : Received Manufacturer ID page
+88338546 : Received Product ID page
+88338796 : Received Product ID page
+88339031 : Received Product ID page
+88339281 : Received Product ID page
+88372031 : Received Manufacturer ID page
+88372281 : Received Manufacturer ID page
+88372531 : Received Manufacturer ID page
+88388781 : Received Product ID page
+88389031 : Received Product ID page
+88389281 : Received Product ID page
+88422281 : Received Manufacturer ID page
+88422531 : Received Manufacturer ID page
+88422765 : Received Manufacturer ID page
+88423015 : Received Manufacturer ID page
+88439031 : Received Product ID page
+88439265 : Received Product ID page
+88439515 : Received Product ID page
+88439765 : Received Product ID page
+88472765 : Received Manufacturer ID page
+88473250 : Received Manufacturer ID page
+88489265 : Received Product ID page
+88490000 : Received Product ID page
+88522765 : Received Manufacturer ID page
+88523000 : Received Manufacturer ID page
+88523250 : Received Manufacturer ID page
+88523500 : Received Manufacturer ID page
+88539500 : Received Product ID page
+88539750 : Received Product ID page
+88540000 : Received Product ID page
+88540250 : Received Product ID page
+88573250 : Received Manufacturer ID page
+88573734 : Received Manufacturer ID page
+88590234 : Received Product ID page
+88623234 : Received Manufacturer ID page
+88623484 : Received Manufacturer ID page
+88623734 : Received Manufacturer ID page
+88623984 : Received Manufacturer ID page
+88639984 : Received Product ID page
+88640234 : Received Product ID page
+88640484 : Received Product ID page
+88640718 : Received Product ID page
+88673718 : Received Manufacturer ID page
+88674218 : Received Manufacturer ID page
+88690718 : Received Product ID page
+88694406 : Searching for master device...
+88694656 : Connected to master device (43084/65)
+88707718 : Searching for master device...
+88708453 : Connected to master device (43084/65)
+88723718 : Received Manufacturer ID page
+88723968 : Received Manufacturer ID page
+88724218 : Received Manufacturer ID page
+88724453 : Received Manufacturer ID page
+88740468 : Received Product ID page
+88740718 : Received Product ID page
+88740953 : Received Product ID page
+88741203 : Received Product ID page
+88774453 : Received Manufacturer ID page
+88774703 : Received Manufacturer ID page
+88790703 : Received Product ID page
+88791203 : Received Product ID page
+88791453 : Received Product ID page
+88824203 : Received Manufacturer ID page
+88824453 : Received Manufacturer ID page
+88824687 : Received Manufacturer ID page
+88824937 : Received Manufacturer ID page
+88841187 : Received Product ID page
+88841437 : Received Product ID page
+88841687 : Received Product ID page
+88874437 : Received Manufacturer ID page
+88874687 : Received Manufacturer ID page
+88874937 : Received Manufacturer ID page
+88875187 : Received Manufacturer ID page
+88891437 : Received Product ID page
+88891687 : Received Product ID page
+88891921 : Received Product ID page
+88924687 : Received Manufacturer ID page
+88924921 : Received Manufacturer ID page
+88925171 : Received Manufacturer ID page
+88925421 : Received Manufacturer ID page
+88941421 : Received Product ID page
+88941671 : Received Product ID page
+88941921 : Received Product ID page
+88942171 : Received Product ID page
+88974921 : Received Manufacturer ID page
+88975171 : Received Manufacturer ID page
+88975421 : Received Manufacturer ID page
+88975656 : Received Manufacturer ID page
+88992156 : Received Product ID page
+89025156 : Received Manufacturer ID page
+89025406 : Received Manufacturer ID page
+89025656 : Received Manufacturer ID page
+89025906 : Received Manufacturer ID page
+89041906 : Received Product ID page
+89042156 : Received Product ID page
+89042406 : Received Product ID page
+89042656 : Received Product ID page
+89075406 : Received Manufacturer ID page
+89075656 : Received Manufacturer ID page
+89075890 : Received Manufacturer ID page
+89076140 : Received Manufacturer ID page
