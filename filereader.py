@@ -80,4 +80,14 @@ class filereader_class:
                 lines_as_dict = list(lines_as_dict)
                 csv_file_original.close()
                 return lines_as_dict
+
+
+    def read_sensorcount(self):
+        path = self.path + "/sensorcount.csv"
+        csv_file_original =  open(path, mode='r')
+        lines_as_dict = csv.DictReader(csv_file_original, delimiter = ';')
+        lines_as_dict = list(lines_as_dict)
+        csv_file_original.close()
+        return lines_as_dict
+
     

@@ -5,12 +5,15 @@ from plotter import plotter_class
 
 path = "C:/Users/hah/Documents/VISUAL_STUDIO_CODE/Forsoeg_sammenligningsscript/Data"
 fr = filereader.filereader_class(path=path)
-tk = tidskorrigering.tidskorrigering_class(1635761570409,63780218)
+tk = tidskorrigering.tidskorrigering_class()
 hrm_pro = extract_hrmpro.extract_hrmpro_class(fr,tk)
 forerunner = extract_forerunner_class(fr,tk)
 maxrefdes103 = extract_maxrefdes103.extract_maxrefdes103_class(fr)
 empatica = extract_empatica.extract_empatica_class(fr, tk)
 plotter = plotter_class()
+
+dict_sensorcount = fr.read_sensorcount()
+tk.set_birthtime_sensor(dict_sensorcount[0]['Absolute_count'], dict_sensorcount[0]['Sensor_count'])
 
 counter = 1
 fasenummer = 0
@@ -26,7 +29,7 @@ while(counter <=antal_testpersoner):
     #print("Maxrefdes103: " + my_datetime)
     timelim_end = maxrefdes103.get_last_timestamp()
     hrm_pro.extract(testpersonnummer,timelim_begin=timelim_begin, timelim_end=timelim_end)
-    empatica.extract(testpersonnummer,timelim_begin, timelim_end)
+    empatica.extract(testpersonnummer,timelim_begin= timelim_begin, timelim_end = timelim_end)
     forerunner.extract(testpersonnummer,timelim_begin=timelim_begin, timelim_end=timelim_end)
     Dict_with_obs[counter]['Hr_Maxrefdes103_' + str(fasenummer)] = maxrefdes103.get_hr()
     Dict_with_obs[counter]['RR_Maxrefdes103_' + str(fasenummer)] = maxrefdes103.get_rr()
@@ -43,7 +46,7 @@ while(counter <=antal_testpersoner):
     sum_empatica = sum(Dict_with_obs[counter]["RR_Empatica_" + str(fasenummer)])
 
     #print("Deltatid = " + str(delta_time) + ", maxrefdes differens = " + str(delta_time - sum_maxrefdes) + ", HRM-Pro differens = " + str(delta_time - sum_hrmpro) + ", Empatica differens = " + str(delta_time - sum_empatica))
-    print("Length forerun hr = " + str(len(Dict_with_obs[counter]["RR_Forerunner_" + str(fasenummer)])) + "\nLength hrm-pro hr = " + str(len(Dict_with_obs[counter]["RR_Hrmpro_" + str(fasenummer)])))
+    #print("Length forerun hr = " + str(len(Dict_with_obs[counter]["RR_Forerunner_" + str(fasenummer)])) + "\nLength hrm-pro hr = " + str(len(Dict_with_obs[counter]["RR_Hrmpro_" + str(fasenummer)])))
 
     # Dictionary_with_all_observations[str(counter)]["Hr_forerunner_" + str(fasenummer)] = maxrefdes103.get_hr()
     fasenummer += 1
@@ -53,6 +56,9 @@ while(counter <=antal_testpersoner):
         Dict_with_obs[counter] = {}
         hrm_pro.set_read_from_file_bool(True)
         empatica.set_read_from_file_bool(True)
+        forerunner.set_read_from_file_bool(True)
+        if(counter <=antal_testpersoner):
+            tk.set_birthtime_sensor(dict_sensorcount[counter-1]['Absolute_count'], dict_sensorcount[counter-1]['Sensor_count'])
         
         #Forerunner
 

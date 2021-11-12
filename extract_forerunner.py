@@ -20,9 +20,9 @@ class extract_forerunner_class():
             timelim_end (int): Tidspunktet, hvor man ikke længere skal bruge data
         """
         if(self.read_from_file):
-            lines_from_file = self.filereader.read_forerunner(testpersonnummer)
-            self.lines_splitted = self.tidkorr.forerunner(lines_from_file, timelim_begin, timelim_end)
+            self.lines_from_file = self.filereader.read_forerunner(testpersonnummer)
             self.read_from_file = False
+        self.lines_splitted = self.tidkorr.forerunner(self.lines_from_file, timelim_begin, timelim_end)
         self.hr_list = []
         oldtogglebit = 0
         # I den hexadecimale streng udtrækkes hver byte og gemmes i et dictionary sammen med den udregnede tid

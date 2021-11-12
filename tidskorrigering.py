@@ -1,14 +1,14 @@
 import datetime, time
 from typing import List
 class tidskorrigering_class:
-    def __init__(self, absolute_time, sensor_count_at_absolute_time ) -> None:
+    def __init__(self) -> None:
         """Initieringsmetoden skal bruges til at specificere et kendt Unixtimestamp til et kendt sensorcount. 
 
         Args:
             absolute_time (int): Unix timestamp til det specificerede sensorcount
             sensor_count_at_absolute_time (int): Sensorcunt til det kendte Unix timestamp
         """
-        self.birthtime_sensor = absolute_time-sensor_count_at_absolute_time
+        pass
 
     def hrm_pro(self, list_of_data1: list, timelim_begin: int, timelim_end: int):
         """Ud fra en liste med data, hvor der også skal indgå tidsværdier, tidskorrigeres ud fra de givbne grænseværdier
@@ -95,3 +95,12 @@ class tidskorrigering_class:
         my_datetime = datetime.datetime.strptime(tid_forkert_dato, '%d/%m/%y %H:%M:%S.%f')
         absolute_time = int((time.mktime(my_datetime.timetuple())*1000))
         return absolute_time
+
+    def set_birthtime_sensor(self, absolute_time: int, sensorcount_at_absolute_time : int):
+        """Bruges til at sætte birthcount, så når der indlæses data fra en ny sensor der skal tidskorrigeres, så skal birthcount justeres
+
+        Args:
+            absolute_time (int): Unix timestamp til det sensorcount
+            sensorcount_at_absolute_time (int): Sensorcount til det tilhørende Unix timestamp
+        """
+        self.birthtime_sensor = int(absolute_time)-int(sensorcount_at_absolute_time)

@@ -113,7 +113,7 @@ class plotter_class():
             i += 1
 
         fig, axs = plt.subplots(2,2)
-        fig.suptitle("Hr for testperson " + str(counter))
+        fig.suptitle("Hr for testperson " + str(counter) + "efter endt stresstest")
         
         list_koordinates = [(0,0), (0,1), (1,0), (1,1)]
 
@@ -123,16 +123,17 @@ class plotter_class():
             axs[list_koordinates[n]].plot(list_timeaxes[n]["Empatica"], Dict_all_data[counter]['Hr_Empatica_' + str(n)], label = 'empatica')
             axs[list_koordinates[n]].plot(list_timeaxes[n]["Hrmpro"],  Dict_all_data[counter]['Hr_Hrmpro_' + str(n)], label = 'HRM-Pro')
             axs[list_koordinates[n]].plot(list_timeaxes[n]["Forerunner"], Dict_all_data[counter]['Hr_Forerunner_' + str(n)], label = 'Forerunner 45')
+            axs[list_koordinates[n]].set_xlabel('Tid [sekunder]')
+            axs[list_koordinates[n]].set_ylabel('HR [BPM]')
             axs[list_koordinates[n]].legend(loc = 'upper right')
-            axs[list_koordinates[n]].set_title('Fase ' + str(n+1))
+            axs[list_koordinates[n]].set_title('Fase ' + str(n))
 
 
         fig.set_size_inches(20,10)
-        fig.subplots_adjust(left=0.03, bottom=0.03, right=0.97, top=0.92, wspace=None, hspace=None)
+        fig.subplots_adjust(left=0.03, bottom=0.08, right=0.97, top=0.92, wspace=None, hspace=None)
         path = 'C:/Users/hah/Documents/VISUAL_STUDIO_CODE/Forsoeg_sammenligningsscript/Figurer/'
         title = 'Testperson ' + str(counter)
         fig.savefig(path + " " + title) #, dpi = 200)
-        print("Plotted " + str(counter))
         #plt.show()    
 
 
