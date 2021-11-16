@@ -14,7 +14,7 @@ class extract_maxrefdes103_class():
         """
         data_list_of_dict = self.filereader.read_maxrefdes_Raa_observationer(testpersonnummer, fasenummer)
 
-        self.first_time = str(datetime.datetime.now().date().strftime("%d/%m/%y")) + " " + data_list_of_dict[0]['timestmp'] #Vi tager ved index 1501 fordi det svarer til at fjerne det første minut, hvor data er utilregnelige
+        self.first_time = str(datetime.datetime.now().date().strftime("%d/%m/%y")) + " " + data_list_of_dict[1501]['timestmp'] #Vi tager ved index 1501 fordi det svarer til at fjerne det første minut, hvor data er utilregnelige
         self.last_time = str(datetime.datetime.now().date().strftime("%d/%m/%y")) + " " + data_list_of_dict[len(data_list_of_dict)-1]['timestmp']
         
         self.hr_list = []
