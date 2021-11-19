@@ -46,7 +46,7 @@ class plotter_class():
         plt.legend(loc = 'upper right')
         plt.title("Hr-values for 4 sensors")
     
-        plt.show(block = show_bool)
+        #plt.show(block = show_bool)
         #plt.close(1)
 
 
@@ -70,7 +70,7 @@ class plotter_class():
         plt.legend(loc = 'upper right')
         plt.title("RR-values for 4 sensors")
     
-        plt.show(block = show_bool)
+        #plt.show(block = show_bool)
         pass
 
     def plot_hr_subplot(self, Dict_all_data: dict, counter: int, show_bool = True):
@@ -113,7 +113,7 @@ class plotter_class():
             i += 1
 
         fig, axs = plt.subplots(2,2)
-        fig.suptitle("Hr for testperson " + str(counter) + "efter endt stresstest")
+        fig.suptitle("Hr for testperson " + str(counter) + " efter endt stresstest")
         
         list_koordinates = [(0,0), (0,1), (1,0), (1,1)]
 

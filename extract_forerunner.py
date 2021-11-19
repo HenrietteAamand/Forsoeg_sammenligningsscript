@@ -45,6 +45,8 @@ class extract_forerunner_class():
                         dictionary_with_hex["time"] = sensordata[0]
                         self.New_list_with_logged_values_as_dictionay.append(dictionary_with_hex)
                     oldtogglebit = temporary_List[6]
+            elif 'Rx' in sensordata[1] and len(self.hr_list) > 0: #hvis data er på formen 8795535 : RX fail
+                self.hr_list.append(self.hr_list[len(self.hr_list)-1])
         
         #Bruger data page 4 til at omregne til RR-værdier
         self.list_of_rr_and_time = self.rr_calculator.rr_0(self.New_list_with_logged_values_as_dictionay)

@@ -1,4 +1,5 @@
 from csv import DictReader
+from Sammenligning import sammenligning_class
 from extract_forerunner import extract_forerunner_class
 import filereader, extract_hrmpro, extract_maxrefdes103, tidskorrigering, extract_empatica, datetime
 from plotter import plotter_class
@@ -72,15 +73,28 @@ antal_testpersoner = 14
 plotter = plotter_class()
 path = "C:/Users/hah/Documents/VISUAL_STUDIO_CODE/Forsoeg_sammenligningsscript/Data"
 fr = filereader.filereader_class(path=path)
+sammenligner = sammenligning_class()
 main = main_class(antal_testpersoner, fr)
 
 #main.extract_data()
 Dict_with_obs_file = fr.read_hr_data()
 counter = 1
+antal_testpersoner = 14
+# Plotter alle hr afhængigt af tiden
+# while counter <= antal_testpersoner:
+#     counter += 1
+
+# Plotter alle hr afhængigt af tiden
+counter = 1
 while counter <= antal_testpersoner:
+    sammenligner.plot_differences(Dict_with_obs_file, counter=counter)
     plotter.plot_hr_subplot(Dict_all_data=Dict_with_obs_file, counter=counter)
+    #sammenligner.plot_corellation(Dict_with_obs_file, counter=counter)
+    #sammenligner.plot_normal_distribution(Dict_with_obs_file, counter = counter, type='QQ') #type = 'hist'
+    sammenligner.plot_2_percentage_under(Dict_with_obs_file, counter)
     counter += 1
     print(str(counter-1) + " new figure created")
+
 
 
 # while(counter <= antal_testpersoner):

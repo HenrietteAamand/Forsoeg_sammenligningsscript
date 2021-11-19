@@ -37,9 +37,11 @@ class extract_hrmpro_class():
                     temporary_List = sensordata[2][1:-2].split('][')
                     if(temporary_List[0][2] == '0'):
                         self.hr_list.append('3C')
-                    elif(temporary_List[0][2] == '4'):    
+                    else: #(temporary_List[0][2] == '4'):    
                         self.hr_list.append(temporary_List[7])
                     newTogglebit = int(temporary_List[6],16)
+                    # if(oldtogglebit != newTogglebit-1):
+                    #     self.hr_list.append(temporary_List[7]) 
                     if(oldtogglebit != newTogglebit): #Yderligere gemmes kun data, når der har været et nyt 'heart-beat-event svarende til at hr_count er blevet en større
                         dictionary_with_hex["b0"] = temporary_List[0]
                         dictionary_with_hex["b1"] = temporary_List[1]
@@ -51,9 +53,12 @@ class extract_hrmpro_class():
                         dictionary_with_hex["hr"] = temporary_List[7]
                         dictionary_with_hex["time"] = sensordata[0]
                         if(oldtogglebit != newTogglebit-1):
-                            self.New_list_with_logged_values_as_dictionay.append(dictionary_with_hex)     
+                            self.New_list_with_logged_values_as_dictionay.append(dictionary_with_hex)
+                            self.hr_list.append(temporary_List[7])   
                         self.New_list_with_logged_values_as_dictionay.append(dictionary_with_hex)
                     oldtogglebit = int(temporary_List[6],16)
+            elif 'Rx' in sensordata[1] and len(self.hr_list) > 0: #hvis data er på formen 8795535 : RX fail
+                self.hr_list.append(self.hr_list[len(self.hr_list)-1])
         
         #Bruger data page 4 til at omregne til RR-værdier
         self.list_of_rr_and_time = self.rr_calculator.rr_4(self.New_list_with_logged_values_as_dictionay)
