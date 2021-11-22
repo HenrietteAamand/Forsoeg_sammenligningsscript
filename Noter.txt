@@ -14,8 +14,9 @@ Implementere:
 
 Andet:
   1) Allign alle navne på filer
-
+  2) Machinelearning: https://scikit-learn.org/stable/modules/generated/sklearn.mixture.GaussianMixture.html 
+  3) GMM explained: https://jakevdp.github.io/PythonDataScienceHandbook/05.12-gaussian-mixtures.html 
+  4) K-nn explained: https://jakevdp.github.io/PythonDataScienceHandbook/05.11-k-means.html 
   'C:/Users/hah/Documents/VISUAL_STUDIO_CODE/Forsoeg_sammenligningsscript/Data/Testperson1/Raaobservationer/Testperson_1_Fase_1_Stilhed_maxdata.csv'
 
 
-  Der sker noget nu, når jeg plotter. På en eller anden måde klipper jeg HRM-pro signalet, og jeg ved ikke hvorfor...?

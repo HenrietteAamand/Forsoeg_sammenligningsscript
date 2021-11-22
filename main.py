@@ -85,15 +85,15 @@ antal_testpersoner = 14
 #     counter += 1
 
 # Plotter alle hr afhængigt af tiden
-counter = 1
-while counter <= antal_testpersoner:
-    sammenligner.plot_differences(Dict_with_obs_file, counter=counter)
-    plotter.plot_hr_subplot(Dict_all_data=Dict_with_obs_file, counter=counter)
+brugbare_datasaet = [5,8,9,11,12,13,14]
+for n in range(len(brugbare_datasaet)):
+    #sammenligner.plot_differences(Dict_with_obs_file, counter=counter)
+    #plotter.plot_hr_subplot(Dict_all_data=Dict_with_obs_file, counter=counter)
     #sammenligner.plot_corellation(Dict_with_obs_file, counter=counter)
     #sammenligner.plot_normal_distribution(Dict_with_obs_file, counter = counter, type='QQ') #type = 'hist'
-    sammenligner.plot_2_percentage_under(Dict_with_obs_file, counter)
-    counter += 1
-    print(str(counter-1) + " new figure created")
+    #sammenligner.plot_2_percentage_under(Dict_with_obs_file, counter)
+    plotter.plot_limit_HRM_pro(Dict_with_obs_file, counter = brugbare_datasaet[n])
+    print(str(n+1) + " new figure created")
 
 
 

@@ -1,9 +1,11 @@
 import matplotlib.pyplot as plt
 import numpy as np
+from stableisation import*
 
 
 class plotter_class():
     def __init__(self) -> None:
+        self.stabilityindex = stabelisation_class()
         pass
 
     def plot_hr(self, maxrefdes = [], fs_maxrefdes = 25, hrm_pro = [], forerunner = [], fs_garmin = 4, empatica = [], fs_empatica = 1, fasenummer = 0, testpersonnummer = 0, show_bool = True):
@@ -144,3 +146,69 @@ class plotter_class():
         # plotter.plot_rr(maxrefdes= Dict_all_data[counter]['RR_Maxrefdes103_2'], hrm_pro=Dict_all_data[counter]['RR_Hrmpro_2'], empatica=Dict_all_data[counter]['RR_Empatica_2'], forerunner=Dict_all_data[counter]['RR_Forerunner_2'])
         # plotter.plot_rr(maxrefdes= Dict_all_data[counter]['RR_Maxrefdes103_3'], hrm_pro=Dict_all_data[counter]['RR_Hrmpro_3'], empatica=Dict_all_data[counter]['RR_Empatica_3'], forerunner=Dict_all_data[counter]['RR_Forerunner_3'])
         # counter += 1
+
+    def plot_limit_HRM_pro(self, Dict_all_data: dict, counter: int, show_bool = True):
+
+        list_timeaxes = []
+        list_indexes_time = []
+        fs_garmin = 4
+        list_avg = []
+        i = 0
+        while i < 4:
+            hrm_pro = Dict_all_data[counter]['Hr_Hrmpro_' + str(i)]
+            hrm_pro_avg = self.get_filtered_signal(hrm_pro, 21)
+            list_avg.append(hrm_pro_avg)
+
+            index = self.stabilityindex.gmm(hrm_pro_avg)
+            #index = self.stabilityindex.dispertion(hrm_pro_avg)
+
+            # Deltatider
+            delta_tid_garmin = 1/fs_garmin
+            list_indexes_time.append(index*delta_tid_garmin)
+
+            # længde af signal i tid
+            tid_hrmpro = len(hrm_pro)/fs_garmin
+            tid_hrmpro_avg = len(hrm_pro_avg)/fs_garmin
+
+            # Laver tidsakse til de forskellige signaler så de kan plottes i samme figur
+            tidsakse_hrmpro = np.arange(0,tid_hrmpro, delta_tid_garmin)
+            tidsakse_hrmpro_avg = np.arange(0,tid_hrmpro_avg, delta_tid_garmin)
+
+            dict_tidsakse = {}
+            dict_tidsakse["Hrmpro"] = tidsakse_hrmpro
+            dict_tidsakse["Hrmpro_avg"] = tidsakse_hrmpro_avg
+            list_timeaxes.append(dict_tidsakse)
+            i += 1
+
+        fig, axs = plt.subplots(2,2)
+        fig.suptitle("Hr for testperson " + str(counter) + " efter endt stresstest")
+        
+        list_koordinates = [(0,0), (0,1), (1,0), (1,1)]
+
+
+        for n in range(len(list_koordinates)):
+            axs[list_koordinates[n]].plot(list_timeaxes[n]["Hrmpro"],  Dict_all_data[counter]['Hr_Hrmpro_' + str(n)], label = 'HRM-Pro', color = 'g')
+            axs[list_koordinates[n]].plot(list_timeaxes[n]["Hrmpro_avg"],  list_avg[n], label = 'HRM-Pro midlet', color = 'b', linewidth = 0.5)
+            markerline_mean, stemlines_mean, baseline = axs[list_koordinates[n]].stem(list_indexes_time[n],max(Dict_all_data[counter]['Hr_Hrmpro_' + str(n)]),'g', markerfmt='o', label = 'Time = ' + str(list_indexes_time[n]), basefmt=" ")
+            plt.setp(markerline_mean, 'color', plt.getp( stemlines_mean,'color'))
+            axs[list_koordinates[n]].set_ylim([min(Dict_all_data[counter]['Hr_Hrmpro_' + str(n)])-10, max(Dict_all_data[counter]['Hr_Hrmpro_' + str(n)])+10])
+            axs[list_koordinates[n]].set_xlabel('Tid [sekunder]')
+            axs[list_koordinates[n]].set_ylabel('HR [BPM]')
+            axs[list_koordinates[n]].legend(loc = 'upper right')
+            axs[list_koordinates[n]].set_title('Fase ' + str(n))
+
+
+        fig.set_size_inches(20,10)
+        fig.subplots_adjust(left=0.03, bottom=0.08, right=0.97, top=0.92, wspace=None, hspace=None)
+        path = 'C:/Users/hah/Documents/VISUAL_STUDIO_CODE/Forsoeg_sammenligningsscript/Figurer/dispertion/'
+        title = 'Testperson ' + str(counter)
+        fig.savefig(path + " " + title) #, dpi = 200)
+        #plt.show()    
+
+    
+    def get_filtered_signal(self, raw_signal, average_value):
+        N = average_value
+        if(N%2 == 0):
+            N+=1
+        hr_avg = np.convolve(raw_signal, np.ones(N)/N, mode='valid')
+        return hr_avg
