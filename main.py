@@ -1,8 +1,11 @@
+import keyboard
 from csv import DictReader
 from Sammenligning import sammenligning_class
 from extract_forerunner import extract_forerunner_class
 import filereader, extract_hrmpro, extract_maxrefdes103, tidskorrigering, extract_empatica, datetime
+from results import results_class
 from plotter import plotter_class
+import numpy as np
 
 class main_class:
     def __init__(self, antal_testpersoner: int, filereader : filereader.filereader_class) -> None:
@@ -75,6 +78,7 @@ path = "C:/Users/hah/Documents/VISUAL_STUDIO_CODE/Forsoeg_sammenligningsscript/D
 fr = filereader.filereader_class(path=path)
 sammenligner = sammenligning_class()
 main = main_class(antal_testpersoner, fr)
+resultater = results_class(fr.read_fase_to_intervention_file())
 
 #main.extract_data()
 Dict_with_obs_file = fr.read_hr_data()
@@ -84,18 +88,25 @@ antal_testpersoner = 14
 # while counter <= antal_testpersoner:
 #     counter += 1
 
-# Plotter alle hr afhængigt af tiden
-brugbare_datasaet = [5,8,9,11,12,13,14]
-for n in range(len(brugbare_datasaet)):
-    #sammenligner.plot_differences(Dict_with_obs_file, counter=counter)
-    #plotter.plot_hr_subplot(Dict_all_data=Dict_with_obs_file, counter=counter)
-    #sammenligner.plot_corellation(Dict_with_obs_file, counter=counter)
-    #sammenligner.plot_normal_distribution(Dict_with_obs_file, counter = counter, type='QQ') #type = 'hist'
-    #sammenligner.plot_2_percentage_under(Dict_with_obs_file, counter)
-    plotter.plot_limit_HRM_pro(Dict_with_obs_file, counter = brugbare_datasaet[n])
-    print(str(n+1) + " new figure created")
+l = 0
+while l < 5:
+    l += 1
+    # Plotter alle hr afhængigt af tiden
+    brugbare_datasaet = [5,8,9,11,12,13,14]
+    for n in range(len(brugbare_datasaet)):
+        #sammenligner.plot_differences(Dict_with_obs_file, counter=counter)
+        #plotter.plot_hr_subplot(Dict_all_data=Dict_with_obs_file, counter=counter)
+        #sammenligner.plot_corellation(Dict_with_obs_file, counter=counter)
+        #sammenligner.plot_normal_distribution(Dict_with_obs_file, counter = counter, type='QQ') #type = 'hist'
+        #sammenligner.plot_2_percentage_under(Dict_with_obs_file, counter)
+        #plotter.plot_limit_HRM_pro(Dict_with_obs_file, counter = brugbare_datasaet[n])
+        resultater.procces_results(Dict_with_obs_file, counter = brugbare_datasaet[n])
 
+        #print(str(n+1) + " new figure created")
 
+    fr.save_results(resultater.Get_results_as_list())
+
+keyboard.sleep()
 
 # while(counter <= antal_testpersoner):
 #     plotter.plot_hr(maxrefdes= Dict_with_obs_file[counter]['Hr_Maxrefdes103_1'], hrm_pro=Dict_with_obs_file[counter]['Hr_Hrmpro_1'], empatica=Dict_with_obs_file[counter]['Hr_Empatica_1'], forerunner=Dict_with_obs_file[counter]['Hr_Forerunner_1'])
