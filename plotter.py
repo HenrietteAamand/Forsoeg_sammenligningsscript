@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from stableisation import*
+from stabelisation import*
 
 
 class plotter_class():
@@ -156,10 +156,10 @@ class plotter_class():
         i = 0
         while i < 4:
             hrm_pro = Dict_all_data[counter]['Hr_Hrmpro_' + str(i)]
-            hrm_pro_avg = self.get_filtered_signal(hrm_pro, 21)
+            hrm_pro_avg = self.get_filtered_signal(hrm_pro, 51)
             list_avg.append(hrm_pro_avg)
 
-            index = self.stabilityindex.gmm(hrm_pro_avg)
+            index = self.stabilityindex.gmm(hrm_pro_avg, counter)
             #index = self.stabilityindex.dispertion(hrm_pro_avg)
 
             # Deltatider
@@ -199,7 +199,7 @@ class plotter_class():
 
 
         fig.set_size_inches(20,10)
-        fig.subplots_adjust(left=0.03, bottom=0.08, right=0.97, top=0.92, wspace=None, hspace=None)
+        fig.subplots_adjust(left=0.05, bottom=0.08, right=0.97, top=0.92, wspace=None, hspace=None)
         path = 'C:/Users/hah/Documents/VISUAL_STUDIO_CODE/Forsoeg_sammenligningsscript/Figurer/dispertion/'
         title = 'Testperson ' + str(counter)
         fig.savefig(path + " " + title) #, dpi = 200)
@@ -210,5 +210,5 @@ class plotter_class():
         N = average_value
         if(N%2 == 0):
             N+=1
-        hr_avg = np.convolve(raw_signal, np.ones(N)/N, mode='valid')
+        hr_avg = np.convolve(raw_signal, np.ones(N)/N, mode='same')
         return hr_avg

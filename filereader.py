@@ -140,6 +140,22 @@ class filereader_class:
             i+=1
         return dict_data
 
+    def save_results(self, list_to_save: list):
+        keys = list_to_save[0].keys()
+        output_file = open('C:/Users/hah/Documents/VISUAL_STUDIO_CODE/Forsoeg_sammenligningsscript/Data/resluts.csv', 'w+', newline='')
+        dict_writer = csv.DictWriter(output_file, keys)
+        dict_writer.writeheader()
+        dict_writer.writerows(list_to_save)
+
+    def read_fase_to_intervention_file(self):
+        full_path = 'C:/Users/hah/Documents/VISUAL_STUDIO_CODE/Forsoeg_sammenligningsscript/Data/testperson_fase_intervention.csv'
+        csv_file_original =  open(full_path, mode='r')
+        lines_as_dict = csv.DictReader(csv_file_original, delimiter = ';')
+        lines_as_list = list(lines_as_dict)
+        csv_file_original.close()
+        return lines_as_list
+
+
         
 
     

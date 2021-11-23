@@ -41,12 +41,15 @@ class stabelisation_class():
         # plt.show()
         return index
 
-    def gmm(self, signal: list):
+    def gmm(self, signal: list, counter = 0):
         # init_1, init_2 = self.__initial_parameters(signal)
+        # means = np.array([[init_1],[init_2]])
+        # gmm = GMM(n_components=2, means_init=means)
         gmm = GMM(n_components=2)
         
         reshaped = signal.reshape(-1,1)
         results = gmm.fit(reshaped)
+        #print(str(counter) + " Low mean: " + str(min(results.means_)) + " High mean " + str(max(results.means_)))
         reached_maximum = False
         maximum = max(signal)
         n=0
@@ -57,27 +60,29 @@ class stabelisation_class():
             elif(hr == maximum):
                 reached_maximum=True
             n+=1
+        self.mean = min(results.means_)
             
         return index
 
     def __initial_parameters(self,signal):
-        minimum = min(signal)
-        maximum = max(signal)
-        split = min + int(round((maximum-minimum)/2))
+        hr_list = self.__remove_X_percentages(signal,0)
+        minimum = min(hr_list)
+        maximum = max(hr_list)
+        split = minimum + int(round((maximum-minimum)/2))
         high = []
         low = []
-        hr_list = self.__remove_X_percentages(signal,10)
         for hr in hr_list:
-            if(hr <=split):
+            if(hr <= split):
                 low.append(hr)
             else:
                 high.append(hr)
         mean_low = sum(low)/len(low)
-        mean_high = sum(high)(len(high))
+        mean_high = sum(high)/(len(high))
 
         return mean_low, mean_high
 
-        
+    def get_mean(self):
+        return self.mean
 
 
     def __remove_X_percentages(self,signal, percentage_to_remove):
@@ -90,3 +95,4 @@ class stabelisation_class():
             list_to_sort = list_to_sort[amount_to_remove-1:from_end] # Fjerne de laveste og højeste 10 %
             # list_to_sort = list_to_sort[0:from_end] # Fjerner kun de højeste 10 %
         return list_to_sort
+
