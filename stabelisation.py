@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns; sns.set()
 import numpy as np
 from sklearn.mixture import GaussianMixture as GMM
+import math
 class stabelisation_class():
     def __init__(self) -> None:
         pass
@@ -52,15 +53,22 @@ class stabelisation_class():
         #print(str(counter) + " Low mean: " + str(min(results.means_)) + " High mean " + str(max(results.means_)))
         reached_maximum = False
         maximum = max(signal)
+
+        self.std_low = math.sqrt(min(results.covariances_))
+        self.std_high = math.sqrt(max(results.covariances_))
+        self.mean_low = min(results.means_[0])
+        self.mean_high = max(results.means_[1])
+
+        limit = min(results.means_) + self.std_low
         n=0
+        index = len(signal)-1
         for hr in signal:
-            if(reached_maximum == True and hr <= min(results.means_)):
+            if(reached_maximum == True and hr <= limit):
                 index = n
                 break
             elif(hr == maximum):
                 reached_maximum=True
             n+=1
-        self.mean = min(results.means_)
             
         return index
 
@@ -81,8 +89,11 @@ class stabelisation_class():
 
         return mean_low, mean_high
 
-    def get_mean(self):
-        return self.mean
+    def get_means(self):
+        return self.mean_low, self.mean_high
+
+    def get_stds(self):
+        return self.std_low, self.std_high
 
 
     def __remove_X_percentages(self,signal, percentage_to_remove):

@@ -142,7 +142,7 @@ class filereader_class:
 
     def save_results(self, list_to_save: list):
         keys = list_to_save[0].keys()
-        output_file = open('C:/Users/hah/Documents/VISUAL_STUDIO_CODE/Forsoeg_sammenligningsscript/Data/resluts.csv', 'w+', newline='')
+        output_file = open('C:/Users/hah/Documents/VISUAL_STUDIO_CODE/Forsoeg_sammenligningsscript/Data/results.csv', 'w+', newline='')
         dict_writer = csv.DictWriter(output_file, keys)
         dict_writer.writeheader()
         dict_writer.writerows(list_to_save)

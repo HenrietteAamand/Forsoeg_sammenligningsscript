@@ -151,32 +151,42 @@ class plotter_class():
 
         list_timeaxes = []
         list_indexes_time = []
-        fs_garmin = 4
+        fs = 4
         list_avg = []
         i = 0
+        N = 51
+        signal_name=""
         while i < 4:
-            hrm_pro = Dict_all_data[counter]['Hr_Hrmpro_' + str(i)]
-            hrm_pro_avg = self.get_filtered_signal(hrm_pro, 51)
-            list_avg.append(hrm_pro_avg)
+            if(counter == 1):
+                signal_original = Dict_all_data[counter]['Hr_Maxrefdes103_' + str(i)]
+                signal_name="Hr_Maxrefdes103_"
+                fs = 25
+            else:
+                signal_original = Dict_all_data[counter]['Hr_Hrmpro_' + str(i)]
+                signal_name = "Hr_Hrmpro_"
+                fs = 4
+            N = fs*12+1
+            signal_avg = self.get_filtered_signal(signal_original, N)
+            list_avg.append(signal_avg)
 
-            index = self.stabilityindex.gmm(hrm_pro_avg, counter)
+            index = self.stabilityindex.gmm(signal_avg, counter)
             #index = self.stabilityindex.dispertion(hrm_pro_avg)
 
             # Deltatider
-            delta_tid_garmin = 1/fs_garmin
+            delta_tid_garmin = 1/fs
             list_indexes_time.append(index*delta_tid_garmin)
 
             # længde af signal i tid
-            tid_hrmpro = len(hrm_pro)/fs_garmin
-            tid_hrmpro_avg = len(hrm_pro_avg)/fs_garmin
+            tid_signal = len(signal_original[N:len(signal_original)-N])/fs
+            tid_avg = len(signal_avg)/fs
 
             # Laver tidsakse til de forskellige signaler så de kan plottes i samme figur
-            tidsakse_hrmpro = np.arange(0,tid_hrmpro, delta_tid_garmin)
-            tidsakse_hrmpro_avg = np.arange(0,tid_hrmpro_avg, delta_tid_garmin)
+            tidsakse_signal = np.arange(0,tid_signal, delta_tid_garmin)
+            tidsakse_avg = np.arange(0,tid_avg, delta_tid_garmin)
 
             dict_tidsakse = {}
-            dict_tidsakse["Hrmpro"] = tidsakse_hrmpro
-            dict_tidsakse["Hrmpro_avg"] = tidsakse_hrmpro_avg
+            dict_tidsakse["Signal"] = tidsakse_signal
+            dict_tidsakse["Avg"] = tidsakse_avg
             list_timeaxes.append(dict_tidsakse)
             i += 1
 
@@ -187,11 +197,11 @@ class plotter_class():
 
 
         for n in range(len(list_koordinates)):
-            axs[list_koordinates[n]].plot(list_timeaxes[n]["Hrmpro"],  Dict_all_data[counter]['Hr_Hrmpro_' + str(n)], label = 'HRM-Pro', color = 'g')
-            axs[list_koordinates[n]].plot(list_timeaxes[n]["Hrmpro_avg"],  list_avg[n], label = 'HRM-Pro midlet', color = 'b', linewidth = 0.5)
-            markerline_mean, stemlines_mean, baseline = axs[list_koordinates[n]].stem(list_indexes_time[n],max(Dict_all_data[counter]['Hr_Hrmpro_' + str(n)]),'g', markerfmt='o', label = 'Time = ' + str(list_indexes_time[n]), basefmt=" ")
+            axs[list_koordinates[n]].plot(list_timeaxes[n]["Signal"],  Dict_all_data[counter][signal_name + str(n)][N:len(Dict_all_data[counter][signal_name + str(n)])-N], label = 'Rå Hr data', color = 'g')
+            axs[list_koordinates[n]].plot(list_timeaxes[n]["Avg"],  list_avg[n], label = 'Midlet Hr data', color = 'b', linewidth = 0.5)
+            markerline_mean, stemlines_mean, baseline = axs[list_koordinates[n]].stem(list_indexes_time[n],max(Dict_all_data[counter][signal_name + str(n)]),'g', markerfmt='o', label = 'Time = ' + str(list_indexes_time[n]), basefmt=" ")
             plt.setp(markerline_mean, 'color', plt.getp( stemlines_mean,'color'))
-            axs[list_koordinates[n]].set_ylim([min(Dict_all_data[counter]['Hr_Hrmpro_' + str(n)])-10, max(Dict_all_data[counter]['Hr_Hrmpro_' + str(n)])+10])
+            axs[list_koordinates[n]].set_ylim([min(Dict_all_data[counter][signal_name + str(n)])-10, max(Dict_all_data[counter][signal_name + str(n)])+10])
             axs[list_koordinates[n]].set_xlabel('Tid [sekunder]')
             axs[list_koordinates[n]].set_ylabel('HR [BPM]')
             axs[list_koordinates[n]].legend(loc = 'upper right')
@@ -200,7 +210,7 @@ class plotter_class():
 
         fig.set_size_inches(20,10)
         fig.subplots_adjust(left=0.05, bottom=0.08, right=0.97, top=0.92, wspace=None, hspace=None)
-        path = 'C:/Users/hah/Documents/VISUAL_STUDIO_CODE/Forsoeg_sammenligningsscript/Figurer/dispertion/'
+        path = 'C:/Users/hah/Documents/VISUAL_STUDIO_CODE/Forsoeg_sammenligningsscript/Figurer/gmm/'
         title = 'Testperson ' + str(counter)
         fig.savefig(path + " " + title) #, dpi = 200)
         #plt.show()    
@@ -211,4 +221,5 @@ class plotter_class():
         if(N%2 == 0):
             N+=1
         hr_avg = np.convolve(raw_signal, np.ones(N)/N, mode='same')
-        return hr_avg
+        hr_return = hr_avg[N:len(hr_avg)-N]
+        return hr_return

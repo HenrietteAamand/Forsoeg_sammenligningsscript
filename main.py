@@ -89,24 +89,23 @@ antal_testpersoner = 14
 #     counter += 1
 
 l = 0
-while l < 5:
-    l += 1
-    # Plotter alle hr afhængigt af tiden
-    brugbare_datasaet = [5,8,9,11,12,13,14]
-    for n in range(len(brugbare_datasaet)):
-        #sammenligner.plot_differences(Dict_with_obs_file, counter=counter)
-        #plotter.plot_hr_subplot(Dict_all_data=Dict_with_obs_file, counter=counter)
-        #sammenligner.plot_corellation(Dict_with_obs_file, counter=counter)
-        #sammenligner.plot_normal_distribution(Dict_with_obs_file, counter = counter, type='QQ') #type = 'hist'
-        #sammenligner.plot_2_percentage_under(Dict_with_obs_file, counter)
-        #plotter.plot_limit_HRM_pro(Dict_with_obs_file, counter = brugbare_datasaet[n])
-        resultater.procces_results(Dict_with_obs_file, counter = brugbare_datasaet[n])
 
-        #print(str(n+1) + " new figure created")
+# Plotter alle hr afhængigt af tiden
+brugbare_datasaet = [1,5,8,9,11,12,13,14]
+for n in range(len(brugbare_datasaet)):
+    #sammenligner.plot_differences(Dict_with_obs_file, counter=counter)
+    #plotter.plot_hr_subplot(Dict_all_data=Dict_with_obs_file, counter=counter)
+    #sammenligner.plot_corellation(Dict_with_obs_file, counter=counter)
+    #sammenligner.plot_normal_distribution(Dict_with_obs_file, counter = counter, type='QQ') #type = 'hist'
+    #sammenligner.plot_2_percentage_under(Dict_with_obs_file, counter)
+    plotter.plot_limit_HRM_pro(Dict_with_obs_file, counter = brugbare_datasaet[n])
+    resultater.procces_results(Dict_with_obs_file, counter = brugbare_datasaet[n])
 
-    fr.save_results(resultater.Get_results_as_list())
+    #print(str(n+1) + " new figure created")
 
-keyboard.sleep()
+fr.save_results(resultater.Get_results_as_list())
+#input("Press Enter to continue...")
+resultater.Empty_dict()
 
 # while(counter <= antal_testpersoner):
 #     plotter.plot_hr(maxrefdes= Dict_with_obs_file[counter]['Hr_Maxrefdes103_1'], hrm_pro=Dict_with_obs_file[counter]['Hr_Hrmpro_1'], empatica=Dict_with_obs_file[counter]['Hr_Empatica_1'], forerunner=Dict_with_obs_file[counter]['Hr_Forerunner_1'])
