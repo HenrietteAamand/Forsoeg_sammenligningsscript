@@ -44,7 +44,7 @@ class stabelisation_class():
 
     def gmm(self, signal: list, counter = 0):
         # init_1, init_2 = self.__initial_parameters(signal)
-        # means = np.array([[init_1],[init_2]])
+        # means = np.array([[init_1+20],[init_2+20]])
         # gmm = GMM(n_components=2, means_init=means)
         gmm = GMM(n_components=2)
         
@@ -56,10 +56,10 @@ class stabelisation_class():
 
         self.std_low = math.sqrt(min(results.covariances_))
         self.std_high = math.sqrt(max(results.covariances_))
-        self.mean_low = min(results.means_[0])
-        self.mean_high = max(results.means_[1])
+        self.mean_low = min(results.means_)[0]
+        self.mean_high = max(results.means_)[0]
 
-        limit = min(results.means_) + self.std_low
+        limit = min(results.means_) + self.std_low*0
         n=0
         index = len(signal)-1
         for hr in signal:
@@ -96,6 +96,59 @@ class stabelisation_class():
         return self.std_low, self.std_high
 
 
+    def soren(self, signal2, N, do_soren = False):
+        if(do_soren == True):
+            signal = self.__remove_X_percentages(signal2, 10)
+            middle = self.__get_limit(signal)
+            faktor_under = 1 # Denne faktor ganges under, for at gøre std mindre. 
+            faktor_over = 1.5
+            
+            # Splitter signal i 2 ud fra den midterste hr værdi
+            hr_low = []
+            hr_high = []
+            for hr in signal:
+                if(hr >= middle):
+                    hr_high.append(hr)
+                else:
+                    hr_low.append(hr)
+
+            # Beregner middelværdi og std for de lave værdier i det nu splittede signal
+            mean = round(np.mean(hr_low))
+            std = np.std(hr_low)
+            
+            # Laver midling af hele signalet (Mooving average)
+            hr_avg = self.__get_filtered_signal(signal, N)
+
+            #Forlænger det midlede signal med data, til det er lige så langt som hr signalet
+            # devider = int(round((len(signal)-len(hr_avg))/2))
+            # forlaeng_high = [signal[0]]*(devider)
+            # forlaeng_low = [mean]*(devider)
+            # hr_avg = forlaeng_high + hr_avg.tolist() + forlaeng_low
+
+            found_mean = False
+            found_under = False
+            found_over = False
+            i = 0
+
+            CI_mean = 0
+            CI_std_under = 0
+            CI_std_over = 0 
+
+            #Bestemmer hvornår signalet første gange rammer hhv mean, mean-std*faktor_under og mean+std*self.faktor_over 
+            for hr in hr_avg: #for hr in signal:
+                if(round(hr) == mean and found_mean == False):
+                    found_mean = True
+                    found_under = False
+                    CI_mean = i
+                elif(round(hr) == round(mean-(std*faktor_under)) and found_under == False and found_mean == True):
+                    found_under = True
+                    break
+                i+=1
+            
+            return CI_mean
+        else:
+            return 0
+
     def __remove_X_percentages(self,signal, percentage_to_remove):
         list_to_sort = signal.copy()
         if(percentage_to_remove != 0):
@@ -107,3 +160,18 @@ class stabelisation_class():
             # list_to_sort = list_to_sort[0:from_end] # Fjerner kun de højeste 10 %
         return list_to_sort
 
+    def __get_filtered_signal(self, raw_signal, average_value):
+        N = average_value
+        if(N%2 == 0):
+            N+=1
+        hr_avg = np.convolve(raw_signal, np.ones(N)/N, mode='same')
+        hr_return = hr_avg[N:len(hr_avg)-N]
+        return hr_return
+
+    def __get_limit(self, hr_list):
+        max_val = max(hr_list)
+        min_val = min(hr_list)
+
+        middle = min_val + round((max_val-min_val)/2)
+
+        return middle

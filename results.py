@@ -18,6 +18,7 @@ class results_class():
         fs = 0
         list_hr_avg = []
         list_mean_std = []
+        index_list = []
         while i < 4: #denne tæller faser, jeg skal ikke forholde mig til antal personer
             if(counter == 1):
                 signal_original = Dict_all_data[counter]['Hr_Maxrefdes103_' + str(i)]
@@ -27,15 +28,21 @@ class results_class():
                 signal_original = Dict_all_data[counter]['Hr_Hrmpro_' + str(i)]
                 signal_name = "Hr_Hrmpro_"
                 fs = 4
+            N = fs*10
             signal_original = Dict_all_data[counter][signal_name + str(i)]
-            hr_avg = self.__get_filtered_signal(signal_original, fs*12+1)
+            hr_avg = self.__get_filtered_signal(signal_original, N)
             list_hr_avg.append(hr_avg)
-            index = self.stabel.gmm(hr_avg)
+            index1 = self.stabel.gmm(hr_avg)
+            index2 = self.stabel.soren(signal_original, N)
+            dict_index = {}
+            dict_index['soren'] = index2
+            dict_index['gmm'] = index1
+            index_list.append(dict_index)
             delta_tid_garmin = 1/fs
 
-            tid = index*delta_tid_garmin
+            tid1 = index1*delta_tid_garmin
             maximum_hr = max(hr_avg)
-            hastighed = maximum_hr/(tid)
+            hastighed = maximum_hr/(tid1)
             stabiliseringsniveau, denanden = self.stabel.get_means()
             n=0
             while(n < 3):
@@ -49,7 +56,7 @@ class results_class():
             dict_results['ID 1.0'] = counter
             dict_results['Mean'] = stabiliseringsniveau
             dict_results['Condition'] = intervention
-            dict_results['Time'] = tid
+            dict_results['Time'] = tid1
             dict_results['Max'] = maximum_hr
             dict_results['Velocity (bpm/s)'] = hastighed
 
@@ -66,6 +73,7 @@ class results_class():
 
         self.id_2_dot_0 += 1
         self.plot_hist_and_gaussian(list_hr_data=list_hr_avg, list_mean_std = list_mean_std, counter=counter)
+        return index_list
         
 
 
@@ -78,7 +86,23 @@ class results_class():
         return hr_return
 
     def Get_results_as_list(self):
-        return self.list_dict_results
+        new_returnlist = []
+        raekkefoelge = ['Stilhed', 'Statisk', 'Dynamisk']
+        i = 0
+        while( i < len(self.list_dict_results)):
+            for n in range(3):
+                for j in range(3):
+                    condition = self.list_dict_results[i+j]['Condition'] 
+                    raekkefoelge_index = raekkefoelge[n]
+                    if(condition == raekkefoelge_index):
+                        new_returnlist.append(self.list_dict_results[i+j])
+                        break
+
+            i +=3
+
+
+        return new_returnlist
+
 
     def Empty_dict(self):
         self.list_dict_results.clear()
@@ -87,7 +111,7 @@ class results_class():
     def plot_hist_and_gaussian(self, list_hr_data, list_mean_std, counter = 0):
         fig, axs = plt.subplots(2,2)
         fig.suptitle("Hr for testperson " + str(counter) + " efter endt stresstest")
-        list_koordinates = [(0,0), (0,1), (1,0), (1,1)]
+        list_koordinates = [(0,1), (1,0), (1,1),(0,0)]
 
 
         for n in range(len(list_koordinates)-1):

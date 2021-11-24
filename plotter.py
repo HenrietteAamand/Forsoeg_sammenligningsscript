@@ -133,7 +133,7 @@ class plotter_class():
 
         fig.set_size_inches(20,10)
         fig.subplots_adjust(left=0.03, bottom=0.08, right=0.97, top=0.92, wspace=None, hspace=None)
-        path = 'C:/Users/hah/Documents/VISUAL_STUDIO_CODE/Forsoeg_sammenligningsscript/Figurer/'
+        path = 'C:/Users/hah/Documents/VISUAL_STUDIO_CODE/Forsoeg_sammenligningsscript/Figurer/Alle_sensorer/'
         title = 'Testperson ' + str(counter)
         fig.savefig(path + " " + title) #, dpi = 200)
         #plt.show()    
@@ -147,7 +147,7 @@ class plotter_class():
         # plotter.plot_rr(maxrefdes= Dict_all_data[counter]['RR_Maxrefdes103_3'], hrm_pro=Dict_all_data[counter]['RR_Hrmpro_3'], empatica=Dict_all_data[counter]['RR_Empatica_3'], forerunner=Dict_all_data[counter]['RR_Forerunner_3'])
         # counter += 1
 
-    def plot_limit_HRM_pro(self, Dict_all_data: dict, counter: int, show_bool = True):
+    def plot_limit_HRM_pro(self, Dict_all_data: dict, counter: int, show_bool = True, index_list = []):
 
         list_timeaxes = []
         list_indexes_time = []
@@ -165,16 +165,25 @@ class plotter_class():
                 signal_original = Dict_all_data[counter]['Hr_Hrmpro_' + str(i)]
                 signal_name = "Hr_Hrmpro_"
                 fs = 4
-            N = fs*12+1
+            
+            N = fs*10+1
+            
             signal_avg = self.get_filtered_signal(signal_original, N)
             list_avg.append(signal_avg)
-
-            index = self.stabilityindex.gmm(signal_avg, counter)
             #index = self.stabilityindex.dispertion(hrm_pro_avg)
-
-            # Deltatider
+            dict_tid = {}
             delta_tid_garmin = 1/fs
-            list_indexes_time.append(index*delta_tid_garmin)
+            if (i > 0):    
+                # Deltatider
+                time_gmm = index_list[i-1]['gmm']*delta_tid_garmin
+                time_soren = index_list[i-1]['soren']*delta_tid_garmin
+                dict_tid['gmm'] = time_gmm
+                dict_tid['soren'] = time_soren
+            elif(i==0):
+                dict_tid['gmm'] = 0
+                dict_tid['soren'] = 0
+            list_indexes_time.append(dict_tid)
+
 
             # længde af signal i tid
             tid_signal = len(signal_original[N:len(signal_original)-N])/fs
@@ -199,8 +208,11 @@ class plotter_class():
         for n in range(len(list_koordinates)):
             axs[list_koordinates[n]].plot(list_timeaxes[n]["Signal"],  Dict_all_data[counter][signal_name + str(n)][N:len(Dict_all_data[counter][signal_name + str(n)])-N], label = 'Rå Hr data', color = 'g')
             axs[list_koordinates[n]].plot(list_timeaxes[n]["Avg"],  list_avg[n], label = 'Midlet Hr data', color = 'b', linewidth = 0.5)
-            markerline_mean, stemlines_mean, baseline = axs[list_koordinates[n]].stem(list_indexes_time[n],max(Dict_all_data[counter][signal_name + str(n)]),'g', markerfmt='o', label = 'Time = ' + str(list_indexes_time[n]), basefmt=" ")
+            markerline_mean, stemlines_mean, baseline = axs[list_koordinates[n]].stem(list_indexes_time[n]['gmm'],max(Dict_all_data[counter][signal_name + str(n)]),'b', markerfmt='o', label = 'Time = ' + str(list_indexes_time[n]['gmm']) + " sek", basefmt=" ")
             plt.setp(markerline_mean, 'color', plt.getp( stemlines_mean,'color'))
+            if(list_indexes_time[n]['soren']) > 0:
+                markerline_mean_soren, stemlines_mean_soren, baseline = axs[list_koordinates[n]].stem(list_indexes_time[n]['soren'],max(Dict_all_data[counter][signal_name + str(n)]),'g', markerfmt='o', label = 'Time = ' + str(list_indexes_time[n]) + " sek", basefmt=" ")
+                plt.setp(markerline_mean_soren, 'color', plt.getp( stemlines_mean_soren,'color'))
             axs[list_koordinates[n]].set_ylim([min(Dict_all_data[counter][signal_name + str(n)])-10, max(Dict_all_data[counter][signal_name + str(n)])+10])
             axs[list_koordinates[n]].set_xlabel('Tid [sekunder]')
             axs[list_koordinates[n]].set_ylabel('HR [BPM]')

@@ -94,14 +94,14 @@ l = 0
 brugbare_datasaet = [1,5,8,9,11,12,13,14]
 for n in range(len(brugbare_datasaet)):
     #sammenligner.plot_differences(Dict_with_obs_file, counter=counter)
-    #plotter.plot_hr_subplot(Dict_all_data=Dict_with_obs_file, counter=counter)
+    plotter.plot_hr_subplot(Dict_all_data=Dict_with_obs_file, counter=brugbare_datasaet[n])
     #sammenligner.plot_corellation(Dict_with_obs_file, counter=counter)
     #sammenligner.plot_normal_distribution(Dict_with_obs_file, counter = counter, type='QQ') #type = 'hist'
     #sammenligner.plot_2_percentage_under(Dict_with_obs_file, counter)
-    plotter.plot_limit_HRM_pro(Dict_with_obs_file, counter = brugbare_datasaet[n])
-    resultater.procces_results(Dict_with_obs_file, counter = brugbare_datasaet[n])
+    indexlist = resultater.procces_results(Dict_with_obs_file, counter = brugbare_datasaet[n])
+    plotter.plot_limit_HRM_pro(Dict_with_obs_file, counter = brugbare_datasaet[n], index_list= indexlist)
 
-    #print(str(n+1) + " new figure created")
+    print(str(n+1) + " new figure(s) created")
 
 fr.save_results(resultater.Get_results_as_list())
 #input("Press Enter to continue...")
