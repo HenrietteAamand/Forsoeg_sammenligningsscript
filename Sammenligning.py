@@ -186,7 +186,7 @@ class sammenligning_class():
                 path = 'C:/Users/hah/Documents/VISUAL_STUDIO_CODE/Forsoeg_sammenligningsscript/Figurer/Histogrammer/'
                 title = 'Testperson ' + str(counter) + " - Histogram over differenserne"
                 #fig.savefig(path + " " + title) #, dpi = 200)
-                plt.show()
+                #plt.show()
         elif type == 'QQ':
             for n in range(4):
                 self.QQ_plot(list_differneces[n]["Maxrefdes103"])
@@ -375,7 +375,7 @@ class sammenligning_class():
         fig.set_size_inches(20,10)
         fig.subplots_adjust(left=0.03, bottom=0.08, right=0.97, top=0.92, wspace=None, hspace=None)
         # #path = 'C:/Users/hah/Documents/VISUAL_STUDIO_CODE/Forsoeg_sammenligningsscript/Figurer/Differens/Med_krydskorellation/'
-        # path = 'C:/Users/hah/Documents/VISUAL_STUDIO_CODE/Forsoeg_sammenligningsscript/Figurer/Differens/Uden_krydskorellation/'
-        # title = 'Testperson ' + str(counter) + " - Uden krydskorellation"
-        # fig.savefig(path + " " + title) #, dpi = 200)
-        plt.show()
+        path = 'C:/Users/hah/Documents/VISUAL_STUDIO_CODE/Forsoeg_sammenligningsscript/Figurer/Differens/Uden_krydskorellation/'
+        title = 'Testperson ' + str(counter) + " - Uden krydskorellation"
+        fig.savefig(path + " " + title) #, dpi = 200)
+        #plt.show()

@@ -22,4 +22,10 @@ Andet:
 
   lav rækkefælgen i resultater om til stilhed-statisk-dynamisk OG fjern brackets om mean
 
+  plotter: https://matplotlib.org/stable/gallery/color/named_colors.html
+
+  y = a^x :
+  - https://stackoverflow.com/questions/39624462/how-to-do-power-curve-fitting-in-python
+  - https://stackoverflow.com/questions/41109122/fitting-a-curve-to-a-power-law-distribution-with-curve-fit-does-not-work/41109662
+
 

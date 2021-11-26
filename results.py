@@ -93,7 +93,6 @@ class results_class():
         return index_list
         
 
-
     def __get_filtered_signal(self, raw_signal, average_value):
         N = average_value
         if(N%2 == 0):

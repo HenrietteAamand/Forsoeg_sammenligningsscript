@@ -105,18 +105,15 @@ while( i < len(fase_intervention)):
 Dict_with_obs_file = fr.read_hr_data()
 counter = 1
 antal_testpersoner = 14
-# Plotter alle hr afhængigt af tiden
-# while counter <= antal_testpersoner:
-#     counter += 1
 
 l = 0
 # Plotter alle hr afhængigt af tiden
 for n in range(len(brugbare_datasaet)):
-    #sammenligner.plot_differences(Dict_with_obs_file, counter=counter)
-    plotter.plot_hr_subplot(Dict_all_data=Dict_with_obs_file, counter=brugbare_datasaet[n])
-    #sammenligner.plot_corellation(Dict_with_obs_file, counter=counter)
-    #sammenligner.plot_normal_distribution(Dict_with_obs_file, counter = counter, type='QQ') #type = 'hist'
-    #sammenligner.plot_2_percentage_under(Dict_with_obs_file, counter)
+    # sammenligner.plot_differences(Dict_with_obs_file, counter=counter)
+    # plotter.plot_hr_subplot(Dict_all_data=Dict_with_obs_file, counter=brugbare_datasaet[n])
+    # sammenligner.plot_corellation(Dict_with_obs_file, counter=counter)
+    # #sammenligner.plot_normal_distribution(Dict_with_obs_file, counter = counter, type='hist') #type = 'QQ'
+    # sammenligner.plot_2_percentage_under(Dict_with_obs_file, counter)
     indexlist = resultater.procces_results(Dict_with_obs_file, counter = brugbare_datasaet[n])
     list_mean_std = resultater.get_mean_and_std_list()
     plotter.plot_limit_HRM_pro(Dict_with_obs_file, counter = brugbare_datasaet[n], index_list= indexlist, list_mean_std=list_mean_std, hastighed_list=resultater.get_coefs(), fase_intervention_list=fase_intervention_brugbare)
