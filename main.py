@@ -78,7 +78,28 @@ path = "C:/Users/hah/Documents/VISUAL_STUDIO_CODE/Forsoeg_sammenligningsscript/D
 fr = filereader.filereader_class(path=path)
 sammenligner = sammenligning_class()
 main = main_class(antal_testpersoner, fr)
-resultater = results_class(fr.read_fase_to_intervention_file())
+fase_intervention = fr.read_fase_to_intervention_file().copy()
+to_results = fase_intervention.copy()
+resultater = results_class(to_results)
+
+i = 0
+n = 0
+brugbare_datasaet = [1,5,8,9,11,12,13,14]# Lav ny liste, og tilføj kun de elementer asom du skal bruge, altså dem der hører til de brugbare datasæt
+fase_intervention_brugbare = []
+
+while( i < len(fase_intervention)):
+    if(fase_intervention[i]['testperson'] == str(brugbare_datasaet[n])):
+        dicht_basline = {}
+        dicht_basline['testperson'] = str(brugbare_datasaet[n])
+        dicht_basline['fase'] = '0'
+        dicht_basline['intervention'] = 'Baseline'
+        fase_intervention_brugbare.append(dicht_basline)
+        n += 1
+        for r in range(3):
+            fase_intervention_brugbare.append(fase_intervention[i])
+            i+=1
+    else:
+        i+= 3
 
 #main.extract_data()
 Dict_with_obs_file = fr.read_hr_data()
@@ -89,9 +110,7 @@ antal_testpersoner = 14
 #     counter += 1
 
 l = 0
-
 # Plotter alle hr afhængigt af tiden
-brugbare_datasaet = [1,5,8,9,11,12,13,14]
 for n in range(len(brugbare_datasaet)):
     #sammenligner.plot_differences(Dict_with_obs_file, counter=counter)
     plotter.plot_hr_subplot(Dict_all_data=Dict_with_obs_file, counter=brugbare_datasaet[n])
@@ -99,7 +118,8 @@ for n in range(len(brugbare_datasaet)):
     #sammenligner.plot_normal_distribution(Dict_with_obs_file, counter = counter, type='QQ') #type = 'hist'
     #sammenligner.plot_2_percentage_under(Dict_with_obs_file, counter)
     indexlist = resultater.procces_results(Dict_with_obs_file, counter = brugbare_datasaet[n])
-    plotter.plot_limit_HRM_pro(Dict_with_obs_file, counter = brugbare_datasaet[n], index_list= indexlist)
+    list_mean_std = resultater.get_mean_and_std_list()
+    plotter.plot_limit_HRM_pro(Dict_with_obs_file, counter = brugbare_datasaet[n], index_list= indexlist, list_mean_std=list_mean_std, hastighed_list=resultater.get_coefs(), fase_intervention_list=fase_intervention_brugbare)
 
     print(str(n+1) + " new figure(s) created")
 
