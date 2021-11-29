@@ -11,6 +11,9 @@ class results_class():
         self.list_dict_results = []
         self.stabel = stabelisation_class()
         self.id_2_dot_0 = 1
+        self.testperson = 1
+        self.list_velocity = []
+        
         
 
 
@@ -22,6 +25,7 @@ class results_class():
         self.list_mean_std = [] # Bruges til at tegne histogrammet med fordelingerne indtegnet
         index_list = []         # Gemmer de indexer, der er fundet som stabiliseringstidspunktet. 
         self.coef_list = []     # Gemmer hældningskoefficienten sat skæringen med y-aksen
+        self.list_velocity = []
 
         # Dette gøres 4 gange svarende til de 4 faser. Ved baseline ønskes der ikke at gøre noge. 
         while i < 4: #denne tæller faser, jeg skal ikke forholde mig til antal personer
@@ -58,14 +62,16 @@ class results_class():
                 dict_mean_std["std_high"] = std_high
                 dict_mean_std["mean_low"] = mean_low
                 dict_mean_std["mean_high"] = mean_high
+                two_point_high_mean = self.mean_high_data(hr_avg, index_gmm) #mean_high
+                #dict_mean_std["mean_high"] = two_point_high_mean ### OBS SKAL SLETTES###
                 self.list_mean_std.append(dict_mean_std)
-
                 # gemmer de resultater der skal laves statistik af, så de senere lan gemmes i en fil
                 tid1 = index_gmm*delta_tid_garmin
                 maximum_hr = max(hr_avg)
                 hastighed = self.linear_regression(hr_avg,fs, index_gmm)[0][0]     # Der er to metoder til at finde hastigheden, her bruges lineær regression
                 # hastighed = (mean_low-maximum_hr)/(tid1)
                 stabiliseringsniveau, denhoje = self.stabel.get_means()
+                hastighed = self.two_point_velocity(two_point_high_mean,mean_low, tid1)
                 
                 # Jeg vil gerne gemm hvilken intervention der hører til dette datasæt. Derfor skal jeg ind i interventionslisten og finde den intervention, hvor fasenumrene og testpersonnummmeret matcher
                 n=0
@@ -125,8 +131,19 @@ class results_class():
 
 
     def plot_hist_and_gaussian(self, list_hr_data, list_mean_std, counter = 0):
+        SMALL_SIZE = 12
+        MEDIUM_SIZE = 18
+        BIGGER_SIZE = 24
+
+        plt.rc('font', size=MEDIUM_SIZE)         # controls default text sizes
+        plt.rc('axes', titlesize=SMALL_SIZE)     # fontsize of the axes title
+        plt.rc('axes', labelsize=MEDIUM_SIZE)    # fontsize of the x and y labels
+        plt.rc('xtick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
+        plt.rc('ytick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
+        plt.rc('legend', fontsize=MEDIUM_SIZE)   # legend fontsize
+        plt.rc('figure', titlesize=BIGGER_SIZE)  # fontsize of the figure title        
         fig, axs = plt.subplots(2,2)
-        fig.suptitle("Hr for testperson " + str(counter) + " efter endt stresstest")
+        fig.suptitle("Hr, testperson " + str(self.testperson) + " after finishing the stresstest", fontweight = 'bold') 
         list_koordinates = [(0,1), (1,0), (1,1), (0,0)]
 
 
@@ -141,17 +158,24 @@ class results_class():
             axs[list_koordinates[n]].plot(x_low, scipy.stats.norm.pdf(x_low, mean_low, std_low), label = 'Mean = ' + str(mean_low) + ' std = ' + str(std_low))
             axs[list_koordinates[n]].plot(x_high, scipy.stats.norm.pdf(x_high, mean_high, std_high), label = 'Mean = ' + str(mean_high) + ' std = ' + str(std_high))
             axs[list_koordinates[n]].hist(list_hr_data[n], bins, facecolor = 'green', alpha= 0.5, density=True)
-            axs[list_koordinates[n]].legend(loc = 'upper right')
             axs[list_koordinates[n]].set_xlabel('HR [Bpm]')
             axs[list_koordinates[n]].set_ylabel('Density of heart rate')
-            axs[list_koordinates[n]].set_title('Fase ' + str(n))
+            axs[list_koordinates[n]].set_title('Phase ' + str(n+1), fontsize = MEDIUM_SIZE, fontweight = 'bold')
+            axs[list_koordinates[n]].legend(loc = 'upper right', facecolor="white")
+            axs[list_koordinates[n]].set_facecolor('whitesmoke')
+            axs[list_koordinates[n]].grid(color = 'lightgrey')
+
+        axs[list_koordinates[3]].set_facecolor('whitesmoke')
+        axs[list_koordinates[3]].grid(color = 'lightgrey')
 
 
         fig.set_size_inches(20,10)
+        fig.set_tight_layout('tight')
         fig.subplots_adjust(left=0.05, bottom=0.08, right=0.97, top=0.92, wspace=None, hspace=None)
         path = 'C:/Users/hah/Documents/VISUAL_STUDIO_CODE/Forsoeg_sammenligningsscript/Figurer/Histogrammer/'
-        title = 'Gaussian distributions, Testperson ' + str(counter)
+        title = 'Gaussian distributions, Testperson ' + str(self.testperson)
         fig.savefig(path + " " + title) #, dpi = 200)
+        self.testperson+=1
 
     def get_mean_and_std_list(self):
         # std_low = round(self.list_mean_std[n]["std_low"],2)
@@ -177,5 +201,16 @@ class results_class():
         self.coef_list.append(dict_coefficients)
         return coef
 
+    def mean_high_data(self, hr_avg : list, index : int):
+        mean_high = sum(hr_avg[0:index-1])/index
+        return mean_high
+    
+    def two_point_velocity(self, hr_begin : float, hr_mean:float, stabilization_time : float):
+        self.list_velocity.append(round((hr_mean-hr_begin)/stabilization_time,2))
+        return self.list_velocity[len(self.list_velocity)-1]
+
     def get_coefs(self):
         return self.coef_list
+
+    def get_velocity_two_point(self):
+        return self.list_velocity

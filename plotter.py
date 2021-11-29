@@ -6,6 +6,9 @@ from stabelisation import*
 class plotter_class():
     def __init__(self) -> None:
         self.stabilityindex = stabelisation_class()
+        self.fase_variable = 0
+        self.testperson = 1
+        self.velocities = []
         pass
 
     def plot_hr(self, maxrefdes = [], fs_maxrefdes = 25, hrm_pro = [], forerunner = [], fs_garmin = 4, empatica = [], fs_empatica = 1, fasenummer = 0, testpersonnummer = 0, show_bool = True):
@@ -147,7 +150,7 @@ class plotter_class():
         # plotter.plot_rr(maxrefdes= Dict_all_data[counter]['RR_Maxrefdes103_3'], hrm_pro=Dict_all_data[counter]['RR_Hrmpro_3'], empatica=Dict_all_data[counter]['RR_Empatica_3'], forerunner=Dict_all_data[counter]['RR_Forerunner_3'])
         # counter += 1
 
-    def plot_limit_HRM_pro(self, Dict_all_data: dict, counter: int, show_bool = True, index_list = [], list_mean_std = [], hastighed_list = [], fase_intervention_list = []):
+    def plot_limit_HRM_pro(self, Dict_all_data: dict, counter: int, show_bool = True, index_list = [], list_mean_std = [], hastighed_list = [], fase_intervention_list = [], velocity = []):
 
         list_timeaxes = []
         list_indexes_time = []
@@ -158,6 +161,8 @@ class plotter_class():
         signal_name=""
         max_and_min_values = []
         list_hastighed = [] 
+        tid_two_point_list = []
+        hr_two_point_list = []
         while i < 4:
             if(counter == 1):
                 signal_original = Dict_all_data[counter]['Hr_Maxrefdes103_' + str(i)]
@@ -208,12 +213,36 @@ class plotter_class():
                 for tid in tidsakse_avg:
                     list_regression.append((a*(tid)+b))
                 list_hastighed.append(list_regression)
-            i += 1
-                
 
+                #hr_two_point = [signal_avg[0], signal_avg[index_list[i-1]['gmm']]]
+                hr_two_point = [list_mean_std[i-1]['mean_high'], list_mean_std[i-1]['mean_low']]
+                hr_two_point_list.append(hr_two_point)
+                tid_two_point = [0, list_indexes_time[i]['gmm']]
+                tid_two_point_list.append(tid_two_point)
+                velocity_dict = {}
+                velocity_dict['reg'] = a
+                velocity_dict['point'] = velocity[i-1]
+                velocity_dict['diff'] = a-velocity[i-1]
+                self.velocities.append(velocity_dict)
+            i += 1
+
+            
+        SMALL_SIZE = 12
+        MEDIUM_SIZE = 12 #18
+        MEDIUM_BIG_SIZE = 12 #22
+        BIGGER_SIZE = 24
+
+        plt.rc('font', size=MEDIUM_SIZE)         # controls default text sizes
+        plt.rc('axes', titlesize=SMALL_SIZE)     # fontsize of the axes title
+        plt.rc('axes', labelsize=MEDIUM_SIZE)    # fontsize of the x and y labels
+        plt.rc('xtick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
+        plt.rc('ytick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
+        plt.rc('legend', fontsize=MEDIUM_BIG_SIZE)   # legend fontsize
+        plt.rc('figure', titlesize=BIGGER_SIZE)  # fontsize of the figure title
+        # plt.rc('subplot', titlesize=MEDIUM_SIZE)  # fontsize of the figure title
 
         fig, axs = plt.subplots(2,2)
-        fig.suptitle("Hr, testperson " + str(counter) + " after finishing the stresstest")
+        fig.suptitle("Hr, testperson " + str(self.testperson) + " after finishing the stresstest", fontweight='bold')
         
         list_koordinates = [(0,0), (0,1), (1,0), (1,1)]
 
@@ -232,23 +261,32 @@ class plotter_class():
                 axs[list_koordinates[n]].axhline(y=mean + list_mean_std[n-1]["std_low"], color='k', linestyle='--', linewidth = 0.5, label = 'Mean of low cluster +/- 1*std ')
                 axs[list_koordinates[n]].axhline(y=mean - list_mean_std[n-1]["std_low"], color='k', linestyle='--', linewidth = 0.5)
                 axs[list_koordinates[n]].plot(list_timeaxes[n]["Avg"], list_hastighed[n-1], color = 'darkgoldenrod', label = 'Stabelization velocity = ' + str(hastighed_list[n-1]['coef']) + " bpm/s")   
+                axs[list_koordinates[n]].plot(tid_two_point_list[n-1], hr_two_point_list[n-1], color = 'purple', label = 'Stabelization velocity = ' + str(velocity[n-1]) + " bpm/s")   
+
                 markerline_mean, stemlines_mean, baseline = axs[list_koordinates[n]].stem(list_indexes_time[n]['gmm'],y_lim_high-10,'b', markerfmt='o', label = 'Stabilization time = ' + str(list_indexes_time[n]['gmm']) + " sec", basefmt=" ")
                 plt.setp(markerline_mean, 'color', plt.getp( stemlines_mean,'color'))
             axs[list_koordinates[n]].set_ylim([y_lim_low, y_lim_high])
             axs[list_koordinates[n]].set_xlabel('Time [seconds]')
             axs[list_koordinates[n]].set_ylabel('HR [bpm]')
-            axs[list_koordinates[n]].legend(loc = 'upper right')
-            axs[list_koordinates[n]].set_title('Phase ' + str(n) + ': ' + str(fase_intervention_list[counter-1+n]['intervention']) + ' phase')
+            axs[list_koordinates[n]].legend(loc = 'upper right', facecolor="white")
+            axs[list_koordinates[n]].set_facecolor('whitesmoke')
+            axs[list_koordinates[n]].grid(color = 'lightgrey')
+            axs[list_koordinates[n]].set_title('Phase ' + str(n) + ': ' + str(fase_intervention_list[self.fase_variable]['intervention']) + ' phase', fontsize = MEDIUM_BIG_SIZE, fontweight='bold')
+            self.fase_variable += 1
 
 
         fig.set_size_inches(20,10)
+        fig.set_tight_layout('tight')
         fig.subplots_adjust(left=0.05, bottom=0.08, right=0.97, top=0.92, wspace=None, hspace=None)
         path = 'C:/Users/hah/Documents/VISUAL_STUDIO_CODE/Forsoeg_sammenligningsscript/Figurer/gmm/'
-        title = 'Testperson ' + str(counter)
+        title = 'Testperson ' + str(self.testperson)
         fig.savefig(path + " " + title) #, dpi = 200)
+        self.testperson+= 1
         #plt.show()    
 
-    
+    def get_velocities(self):
+        return self.velocities
+
     def get_filtered_signal(self, raw_signal, average_value):
         N = average_value
         if(N%2 == 0):

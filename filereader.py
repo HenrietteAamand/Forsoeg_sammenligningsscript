@@ -140,9 +140,9 @@ class filereader_class:
             i+=1
         return dict_data
 
-    def save_results(self, list_to_save: list):
+    def save_results(self, list_to_save: list, filename : str):
         keys = list_to_save[0].keys()
-        output_file = open('C:/Users/hah/Documents/VISUAL_STUDIO_CODE/Forsoeg_sammenligningsscript/Data/results.csv', 'w+', newline='')
+        output_file = open('C:/Users/hah/Documents/VISUAL_STUDIO_CODE/Forsoeg_sammenligningsscript/Data/' + filename, 'w+', newline='')
         dict_writer = csv.DictWriter(output_file, keys)
         dict_writer.writeheader()
         dict_writer.writerows(list_to_save)
