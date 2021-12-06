@@ -1,12 +1,13 @@
+from IExtract import IExtract
 from filereader import filereader_class
 from tidskorrigering import tidskorrigering_class
 from Calculate_RR_class import *
 
-class extract_forerunner_class():
-    def __init__(self, filereader: filereader_class, tidskorrigering: tidskorrigering_class) -> None:
+class extract_forerunner_class(IExtract):
+    def __init__(self, filereader: filereader_class, tidskorrigering: tidskorrigering_class, calculate_rr : Caculate_rr_class) -> None:
         self.filereader = filereader
         self.tidkorr = tidskorrigering
-        self.rr_calculator = Caculate_rr_class()
+        self.rr_calculator = calculate_rr
         self.read_from_file = True
         self.lines_splitted = []
 
@@ -19,21 +20,26 @@ class extract_forerunner_class():
             timelim_begin (int): Tidspunktet hvorfra der skal gemmes data. Dette er det første tidspunkt i Maxrefdes103 data grundet forsøgets opsætning.
             timelim_end (int): Tidspunktet, hvor man ikke længere skal bruge data
         """
+        # Data indlæses kun en gang pr person, men gennemløbes 4 gange svarende til de 4 faser.  
         if(self.read_from_file):
             self.lines_from_file = self.filereader.read_forerunner(testpersonnummer)
             self.read_from_file = False
-        self.lines_splitted = self.tidkorr.forerunner(self.lines_from_file, timelim_begin, timelim_end)
+
+        # data tidskorrigeres ud fra de angivne tidsgrænser
+        self.lines_splitted = self.tidkorr.garmin(self.lines_from_file, timelim_begin, timelim_end)
+        
+        # Liste der skal gemme hr-værdierne
         self.hr_list = []
         oldtogglebit = 0
         # I den hexadecimale streng udtrækkes hver byte og gemmes i et dictionary sammen med den udregnede tid
         self.New_list_with_logged_values_as_dictionay = []
         for sensordata in self.lines_splitted:
             dictionary_with_hex ={} 
-            if len(sensordata) == 3:
+            if len(sensordata) == 3: #Hvis ikke længden af sensordata splittet ved ':' er lig 3 er det fordi der er modtaget en fejlmeddelelse 890547 : RX fail
                 if 'Rx' in sensordata[1]:
                     temporary_List = sensordata[2][1:-2].split('][')
-                    self.hr_list.append(temporary_List[7])
-                    if(oldtogglebit != temporary_List[6] and temporary_List[0][2] == '0'): #Yderligere gemmes kun data, når der har været et nyt 'heart-beat-event svarende til at hr_count er blevet en større
+                    self.hr_list.append(temporary_List[7]) #Gemmer hr uanset. 
+                    if(oldtogglebit != temporary_List[6]): # Yderligere gemmes kun data, når der har været et nyt 'heart-beat-event svarende til at hr_count er blevet en større
                         dictionary_with_hex["b0"] = temporary_List[0]
                         dictionary_with_hex["b1"] = temporary_List[1]
                         dictionary_with_hex["b2"] = temporary_List[2]
@@ -45,10 +51,10 @@ class extract_forerunner_class():
                         dictionary_with_hex["time"] = sensordata[0]
                         self.New_list_with_logged_values_as_dictionay.append(dictionary_with_hex)
                     oldtogglebit = temporary_List[6]
-            elif 'Rx' in sensordata[1] and len(self.hr_list) > 0: #hvis data er på formen 8795535 : RX fail
+            elif 'Rx' in sensordata[1] and len(self.hr_list) > 0: #hvis data er på formen 8795535 : RX fail, så gemmes den tidligere hr værdi, for at kompensere
                 self.hr_list.append(self.hr_list[len(self.hr_list)-1])
         
-        #Bruger data page 4 til at omregne til RR-værdier
+        #Bruger data page 0 til at omregne til RR-værdier. 
         self.list_of_rr_and_time = self.rr_calculator.rr_0(self.New_list_with_logged_values_as_dictionay)
         return self.list_of_rr_and_time
 

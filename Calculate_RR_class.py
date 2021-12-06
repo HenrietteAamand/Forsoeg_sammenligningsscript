@@ -1,6 +1,6 @@
 class Caculate_rr_class:
     def rr_0(self, Values_in_Hex_List): 
-        """Metode til at udtrække RR fra SimulANT+ datapage 0. Bruges eksempelvis ved Garmin Foreunner 45
+        """Metode til at udtrække RR fra SimulANT+ datapage 0. Bruges eksempelvis ved Garmin Foreunner 45, og i tilfælde af, at datapage 4 ikke er tilstede. 
 
         Args:
             Values_in_Hex_List (list<string>): Indputparameteren er en liste med alle de værdier der ønskes at beregnes RR og HR på

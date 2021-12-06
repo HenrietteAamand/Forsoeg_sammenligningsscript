@@ -1,12 +1,13 @@
 
 
+from IExtract import IExtract
 from filereader import filereader_class
 from tidskorrigering import tidskorrigering_class
 from Calculate_RR_class import *
 
 
-class extract_hrmpro_class():
-    def __init__(self, filereader: filereader_class, tidskorrigering: tidskorrigering_class) -> None:
+class extract_hrmpro_class(IExtract):
+    def __init__(self, filereader: filereader_class, tidskorrigering: tidskorrigering_class, calculate_RR: Caculate_rr_class) -> None:
         self.filereader = filereader
         self.tidkorr = tidskorrigering
         self.rr_calculator = Caculate_rr_class()
@@ -25,7 +26,7 @@ class extract_hrmpro_class():
         if(self.read_from_file):
             self.lines_from_file = self.filereader.read_HRMpro(testpersonnummer)
             self.read_from_file = False
-        self.lines_splitted = self.tidkorr.hrm_pro(self.lines_from_file, timelim_begin, timelim_end)
+        self.lines_splitted = self.tidkorr.garmin(self.lines_from_file, timelim_begin, timelim_end)
         self.hr_list = []
         oldtogglebit = 0
         # I den hexadecimale streng udtrækkes hver byte og gemmes i et dictionary sammen med den udregnede tid

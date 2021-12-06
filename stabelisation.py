@@ -96,7 +96,7 @@ class stabelisation_class():
         return self.std_low, self.std_high
 
 
-    def soren(self, signal2, N, do_soren = False):
+    def sorens_method(self, signal2, filterlemngth, do_soren = False):
         if(do_soren == True):
             signal = self.__remove_X_percentages(signal2, 10)
             middle = self.__get_limit(signal)
@@ -117,7 +117,7 @@ class stabelisation_class():
             std = np.std(hr_low)
             
             # Laver midling af hele signalet (Mooving average)
-            hr_avg = self.__get_filtered_signal(signal, N)
+            hr_avg = self.__get_filtered_signal(signal, filterlemngth)
 
             #Forlænger det midlede signal med data, til det er lige så langt som hr signalet
             # devider = int(round((len(signal)-len(hr_avg))/2))

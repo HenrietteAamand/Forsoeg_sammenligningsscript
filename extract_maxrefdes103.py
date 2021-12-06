@@ -1,3 +1,4 @@
+from IExtract import IExtract
 from filereader import*
 import datetime, time
 
@@ -14,7 +15,9 @@ class extract_maxrefdes103_class():
         """
         data_list_of_dict = self.filereader.read_maxrefdes_Raa_observationer(testpersonnummer, fasenummer)
 
-        self.first_time = str(datetime.datetime.now().date().strftime("%d/%m/%y")) + " " + data_list_of_dict[1501]['timestmp'] #Vi tager ved index 1501 fordi det svarer til at fjerne det første minut, hvor data er utilregnelige
+        #Vi gemmer kun data fra index 1500 fordi det svarer til at fjerne det første minut, hvor data er utilregnelige, og også før interventionsperioden
+        index_to_save_from = 1500
+        self.first_time = str(datetime.datetime.now().date().strftime("%d/%m/%y")) + " " + data_list_of_dict[index_to_save_from]['timestmp'] 
         self.last_time = str(datetime.datetime.now().date().strftime("%d/%m/%y")) + " " + data_list_of_dict[len(data_list_of_dict)-1]['timestmp']
         
         self.hr_list = []
@@ -23,10 +26,10 @@ class extract_maxrefdes103_class():
 
         i = 0
         for row in data_list_of_dict:
-            if i > 1500:
-                self.hr_list.append(int(round(float(row["hr"]))))
-                self.timestamp_list.append(row["timestmp"])
-                if row["rr"] != "0.0": #Hvis rr er lig 0, så vil jeg ikke gemme data
+            if i >= index_to_save_from:
+                self.hr_list.append(int(round(float(row["hr"]))))   #Gemmer alle hr værdier en af gangen
+                self.timestamp_list.append(row["timestmp"])         # Gemmer alle timestamps en af gangen
+                if row["rr"] != "0.0":                              # Gemmer kun RR-værdierne når der er beregnet en ny. 
                     rr_korr = float("{:.1f}".format(0.96*float(row["rr"]))) #korrigerer med den faktor vi fandt i excel
                     self.rr_list.append(rr_korr)
             i +=1
@@ -48,7 +51,7 @@ class extract_maxrefdes103_class():
         return self.hr_list
 
     def get_first_timestamp(self):
-        """Metoen returnerer et timestamp, der er korrigeret til dags dato, men med det korrekte tidspunkt
+        """Metoen returnerer et timestamp, der er korrigeret til dags dato, men med det korrekte tidspunkt fra timestampet
 
         Returns:
             int: Timestamp returneres som unix time, altså af typen int

@@ -189,13 +189,13 @@ class sammenligning_class():
                 #plt.show()
         elif type == 'QQ':
             for n in range(4):
-                self.QQ_plot(list_differneces[n]["Maxrefdes103"])
-                self.QQ_plot(list_differneces[n]["Empatica"])
-                self.QQ_plot(list_differneces[n]["Forerunner"])
+                self.__QQ_plot(list_differneces[n]["Maxrefdes103"])
+                self.__QQ_plot(list_differneces[n]["Empatica"])
+                self.__QQ_plot(list_differneces[n]["Forerunner"])
    
-    def QQ_plot(self, my_data):
-        my_data = norm.rvs(size=1000)
-        sm.qqplot(my_data, line='45')
+    def __QQ_plot(self, list_differences: list):
+        list_differences = norm.rvs(size=1000)
+        sm.qqplot(list_differences, line='45')
         pylab.show()
 
     def plot_2_percentage_under(self, Dict_all_obs, counter):
@@ -286,9 +286,9 @@ class sammenligning_class():
         fig.savefig(path + " " + title) #, dpi = 200)
         #plt.show()
 
-    def krydskorellation(self, HRM_pro, det_andet_signal, fase, testperson, sensor):
+    def __krydskorellation(self, HRM_pro, det_andet_signal):#, fase, testperson, sensor):
         if(len(det_andet_signal) == 0 or len(HRM_pro) == 0):
-            print("Testperson " + str(testperson) + " fase " + str(fase) + " Sensor " + str(sensor) + " havde ingen data" )
+            #rint("Testperson " + str(testperson) + " fase " + str(fase) + " Sensor " + str(sensor) + " havde ingen data" )
             return det_andet_signal
         
         corr = sig.correlate(HRM_pro, (det_andet_signal),mode="valid",method="direct") / len(HRM_pro)
@@ -324,9 +324,9 @@ class sammenligning_class():
             maxrefdes = self.__Downsample_maxrefdes(maxrefdes_raw)
             empatica = self.__upsample_empatica(empatica_raw)
             print("Length og HRM-pro: " + str(len(hrm_pro)))
-            maxrefdes = self.krydskorellation(hrm_pro, maxrefdes, i, counter, "Maxrefdes103")
-            empatica = self.krydskorellation(hrm_pro, empatica, i, counter, "Empatica")
-            forerunner = self.krydskorellation(hrm_pro, forerunner, i, counter, "Forerunner")
+            maxrefdes = self.__krydskorellation(hrm_pro, maxrefdes, i, counter, "Maxrefdes103")
+            empatica = self.__krydskorellation(hrm_pro, empatica, i, counter, "Empatica")
+            forerunner = self.__krydskorellation(hrm_pro, forerunner, i, counter, "Forerunner")
 
             diff_maxrefdes = []
             diff_empatica = []

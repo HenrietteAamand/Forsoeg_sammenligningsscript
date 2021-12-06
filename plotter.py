@@ -5,55 +5,10 @@ from stabelisation import*
 
 class plotter_class():
     def __init__(self) -> None:
-        self.stabilityindex = stabelisation_class()
         self.fase_variable = 0
         self.testperson = 1
         self.velocities = []
         pass
-
-    def plot_hr(self, maxrefdes = [], fs_maxrefdes = 25, hrm_pro = [], forerunner = [], fs_garmin = 4, empatica = [], fs_empatica = 1, fasenummer = 0, testpersonnummer = 0, show_bool = True):
-        """Metoden plotter alle HR signaler i samme plot. Der laves en tidsakse ud fra den angivede samplerate. Samperate er pr default sat til til hhv 25, 4 og 1 for Maxrefdes103, Garmn og sidst empatica. 
-
-        Args:
-            maxrefdes (list, optional): Liste med hr værdier Defaults to [].
-            fs_maxrefdes (int, optional): [description]. Defaults to 25.
-            hrm_pro (list, optional): Liste med hr værdier. Defaults to [].
-            forerunner (list, optional): Liste med hr værdier. Defaults to [].
-            fs_garmin (int, optional): Samplefrekvens for garmminprodukterne. Defaults to 4.
-            empatica (list, optional): Liste med hr værdier. Defaults to [].
-            fs_empatica (int, optional): Sampelfrekvens for empatica. Defaults to 1.
-            fasenummer (int, optional): Fasenummer er nummeret på fasen, og Bruges til en titel. Defaults to 0.
-            testpersonnummer (int, optional): Testpersonnummer er nummeret på testpersonen, hvis data der plottes. Defaults to 0.
-            show_bool (bool, optional): Styrer om plottet vises eller ej. Defaults to True.
-        """
-        # Deltatider
-        delta_tid_maxrefdes = 1/fs_maxrefdes
-        delta_tid_garmin = 1/fs_garmin
-        delta_tid_empatica = 1/fs_empatica
-
-        # længde af signal i tid
-        tid_maxrefdes = len(maxrefdes)/fs_maxrefdes
-        tid_empatica = len(empatica)/fs_empatica
-        tid_hrmpro = len(hrm_pro)/fs_garmin
-        tid_forerunner = len(forerunner)/fs_garmin
-
-        # Laver tidsakse til de forskellige signaler så de kan plottes i samme figur
-        tidsakse_maxrefdes = np.arange(0,tid_maxrefdes,delta_tid_maxrefdes)
-        tidsakse_empatica = np.arange(0,tid_empatica, delta_tid_empatica)
-        tidsakse_hrmpro = np.arange(0,tid_hrmpro,delta_tid_garmin)
-        tidsakse_forerunner = np.arange(0,tid_forerunner, delta_tid_garmin)
-
-        plt.figure(1)
-        plt.plot(tidsakse_maxrefdes, maxrefdes, label = 'MAXREFDES103')
-        plt.plot(tidsakse_empatica, empatica, label = 'empatica')
-        plt.plot(tidsakse_hrmpro, hrm_pro, label = 'HRM-Pro')
-        plt.plot(tidsakse_forerunner, forerunner, label = 'Forerunner 45')
-        plt.legend(loc = 'upper right')
-        plt.title("Hr-values for 4 sensors")
-    
-        #plt.show(block = show_bool)
-        #plt.close(1)
-
 
     def plot_rr(self, maxrefdes = [], hrm_pro = [], forerunner = [], empatica = [], fasenummer = 0, testpersonnummer = 0, show_bool = True):
         """Metoden plotter de givne RR-værdier
@@ -79,6 +34,13 @@ class plotter_class():
         pass
 
     def plot_hr_subplot(self, Dict_all_data: dict, counter: int, show_bool = True):
+        """Plotter alle faser for en given testperson i det samme subplot. Dermed bliver der en figur på 2x2 med fase 0 - 3
+
+        Args:
+            Dict_all_data (dict): dictionarie med data fra samtlige testpersoner og samtlige faser
+            counter (int): nummeret på den testperson der ønskes plottet hr data for
+            show_bool (bool, optional): Styrer om plottet vises eller ej. 
+        """
         list_timeaxes = []
         fs_maxrefdes = 25
         fs_empatica = 1
@@ -91,7 +53,7 @@ class plotter_class():
             empatica = Dict_all_data[counter]['Hr_Empatica_' + str(i)]
             forerunner = Dict_all_data[counter]['Hr_Forerunner_' + str(i)]
 
-             # Deltatider
+            # Deltatider
             delta_tid_maxrefdes = 1/fs_maxrefdes
             delta_tid_garmin = 1/fs_garmin
             delta_tid_empatica = 1/fs_empatica
@@ -139,18 +101,26 @@ class plotter_class():
         path = 'C:/Users/hah/Documents/VISUAL_STUDIO_CODE/Forsoeg_sammenligningsscript/Figurer/Alle_sensorer/'
         title = 'Testperson ' + str(counter)
         fig.savefig(path + " " + title) #, dpi = 200)
-        #plt.show()    
+        if show_bool == True:
+            plt.show()    
 
+    def plot_limit_HRM_pro(self, Dict_all_data: dict, counter: int, show_bool = True, index_list = [], list_mean_std = [], fase_intervention_list = [], hastighed_lin_reg = [], hastighed_two_points = []):
+        """ Her plottes hr data udelukkende for HRM-pro. Figurerne bruges i selve forsøget. I figuren er der:
+             1) Det midlede hr signal
+             2) Et stem der viser stabiliseringstidspunktet
+             3) En linje der viser hastigheden alt efter metode
+             4) Tre horisontale linje med hhv stabiliseringsniveau +/- std
 
-        # plotter.plot_hr(maxrefdes= Dict_all_data[counter]['Hr_Maxrefdes103_1'], hrm_pro=Dict_all_data[counter]['Hr_Hrmpro_1'], empatica=Dict_all_data[counter]['Hr_Empatica_1'], forerunner=Dict_all_data[counter]['Hr_Forerunner_1'])
-        # plotter.plot_hr(maxrefdes= Dict_all_data[counter]['Hr_Maxrefdes103_2'], hrm_pro=Dict_all_data[counter]['Hr_Hrmpro_2'], empatica=Dict_all_data[counter]['Hr_Empatica_2'], forerunner=Dict_all_data[counter]['Hr_Forerunner_2'])
-        # plotter.plot_hr(maxrefdes= Dict_all_data[counter]['Hr_Maxrefdes103_3'], hrm_pro=Dict_all_data[counter]['Hr_Hrmpro_3'], empatica=Dict_all_data[counter]['Hr_Empatica_3'], forerunner=Dict_all_data[counter]['Hr_Forerunner_3'])
-        # plotter.plot_rr(maxrefdes= Dict_all_data[counter]['RR_Maxrefdes103_1'], hrm_pro=Dict_all_data[counter]['RR_Hrmpro_1'], empatica=Dict_all_data[counter]['RR_Empatica_1'], forerunner=Dict_all_data[counter]['RR_Forerunner_1'])
-        # plotter.plot_rr(maxrefdes= Dict_all_data[counter]['RR_Maxrefdes103_2'], hrm_pro=Dict_all_data[counter]['RR_Hrmpro_2'], empatica=Dict_all_data[counter]['RR_Empatica_2'], forerunner=Dict_all_data[counter]['RR_Forerunner_2'])
-        # plotter.plot_rr(maxrefdes= Dict_all_data[counter]['RR_Maxrefdes103_3'], hrm_pro=Dict_all_data[counter]['RR_Hrmpro_3'], empatica=Dict_all_data[counter]['RR_Empatica_3'], forerunner=Dict_all_data[counter]['RR_Forerunner_3'])
-        # counter += 1
-
-    def plot_limit_HRM_pro(self, Dict_all_data: dict, counter: int, show_bool = True, index_list = [], list_mean_std = [], hastighed_list = [], fase_intervention_list = [], velocity = []):
+        Args:
+            Dict_all_data (dict): Dictionarie med data fra samtlige testpersoner og samtlige faser
+            counter (int): nummeret på den testperson der ønskes plottet hr data for
+            show_bool (bool, optional): Styrer om plottet vises eller ej. Default er True.
+            index_list (list, optional): Listen indeholder ved hvilket index i hr_listen stabiliseringstidspunktet er fundet for fase 1-3. Defaults er [].
+            list_mean_std (list, optional): Liste med et dictionary. Listen har 3 pladser svarende til fase 1-3 og hver dictionary har 4 pladser hhv mean_low, mean_high, std_low og std_high. Defaults er [].
+            fase_intervention_list (list, optional): liste med sammenhæng mellem testperson, fase og intervention. Defaults er [].
+            hastighed_lin_reg (list, optional): Liste med de hastigheder der er beregnet via den lineære regression. Defaults er [].
+            hastighed_two_points (list, optional): Liste med de hastigheder der er beregnet via en two point metode. Defaults er [].
+        """
 
         list_timeaxes = []
         list_indexes_time = []
@@ -164,20 +134,22 @@ class plotter_class():
         tid_two_point_list = []
         hr_two_point_list = []
         while i < 4:
-            if(counter == 1):
+            if(counter == 1): #Fra første testperson bruges data fra MAXREFDES103
                 signal_original = Dict_all_data[counter]['Hr_Maxrefdes103_' + str(i)]
                 signal_name="Hr_Maxrefdes103_"
                 fs = 25
-            else:
+            else: #For de øvrige tespersoner bruges data fra HRM_pro
                 signal_original = Dict_all_data[counter]['Hr_Hrmpro_' + str(i)]
                 signal_name = "Hr_Hrmpro_"
                 fs = 4
             
+            # Antal filterkoefficienter
             N = fs*10+1
             
-            signal_avg = self.get_filtered_signal(signal_original, N)
+            # Finder det filtrerede signal
+            signal_avg = self.__get_filtered_signal(signal_original, N)
             list_avg.append(signal_avg)
-            #index = self.stabilityindex.dispertion(hrm_pro_avg)
+
             dict_tid = {}
             delta_tid_garmin = 1/fs
             if (i > 0):    
@@ -186,7 +158,7 @@ class plotter_class():
                 time_soren = index_list[i-1]['soren']*delta_tid_garmin
                 dict_tid['gmm'] = time_gmm
                 dict_tid['soren'] = time_soren
-            elif(i==0):
+            elif(i==0): # Vi beregner ikke en stabiliseringstid for baselineperioden, og derfor tilføjes bare 0
                 dict_tid['gmm'] = 0
                 dict_tid['soren'] = 0
             list_indexes_time.append(dict_tid)
@@ -207,8 +179,8 @@ class plotter_class():
             max_and_min_values.append(min(signal_avg))
             if(i>0):    
                 list_regression = []
-                a = hastighed_list[i-1]['coef']
-                b = hastighed_list[i-1]['intercept']
+                a = hastighed_lin_reg[i-1]['coef']
+                b = hastighed_lin_reg[i-1]['intercept']
                 # Laver den rette linje
                 for tid in tidsakse_avg:
                     list_regression.append((a*(tid)+b))
@@ -221,12 +193,12 @@ class plotter_class():
                 tid_two_point_list.append(tid_two_point)
                 velocity_dict = {}
                 velocity_dict['reg'] = a
-                velocity_dict['point'] = velocity[i-1]
-                velocity_dict['diff'] = a-velocity[i-1]
+                velocity_dict['point'] = hastighed_two_points[i-1]
+                velocity_dict['diff'] = a-hastighed_two_points[i-1]
                 self.velocities.append(velocity_dict)
             i += 1
 
-            
+        # Ændrer skriftstørrelsen, så plotsne bliver mere læsbare i artiklen
         SMALL_SIZE = 12
         MEDIUM_SIZE = 12 #18
         MEDIUM_BIG_SIZE = 12 #22
@@ -239,11 +211,9 @@ class plotter_class():
         plt.rc('ytick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
         plt.rc('legend', fontsize=MEDIUM_BIG_SIZE)   # legend fontsize
         plt.rc('figure', titlesize=BIGGER_SIZE)  # fontsize of the figure title
-        # plt.rc('subplot', titlesize=MEDIUM_SIZE)  # fontsize of the figure title
 
         fig, axs = plt.subplots(2,2)
         fig.suptitle("Hr, testperson " + str(self.testperson) + " after finishing the stresstest", fontweight='bold')
-        
         list_koordinates = [(0,0), (0,1), (1,0), (1,1)]
 
         y_lim_low = min(max_and_min_values)-5
@@ -260,8 +230,8 @@ class plotter_class():
                 axs[list_koordinates[n]].axhline(y=mean, color='b', linestyle='-', label = 'Mean of low cluster = ' + str(round(mean,2)), linewidth = 0.8)
                 axs[list_koordinates[n]].axhline(y=mean + list_mean_std[n-1]["std_low"], color='k', linestyle='--', linewidth = 0.5, label = 'Mean of low cluster +/- 1*std ')
                 axs[list_koordinates[n]].axhline(y=mean - list_mean_std[n-1]["std_low"], color='k', linestyle='--', linewidth = 0.5)
-                axs[list_koordinates[n]].plot(list_timeaxes[n]["Avg"], list_hastighed[n-1], color = 'darkgoldenrod', label = 'Stabelization velocity = ' + str(hastighed_list[n-1]['coef']) + " bpm/s")   
-                axs[list_koordinates[n]].plot(tid_two_point_list[n-1], hr_two_point_list[n-1], color = 'purple', label = 'Stabelization velocity = ' + str(velocity[n-1]) + " bpm/s")   
+                axs[list_koordinates[n]].plot(list_timeaxes[n]["Avg"], list_hastighed[n-1], color = 'darkgoldenrod', label = 'Stabelization velocity = ' + str(hastighed_lin_reg[n-1]['coef']) + " bpm/s")   
+                axs[list_koordinates[n]].plot(tid_two_point_list[n-1], hr_two_point_list[n-1], color = 'purple', label = 'Stabelization velocity = ' + str(hastighed_two_points[n-1]) + " bpm/s")   
 
                 markerline_mean, stemlines_mean, baseline = axs[list_koordinates[n]].stem(list_indexes_time[n]['gmm'],y_lim_high-10,'b', markerfmt='o', label = 'Stabilization time = ' + str(list_indexes_time[n]['gmm']) + " sec", basefmt=" ")
                 plt.setp(markerline_mean, 'color', plt.getp( stemlines_mean,'color'))
@@ -282,12 +252,22 @@ class plotter_class():
         title = 'Testperson ' + str(self.testperson)
         fig.savefig(path + " " + title) #, dpi = 200)
         self.testperson+= 1
-        #plt.show()    
+        if show_bool == True:
+            plt.show()    
 
     def get_velocities(self):
         return self.velocities
 
-    def get_filtered_signal(self, raw_signal, average_value):
+    def __get_filtered_signal(self, raw_signal: list, average_value: int):
+        """filtrerer signalet med et mooving average filter. Der bruges numpy.convolve metoden medmode='same'. 
+
+        Args:
+            raw_signal (list): listet med hr signalet før filtrtering
+            average_value (int): antallet af filterkoefficienter. Angives det til et lige tal korrigeres med +1
+
+        Returns:
+            list : Der returneres en liste med det midlede signal på længden n = (len(raw_signaal) - 2xN) svarende til de data, hvor filter og signal overlapper 100%
+        """
         N = average_value
         if(N%2 == 0):
             N+=1

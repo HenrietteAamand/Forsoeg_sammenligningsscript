@@ -17,7 +17,16 @@ class results_class():
         
 
 
-    def procces_results(self, Dict_all_data: dict, counter: int):
+    def process_results(self, Dict_all_data: dict, counter: int):
+        """Metoden styrer hvordan hr processeres, så der findes en stabiliseringshastighed og niveau. 
+
+        Args:
+            Dict_all_data (dict): dictionarie med data fra samtlige testpersoner og samtlige faser
+            counter (int): Nummeret på den testperson der behandles
+
+        Returns:
+            (list): Der returneres en liste der indeholder 3 indexer svarende til stabiliseringstidspunktet for det midlede hr signal for alle tre faser
+        """
         testperson_nr = counter
         i = 1
         fs = 0
@@ -47,7 +56,7 @@ class results_class():
                 hr_avg = self.__get_filtered_signal(signal_original, N)
                 list_hr_avg.append(hr_avg)
                 index_gmm = self.stabel.gmm(hr_avg)
-                index_soren = self.stabel.soren(signal_original, N)
+                index_soren = self.stabel.sorens_method(signal_original, N)
                 dict_index = {}
                 dict_index['soren'] = index_soren
                 dict_index['gmm'] = index_gmm
@@ -62,7 +71,7 @@ class results_class():
                 dict_mean_std["std_high"] = std_high
                 dict_mean_std["mean_low"] = mean_low
                 dict_mean_std["mean_high"] = mean_high
-                two_point_high_mean = self.mean_high_data(hr_avg, index_gmm) #mean_high
+                two_point_high_mean = hr_avg[0] # self.mean_high_data(hr_avg, index_gmm) #mean_high # 
                 #dict_mean_std["mean_high"] = two_point_high_mean ### OBS SKAL SLETTES###
                 self.list_mean_std.append(dict_mean_std)
                 # gemmer de resultater der skal laves statistik af, så de senere lan gemmes i en fil
@@ -99,7 +108,16 @@ class results_class():
         return index_list
         
 
-    def __get_filtered_signal(self, raw_signal, average_value):
+    def __get_filtered_signal(self, raw_signal, average_value):        
+        """filtrerer signalet med et mooving average filter. Der bruges numpy.convolve metoden medmode='same'. 
+
+        Args:
+            raw_signal (list): listet med hr signalet før filtrtering
+            average_value (int): antallet af filterkoefficienter. Angives det til et lige tal korrigeres med +1
+
+        Returns:
+            list : Der returneres en liste med det midlede signal på længden n = (len(raw_signaal) - 2xN) svarende til de data, hvor filter og signal overlapper 100%
+        """
         N = average_value
         if(N%2 == 0):
             N+=1
@@ -108,6 +126,11 @@ class results_class():
         return hr_return
 
     def Get_results_as_list(self):
+        """Når data skal behandles i R-studioi var det ønsket, at alle resultaterne kom ud i rækkefælgen: stilhed, statisk, dynamisk. Denne metode ændrer på rækkefølgen af resultaterne, så dette er tilfældet
+
+        Returns:
+            (list): liste med resultater for stabiliseringshastighed, niveau, tid mm, men nu i korrigeret rækkefølge. 
+        """
         new_returnlist = []
         raekkefoelge = ['Silent', 'Static', 'Dynamic']
         i = 0
@@ -126,11 +149,20 @@ class results_class():
         return new_returnlist
 
 
-    def Empty_dict(self):
+    def Empty_result_dict(self):
+        """Tømmer resultatlisten. Skulle bruges på et tidligere tidspunkt, hvor databehandlingen blev lavet flere gange uden programmet sluttede. Bruges ikke mere
+        """
         self.list_dict_results.clear()
 
 
     def plot_hist_and_gaussian(self, list_hr_data, list_mean_std, counter = 0):
+        """Plotter et histogram med fordelingerne der er fundet med gmm metoden
+
+        Args:
+            list_hr_data (list): Liste med de rå hr data
+            list_mean_std ([type]): liste med længden 3. På hver plads er et dictionary, der indeholder mean og std for begge fordelinger
+            counter (int, optional): testpeson nummer. Bruges ikke. Defaults to 0
+        """
         SMALL_SIZE = 12
         MEDIUM_SIZE = 18
         BIGGER_SIZE = 24
@@ -178,17 +210,41 @@ class results_class():
         self.testperson+=1
 
     def get_mean_and_std_list(self):
+        """Standard getmetode, der returnerer resultaterne for gmm metoden
+
+        Returns:
+            (list<dict>):liste med længden 3. På hver plads er et dictionary, der indeholder mean og std for begge fordelinger
+        """
         # std_low = round(self.list_mean_std[n]["std_low"],2)
         # mean_low = round(self.list_mean_std[n]["mean_low"],2)
         return self.list_mean_std
 
     def __get_time(self, signal_avg, fs):
+        """Bruges til at lave lineær regression. Her er krævet en tidsakse frem for bare indexer.
+
+        Args:
+            signal_avg (list<float>): det midlede hr signal
+            fs (int): samelfrekvens for den brugte sensor
+
+        Returns:
+            8list): liste med tidsakse for hr_avg
+        """
         delta_tid = 1/fs
         tid_avg = len(signal_avg)/fs
         tidsakse_avg = np.arange(0,tid_avg, delta_tid)
         return tidsakse_avg
 
     def linear_regression(self, signal_avg = [], fs = 4, index = 0):
+        """Udfører lineær regression på den første del af signalet fra t = 0 til t = stabiliseringstid
+
+        Args:
+            signal_avg (list, optional):  det midlede hr signal. Default er [].
+            fs (int, optional): samelfrekvens for den brugte sensor. Default er 4.
+            index (int, optional): indexet hvor der er registreret stabiliseringsniveau. Default er 0.
+
+        Returns:
+            returnerer et arraylignende objekt med hældningen.
+        """
         y = signal_avg[:index] # Vil kun lave lineær regression på data indtil det index hvor vi har fundet stabiliseringstiden
         X = self.__get_time(y, fs).reshape(-1,1)
         y = y.reshape(-1,1)
@@ -202,14 +258,38 @@ class results_class():
         return coef
 
     def mean_high_data(self, hr_avg : list, index : int):
+        """Beregner middelværdien af data fra t=0 til det givne index
+
+        Args:
+            hr_avg (list):  det midlede hr signal
+            index (int): Det index hvor der er registreret stabiliseringsniveau
+
+        Returns:
+            (int): gennemsnittet af hr_avg i intervallet 0 < t <= index)
+        """
         mean_high = sum(hr_avg[0:index-1])/index
         return mean_high
     
     def two_point_velocity(self, hr_begin : float, hr_mean:float, stabilization_time : float):
+        """Beregner hældningen af den rette linje der går igennem de to punkter: 1) [0, hr_begin] 2) [stibilization_time, hr_mean]. Denne metode beregner altså hastigheden ved brug af two point velocity
+
+        Args:
+            hr_begin (float): den hr-værdi der skal bruges i punktet [0, hr_begin]. Det kan være den første hr,værdi, middelværdien af den første del af signalet eller den høje middelværdi fra GMM metoden
+            hr_mean (float): stabiliseringsniveauet
+            stabilization_time (float): Den tid det tog, før hr var stabil efter endt strestest.
+
+        Returns:
+            (float) : den beregnede hældning, svarende til hastigheden
+        """
         self.list_velocity.append(round((hr_mean-hr_begin)/stabilization_time,2))
         return self.list_velocity[len(self.list_velocity)-1]
 
     def get_coefs(self):
+        """Der returneres en liste med dictionary, der indeholder hældningen og skæringen for den libeære regression. Listen har længden 3 svarende til hælding og skæring for fase 1-3
+
+        Returns:
+            (list): Returnerer den ovenfr beskrevne liste. 
+        """
         return self.coef_list
 
     def get_velocity_two_point(self):

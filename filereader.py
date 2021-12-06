@@ -8,6 +8,7 @@ class filereader_class:
     def read_HRMpro(self, testpersonnummer: int):
         """Metoden læser data fra den logfil, der genereres når man bruger SimulANT+ til at læse data der sendes fra en Garmin(R) ANT+ sensor. 
            Der indlæses en liste, hvor hver plads i listen indeholder en linje fra logfilen på formen '81809171 : Rx: [04][00][88][6B][EC][6F][A3][39]', svarende til datapage 4
+           Der er ikke en fælles read_metode for garmin, da filnavnene og dermed filstien er forskellig.
 
         Args:
             testpersonnummer (int): nummer på testpersonnumer fra forøget. Bruges til at åbne den rigtige fil tilhørende den rigtige person. 
@@ -18,7 +19,6 @@ class filereader_class:
         hrmpro_path = self.path + "/Testperson_" + str(testpersonnummer) + "/SimulANT+ Logs - HRM-Pro/"
         filename = "Heart Rate Display ANT Messages.txt"
         fullpath = hrmpro_path + filename
-        #print(fullpath)
         file = open(fullpath, 'r')
         lines_From_Logfile = file.readlines()
         return lines_From_Logfile
@@ -52,7 +52,7 @@ class filereader_class:
         """
         empatica_path = self.path + "/Testperson_" + str(testpersonnummer) + "/Empatica/" + datatype + ".csv"
         file =  open(empatica_path, mode='r', newline='')
-        lines_from_logfile = list(csv.reader(file)) #file.readlines()
+        lines_from_logfile = list(csv.reader(file)) 
         file.close()
         return lines_from_logfile
     
@@ -70,7 +70,6 @@ class filereader_class:
         faser = ["Baseline","Stilhed", "Statisk", "Dynamisk"]
 
         for i in range(len(faser)):
-            #maxrefdes_path = self.path + "/Testperson" + str(testpersonnummer) + "/Raaobservationer/Testperson_" + str(testpersonnummer) + "_Fase_" + str(fasenummer) + "_" + faser[i] + "_observationer.csv"
             maxrefdes_path = self.path + "/Raaobservationer/Testperson_" + str(testpersonnummer) + "_Fase_" + str(fasenummer) + "_" + faser[i] + "_observationer.csv"
             if(os.path.exists(maxrefdes_path)):
                 i = 3
@@ -82,37 +81,43 @@ class filereader_class:
                 return lines_as_dict
 
 
-    def read_sensorcount(self):
-        path = self.path + "/sensorcount.csv"
+    def read_dict_to_list(self, rest_of_path : str):
+        """Metoden indlæser en .csv fil som en liste med dictionaries. det bruges i programmet til to .csv filer:
+           Der er lavet en .csv fil der indeholder sammenhængen mellem et rent faktisk Unix epoch timestamp, og sensorcount på SimulANT+ displayet. 
+           Denne fil indlæses her, så Garmin sensorerne kan få et reelt timestamp der kan sammenlignes med Maxrefdes tidsgrænser 
+           Derudover indlæses en .csv fil, der indeholder information om hvilken intervention der var i hvilken fase. Denne information bruges primært til at plotte figurerne og til at gemme stabiliseringshastighed og niveau relativt til en intervention.
+
+        Returns:
+            lines_as_dict: (list<string>): Dette er en liste med dictionary der indeholder information om sensorcount og absolute count. En linje er på formen '{'Testperson_nr': '1', 'Absolute_count': '1635761570409', 'Sensor_count': '63780218'}
+        """
+        path = self.path + rest_of_path #"/sensorcount.csv"
         csv_file_original =  open(path, mode='r')
         lines_as_dict = csv.DictReader(csv_file_original, delimiter = ';')
         lines_as_dict = list(lines_as_dict)
         csv_file_original.close()
-        return lines_as_dict
+        return lines_as_dict     
 
-    # def save_hr_data(self, data):
-    #     output_file = open('C:/Users/hah/Documents/VISUAL_STUDIO_CODE/Forsoeg_sammenligningsscript/resluts_example.csv', 'w+', newline='')
-    #     keys = data[1].keys()
-    #     dict_writer = csv.DictWriter(output_file, keys)
-    #     dict_writer.writeheader()
-    #     i=1
-    #     while i <= len(data):
-    #         dict_writer.writerows(data[i])
-            
+     
 
     def save_hr_data(self, data):
+        """Når alle HR data er indlæst, tidskorrigere og inddelt i faser, så gemmes de i en stor .csv fil, så næste gang programmet køres
+        Dermed behøver man ikke indlæse samtlige data og tidskorrigere på ny. Dette tidsoptimerer processen, når data skal sammenlignes, og man dermed kører et program mange gange 
+
+        Args:
+            data (Dict<dict<key, list<float>>): Dette er et dictionary, med alt informationen pr testperson.  
+                                                En linje er på formen DATA_SENSOR_FASENR, eksempelvis: Hr_maxrefdes_3
+                                                Udsnit: {1: {'Hr_Maxrefdes103_0': [...], 'RR_Maxrefdes103_0': [...], 'Hr_Hrmpro_0': [...], 'RR_Hrmpro_0': [...], 'Hr_Forerunner_0': [...], 'RR_Forerunner_0': [...], 'Hr_Empatica_0': [...], 'RR_Empatica_0': [...], 'Hr_Maxrefdes103_1': [...], ...}}
+
+        """
         full_path = 'C:/Users/hah/Documents/VISUAL_STUDIO_CODE/Forsoeg_sammenligningsscript/resluts_example.csv'
-        data_file = open(full_path, 'w+', newline='') #w+ fordi så laves filen hvis ikke den allerede eksisterer
+        data_file = open(full_path, 'w+', newline='') 
         csv_writer = csv.writer(data_file, delimiter=';')
         string = json.dumps(data[1], default=lambda o: o.__dict__, sort_keys=False, indent=4)
         json_obj = json.loads(string)
         header = json_obj.keys()
         csv_writer.writerow(header)
-        data_file.close()
-        data_file = open(full_path, 'a', newline='')
-        csv_writer = csv.writer(data_file, delimiter=';')
         
-        # Writing data of CSV file
+        # Gemmer data som JSON objekter
         i=1
         while i <= len(data):
             string = json.dumps(data[i], default=lambda o: o.__dict__, sort_keys=False, indent=4)
@@ -122,6 +127,11 @@ class filereader_class:
         data_file.close()
         
     def read_hr_data(self):
+        """I stedet for at indlæse data gennem samtlige af de originale datafiler, så kan data i stedet indlæses med denne metode, forudsat data på et tidspunkt er blev gemt med metoden 'save_hr_data' 
+
+        Returns:
+            dict_data (dict<dict<key,value>>): Der returneres et dictionary magen til det dictionary der er blevet oprettet, efter alle data er tidskorrigeret m.v. (se forklaring på format i save_hr())
+        """
         full_path = 'C:/Users/hah/Documents/VISUAL_STUDIO_CODE/Forsoeg_sammenligningsscript/resluts_example.csv'
         csv_file_original =  open(full_path, mode='r')
         lines_as_dict = csv.DictReader(csv_file_original, delimiter = ';')
@@ -132,7 +142,6 @@ class filereader_class:
             i+=1
         csv_file_original.close()
         i = 1
-        return_dict = {}
         for key in dict_data:
             for dataset_key in  dict_data[key]:
                 string = dict_data[key][dataset_key]
@@ -141,19 +150,17 @@ class filereader_class:
         return dict_data
 
     def save_results(self, list_to_save: list, filename : str):
+        """Når der er beregnet stabiliseringstider, hastigheder m.v. så gemmes disse via denne metode. Data er blevet brugt i R-tudio til de statistiske beregninger. 
+
+        Args:
+            list_to_save (list): En liste med dictionaries der indeholder de data der ønskes gemt.   
+            filename (str): Filnavnet på de resultater der skal gemmes
+        """
         keys = list_to_save[0].keys()
         output_file = open('C:/Users/hah/Documents/VISUAL_STUDIO_CODE/Forsoeg_sammenligningsscript/Data/' + filename, 'w+', newline='')
         dict_writer = csv.DictWriter(output_file, keys)
         dict_writer.writeheader()
         dict_writer.writerows(list_to_save)
-
-    def read_fase_to_intervention_file(self):
-        full_path = 'C:/Users/hah/Documents/VISUAL_STUDIO_CODE/Forsoeg_sammenligningsscript/Data/testperson_fase_intervention.csv'
-        csv_file_original =  open(full_path, mode='r')
-        lines_as_dict = csv.DictReader(csv_file_original, delimiter = ';')
-        lines_as_list = list(lines_as_dict)
-        csv_file_original.close()
-        return lines_as_list
 
 
         
