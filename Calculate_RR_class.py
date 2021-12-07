@@ -1,4 +1,8 @@
 class Caculate_rr_class:
+    def __init__(self) -> None:
+        self.first_time = True
+        self.old_time = 0
+        self.old_time_str = ''
     def rr_0(self, Values_in_Hex_List): 
         """Metode til at udtrække RR fra SimulANT+ datapage 0. Bruges eksempelvis ved Garmin Foreunner 45, og i tilfælde af, at datapage 4 ikke er tilstede. 
 
@@ -93,3 +97,53 @@ class Caculate_rr_class:
 
             i += 1
         return listOfRR
+
+    def rr_4_new(self, dict_values_in_hex): #Brug 4, fordi det giver altid de rigtige data modsat datapage 0. 
+        """Metode til at udtrække RR fra SimulANT+ datapage 4 Bruges eksempelvis vi Garmin HRM-pro.
+
+        Args:
+            Values_in_Hex_List (list<string>): Indputparameteren er en liste med alle de værdier der ønskes at beregnes RR og HR på
+
+        Returns:
+            List<Dict>: Der returneres en liste med et dictionary med 2 keys, nemlig 'time' og 'rr'
+        """
+        # Defnerer tomme variabler til senere brug
+        rollover = False
+        multiplikator = 1#0.961
+        dict_rr_and_temp = {}
+        new_time_str = dict_values_in_hex['MSB'] + dict_values_in_hex['LSB']#HeartBeatEventTime (byte 4|5)
+        new_time = int(new_time_str,16)
+        if(dict_values_in_hex['b0'][1] == '4'):
+            self.first_time = False
+            self.old_time_str =  dict_values_in_hex['b3'] + dict_values_in_hex['b2']#PreviousHeartBeatEventTime (byte 2|3) OBS! Det skal vende med b3 først og b2 efter
+            self.old_time = int(self.old_time_str,16)
+        else:
+            if(self.first_time):
+                self.old_time_str = dict_values_in_hex['MSB'] + dict_values_in_hex['LSB'] # HeartBeatEventTime (byte 4|5)
+        # Tjekker og Korrigerer for et evt. rollover
+        if(self.old_time > new_time): # and dict['b0'][2] == '4'):
+            new_time += 65535
+            rollover = True
+        if (self.first_time):
+            dict_rr_and_temp['time'] = dict_values_in_hex['time']
+            dict_rr_and_temp['rr'] = 600 #Jeg sætter vare noget random ind på plads
+            self.first_time = False
+        else:
+            rr = ((new_time-self.old_time)*1000)/1024
+            dict_rr_and_temp['time'] = dict_values_in_hex['time']
+            dict_rr_and_temp['rr'] = rr*multiplikator
+            if(rr > 2000):
+                rr = rr
+            
+        
+        if(rollover == True): 
+            new_time -= 65535
+            rollover = False
+            
+        self.old_time = new_time
+
+        return dict_rr_and_temp
+
+    def set_first_time(self):
+        self.first_time = True
+        self.old_time = 0

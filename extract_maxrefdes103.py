@@ -30,7 +30,7 @@ class extract_maxrefdes103_class():
                 self.hr_list.append(int(round(float(row["hr"]))))   #Gemmer alle hr værdier en af gangen
                 self.timestamp_list.append(row["timestmp"])         # Gemmer alle timestamps en af gangen
                 if row["rr"] != "0.0":                              # Gemmer kun RR-værdierne når der er beregnet en ny. 
-                    rr_korr = float("{:.1f}".format(0.96*float(row["rr"]))) #korrigerer med den faktor vi fandt i excel
+                    rr_korr = float("{:.1f}".format(1*float(row["rr"]))) #korrigerer med den faktor (0.96) vi fandt i excel
                     self.rr_list.append(rr_korr)
             i +=1
 

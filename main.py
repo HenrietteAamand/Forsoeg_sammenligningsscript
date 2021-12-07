@@ -53,7 +53,7 @@ class main_class:
             maxrefdes103.extract(testpersonnummer,fasenummer)
             timelim_begin = maxrefdes103.get_first_timestamp()
             timelim_end = maxrefdes103.get_last_timestamp()
-            hrm_pro.extract(testpersonnummer,timelim_begin=timelim_begin, timelim_end=timelim_end)
+            hrm_pro.extract_new(testpersonnummer,timelim_begin=timelim_begin, timelim_end=timelim_end, fase=fasenummer)
             empatica.extract(testpersonnummer,timelim_begin= timelim_begin, timelim_end = timelim_end)
             forerunner.extract(testpersonnummer,timelim_begin=timelim_begin, timelim_end=timelim_end)
             Dict_with_obs[counter]['Hr_Maxrefdes103_' + str(fasenummer)] = maxrefdes103.get_hr()
@@ -81,36 +81,37 @@ class main_class:
 
 # Opsætter programmet
 antal_testpersoner = 14 #Indlæser fra alle forsøgspersoner
+counter = 1
 plotter = plotter_class()
 path = "C:/Users/hah/Documents/VISUAL_STUDIO_CODE/Forsoeg_sammenligningsscript/Data"
 fr = filereader.filereader_class(path=path)
 sammenligner = sammenligning_class()
-main = main_class(antal_testpersoner, 1, fr)
+main = main_class(antal_testpersoner, counter, fr)
 fase_intervention = fr.read_dict_to_list('/testperson_fase_intervention.csv').copy()# fase_intervention er en list, der sammenkobler fasenummer og intervention for ghver enkelt forsøgsperson. Denne bruges til plotsne. 
 to_results = fase_intervention.copy()
 resultater = results_class(to_results)
 
 i = 0
 n = 0
-brugbare_datasaet = [1,5,8,9,11,12,13,14] # Lav ny liste, og tilføj kun de elementer som du skal bruge, altså dem der hører til de brugbare datasæt
+brugbare_datasaet = [1,2,3,4,5,6,7,8,9,10,11,12,13,14] #[1,5,8,9,11,12,13,14] # Lav ny liste, og tilføj kun de elementer som du skal bruge, altså dem der hører til de brugbare datasæt
 fase_intervention_brugbare = []
 
-#Gemmer kun fase-interventyionssammenhæng for de brugbare dataslæt
-while( i < len(fase_intervention)):
-    if(fase_intervention[i]['testperson'] == str(brugbare_datasaet[n])):
-        dicht_basline = {}
-        dicht_basline['testperson'] = str(brugbare_datasaet[n])
-        dicht_basline['fase'] = '0'
-        dicht_basline['intervention'] = 'Baseline'
-        fase_intervention_brugbare.append(dicht_basline)
-        n += 1
-        for r in range(3):
-            fase_intervention_brugbare.append(fase_intervention[i])
-            i+=1
-    else:
-        i+= 3
+# #Gemmer kun fase-interventyionssammenhæng for de brugbare dataslæt
+# while( i < len(fase_intervention)):
+#     if(fase_intervention[i]['testperson'] == str(brugbare_datasaet[n])):
+#         dicht_basline = {}
+#         dicht_basline['testperson'] = str(brugbare_datasaet[n])
+#         dicht_basline['fase'] = '0'
+#         dicht_basline['intervention'] = 'Baseline'
+#         fase_intervention_brugbare.append(dicht_basline)
+#         n += 1
+#         for r in range(3):
+#             fase_intervention_brugbare.append(fase_intervention[i])
+#             i+=1
+#     else:
+#         i+= 3
 
-#main.extract_data() #indkommenteres hvis data skal indlæses på ny.
+main.extract_data() #indkommenteres hvis data skal indlæses på ny.
 Dict_with_obs_file = fr.read_hr_data() # Bruges i stedet for main.extract_data(), hvor data bare indlæses fra en fil.
 counter = 1
 antal_testpersoner = 14
@@ -119,22 +120,23 @@ l = 0
 # Plotter alle hr afhængigt af tiden
 for n in range(len(brugbare_datasaet)):
     # sammenligner.plot_differences(Dict_with_obs_file, counter=counter)
-    # plotter.plot_hr_subplot(Dict_all_data=Dict_with_obs_file, counter=brugbare_datasaet[n])
+    # plotter.plot_hr_subplot(Dict_all_data=Dict_with_obs_file, counter=brugbare_datasaet[n], show_bool=False)
+    plotter.plot_rr_subplot(Dict_all_data=Dict_with_obs_file, counter=brugbare_datasaet[n], show_bool=True)
     # sammenligner.plot_corellation(Dict_with_obs_file, counter=counter)
     # #sammenligner.plot_normal_distribution(Dict_with_obs_file, counter = counter, type='hist') #type = 'QQ'
     # sammenligner.plot_2_percentage_under(Dict_with_obs_file, counter)
-    indexlist = resultater.process_results(Dict_with_obs_file, counter = brugbare_datasaet[n])
-    list_mean_std = resultater.get_mean_and_std_list()
-    velocity_list_two_point = resultater.get_velocity_two_point()
-    velocity_list_lin_reg = resultater.get_coefs()
-    plotter.plot_limit_HRM_pro(Dict_with_obs_file, counter = brugbare_datasaet[n], index_list= indexlist, list_mean_std=list_mean_std, hastighed_lin_reg=velocity_list_lin_reg, fase_intervention_list=fase_intervention_brugbare, hastighed_two_points=velocity_list_two_point)
+    # indexlist = resultater.process_results(Dict_with_obs_file, counter = brugbare_datasaet[n])
+    # list_mean_std = resultater.get_mean_and_std_list()
+    # velocity_list_two_point = resultater.get_velocity_two_point()
+    # velocity_list_lin_reg = resultater.get_coefs()
+    # plotter.plot_limit_HRM_pro(Dict_with_obs_file, counter = brugbare_datasaet[n], index_list= indexlist, list_mean_std=list_mean_std, hastighed_lin_reg=velocity_list_lin_reg, fase_intervention_list=fase_intervention_brugbare, hastighed_two_points=velocity_list_two_point, show_bool=False)
 
     print(str(n+1) + " new figure(s) created")
 
-# Gemmer resultater til en .csv fil, så de kan analyseres i et statistik program 
-fr.save_results(resultater.Get_results_as_list(), 'results.csv')
-fr.save_results(plotter.get_velocities(), 'velocities.csv')
-resultater.Empty_result_dict()
+# # Gemmer resultater til en .csv fil, så de kan analyseres i et statistik program 
+# fr.save_results(resultater.Get_results_as_list(), 'results.csv')
+# fr.save_results(plotter.get_velocities(), 'velocities.csv')
+# resultater.Empty_result_dict()
 
 
 
