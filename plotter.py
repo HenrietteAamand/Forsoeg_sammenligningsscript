@@ -10,7 +10,7 @@ class plotter_class():
         self.velocities = []
         pass
 
-    def plot_rr(self, maxrefdes = [], hrm_pro = [], forerunner = [], empatica = [], fasenummer = 0, testpersonnummer = 0, show_bool = True):
+    def plot_rr_subplot(self, Dict_all_data: dict, counter: int, show_bool = True):
         """Metoden plotter de givne RR-værdier
 
         Args:
@@ -22,16 +22,26 @@ class plotter_class():
             testpersonnummer (int, optional): Testpersonnummer er nummeret på testpersonen, hvis data der plottes. Defaults to 0.
             show_bool (bool, optional): Styrer om plottet vises eller ej. Defaults to True.
         """
-        plt.figure(1)
-        plt.plot(maxrefdes, label = 'MAXREFDES103')
-        plt.plot(empatica, label = 'empatica')
-        plt.plot(hrm_pro, label = 'HRM-Pro')
-        plt.plot(forerunner, label = 'Forerunner 45')
-        plt.legend(loc = 'upper right')
-        plt.title("RR-values for 4 sensors")
-    
-        #plt.show(block = show_bool)
-        pass
+        fig, axs = plt.subplots(2,2)
+        fig.suptitle("RR værdier for testperson " + str(counter) + " efter endt stresstest - Forerunner er pillet ud")
+        list_koordinates = [(0,0), (0,1), (1,0), (1,1)]
+        for n in range(len(list_koordinates)):
+            axs[list_koordinates[n]].plot(Dict_all_data[counter]['RR_Maxrefdes103_' + str(n)], label = 'MAXREFDES103')
+            axs[list_koordinates[n]].plot(Dict_all_data[counter]['RR_Empatica_' + str(n)], label = 'empatica')
+            axs[list_koordinates[n]].plot(Dict_all_data[counter]['RR_Hrmpro_' + str(n)], label = 'HRM-Pro')
+            #axs[list_koordinates[n]].plot(Dict_all_data[counter]['RR_Forerunner_' + str(n)], label = 'Forerunner 45')
+            axs[list_koordinates[n]].set_xlabel('Nr af RR-værdier')
+            axs[list_koordinates[n]].set_ylabel('Tid [ms]')
+            axs[list_koordinates[n]].legend(loc = 'upper right')
+            axs[list_koordinates[n]].set_title('Fase ' + str(n))
+        fig.set_size_inches(20,10)
+        fig.subplots_adjust(left=0.03, bottom=0.08, right=0.97, top=0.92, wspace=None, hspace=None)
+        path = 'C:/Users/hah/Documents/VISUAL_STUDIO_CODE/Forsoeg_sammenligningsscript/Figurer/Alle_sensorer/'
+        title = 'Testperson ' + str(counter)
+        fig.savefig(path + " " + title) #, dpi = 200)
+        if show_bool == True:
+            plt.show()    
+
 
     def plot_hr_subplot(self, Dict_all_data: dict, counter: int, show_bool = True):
         """Plotter alle faser for en given testperson i det samme subplot. Dermed bliver der en figur på 2x2 med fase 0 - 3
