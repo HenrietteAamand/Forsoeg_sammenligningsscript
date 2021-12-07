@@ -286,7 +286,7 @@ class sammenligning_class():
         fig.savefig(path + " " + title) #, dpi = 200)
         #plt.show()
 
-    def __krydskorellation(self, HRM_pro, det_andet_signal):#, fase, testperson, sensor):
+    def krydskorellation(self, HRM_pro, det_andet_signal, fase, testperson, sensor):
         if(len(det_andet_signal) == 0 or len(HRM_pro) == 0):
             #rint("Testperson " + str(testperson) + " fase " + str(fase) + " Sensor " + str(sensor) + " havde ingen data" )
             return det_andet_signal
@@ -303,9 +303,13 @@ class sammenligning_class():
         # # axs.set_xlim(-100,100)
         # axs.set_title("Korrelationsresultat for sensor " + sensor + " fase " + str(fase) + " Testperson " + str(testperson))
         # axs.set_xlabel("Lag [ms]")
-        # #plt.show()
-
-        det_andet_signal = np.roll(det_andet_signal, lag)
+        # plt.show()
+        if(lag > 0):
+            for n in range(lag):
+                det_andet_signal.insert(0,det_andet_signal[0])
+        elif( lag < 0):
+            for n in range(lag):
+                det_andet_signal.pop(0)
         return det_andet_signal
 
     def plot_corellation(self, Dict_all_obs, counter):
@@ -324,9 +328,9 @@ class sammenligning_class():
             maxrefdes = self.__Downsample_maxrefdes(maxrefdes_raw)
             empatica = self.__upsample_empatica(empatica_raw)
             print("Length og HRM-pro: " + str(len(hrm_pro)))
-            maxrefdes = self.__krydskorellation(hrm_pro, maxrefdes, i, counter, "Maxrefdes103")
-            empatica = self.__krydskorellation(hrm_pro, empatica, i, counter, "Empatica")
-            forerunner = self.__krydskorellation(hrm_pro, forerunner, i, counter, "Forerunner")
+            maxrefdes = self.krydskorellation(hrm_pro, maxrefdes, i, counter, "Maxrefdes103")
+            empatica = self.krydskorellation(hrm_pro, empatica, i, counter, "Empatica")
+            forerunner = self.krydskorellation(hrm_pro, forerunner, i, counter, "Forerunner")
 
             diff_maxrefdes = []
             diff_empatica = []

@@ -56,8 +56,8 @@ class extract_empatica_class(IExtract):
                 n += 1
                 i += 1
         # Data tidskorrigeres i henhold til timelim_begin og timelim_end, der er givet af Maxrefdes103
-        self.hr_list = self.tidkorr.empatica(self.hr_full_timeperiod, timelim_begin, timelim_end, 'hr').copy()
-        self.rr_list = self.tidkorr.empatica(self.rr_full_timeperiod, timelim_begin, timelim_end, 'rr').copy()
+        self.hr_list, self.time_hr = self.tidkorr.empatica(self.hr_full_timeperiod, timelim_begin, timelim_end, "hr")
+        self.rr_list, self.time_rr = self.tidkorr.empatica(self.rr_full_timeperiod, timelim_begin, timelim_end, "rr")
 
     def get_hr(self):
         """En standard get-metode der returnerer hr
@@ -71,9 +71,13 @@ class extract_empatica_class(IExtract):
         """En standard get-metode der returnerer rr
 
         Returns:
-            list<float>: Rr returneres som en liste med floats
+            list<float>: Rr returneres som et dictionary med både RR-værdi samt tidsstamp. Tidsstampet er i Unix epoch timestamp
         """
         return self.rr_list
+        
+    def get_time_rr(self):
+        return self.time_rr
+
 
     def set_read_from_file_bool(self, value : bool):
         """ Denne bool bruges til at fortælle extract_empatic metoden, at nu skal der indlæses data fra en ny testperson. 

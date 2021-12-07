@@ -56,14 +56,18 @@ class main_class:
             hrm_pro.extract_new(testpersonnummer,timelim_begin=timelim_begin, timelim_end=timelim_end, fase=fasenummer)
             empatica.extract(testpersonnummer,timelim_begin= timelim_begin, timelim_end = timelim_end)
             forerunner.extract(testpersonnummer,timelim_begin=timelim_begin, timelim_end=timelim_end)
-            Dict_with_obs[counter]['Hr_Maxrefdes103_' + str(fasenummer)] = maxrefdes103.get_hr()
-            Dict_with_obs[counter]['RR_Maxrefdes103_' + str(fasenummer)] = maxrefdes103.get_rr()
             Dict_with_obs[counter]["Hr_Hrmpro_" + str(fasenummer)] = hrm_pro.get_hr()
             Dict_with_obs[counter]["RR_Hrmpro_" + str(fasenummer)] = hrm_pro.get_rr()
+            Dict_with_obs[counter]["RRtime_Hrmpro_" + str(fasenummer)] = hrm_pro.get_time_rr()
+            Dict_with_obs[counter]["RRtime_Hrmpro_" + str(fasenummer)] = hrm_pro.get_time_rr()
+            Dict_with_obs[counter]['Hr_Maxrefdes103_' + str(fasenummer)] = maxrefdes103.get_hr()
+            Dict_with_obs[counter]['RR_Maxrefdes103_' + str(fasenummer)] = maxrefdes103.get_rr()
+            Dict_with_obs[counter]['RRtime_Maxrefdes103_' + str(fasenummer)] = maxrefdes103.get_time_rr()
             Dict_with_obs[counter]["Hr_Forerunner_" + str(fasenummer)] = forerunner.get_hr()
             Dict_with_obs[counter]["RR_Forerunner_" + str(fasenummer)] = forerunner.get_rr()
             Dict_with_obs[counter]["Hr_Empatica_" + str(fasenummer)] =empatica.get_hr()
             Dict_with_obs[counter]["RR_Empatica_" + str(fasenummer)] =empatica.get_rr()
+            Dict_with_obs[counter]["RRtime_Empatica_" + str(fasenummer)] =empatica.get_time_rr()
             
             fasenummer += 1
             if(fasenummer > 3 and counter <= antal_testpersoner):
@@ -115,13 +119,18 @@ main.extract_data() #indkommenteres hvis data skal indlæses på ny.
 Dict_with_obs_file = fr.read_hr_data() # Bruges i stedet for main.extract_data(), hvor data bare indlæses fra en fil.
 counter = 1
 antal_testpersoner = 14
-
+emp = []
+mrd = []
 l = 0
 # Plotter alle hr afhængigt af tiden
 for n in range(len(brugbare_datasaet)):
     # sammenligner.plot_differences(Dict_with_obs_file, counter=counter)
     # plotter.plot_hr_subplot(Dict_all_data=Dict_with_obs_file, counter=brugbare_datasaet[n], show_bool=False)
-    plotter.plot_rr_subplot(Dict_all_data=Dict_with_obs_file, counter=brugbare_datasaet[n], show_bool=True)
+    # # krydskorellation:
+    # for fasenummer in range(4):
+    #     Dict_with_obs_file[brugbare_datasaet[n]]["RR_Empatica_" + str(fasenummer)]      = sammenligner.krydskorellation(Dict_with_obs_file[brugbare_datasaet[n]]["RR_Hrmpro_" + str(fasenummer)], Dict_with_obs_file[brugbare_datasaet[n]]["RR_Empatica_" + str(fasenummer)], fase=fasenummer, testperson = brugbare_datasaet[n], sensor = 'Empatica')
+    #     Dict_with_obs_file[brugbare_datasaet[n]]["RR_Maxrefdes103_" + str(fasenummer)]  = sammenligner.krydskorellation(Dict_with_obs_file[brugbare_datasaet[n]]["RR_Hrmpro_" + str(fasenummer)],Dict_with_obs_file[brugbare_datasaet[n]]["RR_Maxrefdes103_" + str(fasenummer)], fase=fasenummer, testperson = brugbare_datasaet[n], sensor = 'Maxrefdes103')
+    plotter.plot_rr_subplot(Dict_all_data=Dict_with_obs_file, counter=brugbare_datasaet[n], show_bool=False)
     # sammenligner.plot_corellation(Dict_with_obs_file, counter=counter)
     # #sammenligner.plot_normal_distribution(Dict_with_obs_file, counter = counter, type='hist') #type = 'QQ'
     # sammenligner.plot_2_percentage_under(Dict_with_obs_file, counter)

@@ -47,8 +47,6 @@ class extract_hrmpro_class(IExtract):
                         self.hr_list.append(temporary_List[7])
                     newTogglebit = int(temporary_List[6],16)
                     if(oldtogglebit != newTogglebit): #Yderligere gemmes kun data, når der har været et nyt 'heart-beat-event svarende til at hr_count er blevet en større
-                        if t == 160 or t == 105 or 7 == 73:
-                            t = t
                         dictionary_with_hex["b0"] = temporary_List[0][1:]
                         dictionary_with_hex["b1"] = temporary_List[1]
                         dictionary_with_hex["b2"] = temporary_List[2]
@@ -148,6 +146,18 @@ class extract_hrmpro_class(IExtract):
             #print("please extract rr data with the extract_rr_values-method before getting the rr-values in a separate list")
             pass
         return rr
+
+    def get_time_rr(self):
+        time = []
+        first_time = self.list_of_rr_and_time[0]['time']
+        if len(self.list_of_rr_and_time) > 0:
+            for dict in self.list_of_rr_and_time:
+                time.append((dict['time']-first_time)/1000)
+        else:
+            #print("please extract rr data with the extract_rr_values-method before getting the rr-values in a separate list")
+            pass
+        return time
+
     
     def get_hr(self):
         """ Metoden returnerer en liste med Hr-værdier.

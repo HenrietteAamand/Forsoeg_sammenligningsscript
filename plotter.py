@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+from statistics import mode
 from stabelisation import*
 
 
@@ -22,18 +23,29 @@ class plotter_class():
             testpersonnummer (int, optional): Testpersonnummer er nummeret på testpersonen, hvis data der plottes. Defaults to 0.
             show_bool (bool, optional): Styrer om plottet vises eller ej. Defaults to True.
         """
+        min_max = []
+        for i in range(4):
+            middel = mode(Dict_all_data[counter]['RR_Hrmpro_' + str(i)])
+            minimum = middel*0.6
+            maximum = middel*1.3
+            min_max.append(minimum)
+            min_max.append(maximum)
+        y_lim_low = min(min_max)
+        y_lim_high = max(min_max)
+
         fig, axs = plt.subplots(2,2)
         fig.suptitle("RR værdier for testperson " + str(counter) + " efter endt stresstest - Forerunner er pillet ud")
         list_koordinates = [(0,0), (0,1), (1,0), (1,1)]
         for n in range(len(list_koordinates)):
-            axs[list_koordinates[n]].plot(Dict_all_data[counter]['RR_Maxrefdes103_' + str(n)], label = 'MAXREFDES103')
-            axs[list_koordinates[n]].plot(Dict_all_data[counter]['RR_Empatica_' + str(n)], label = 'empatica')
-            axs[list_koordinates[n]].plot(Dict_all_data[counter]['RR_Hrmpro_' + str(n)], label = 'HRM-Pro')
+            axs[list_koordinates[n]].plot(Dict_all_data[counter]['RRtime_Maxrefdes103_' + str(n)],Dict_all_data[counter]['RR_Maxrefdes103_' + str(n)], label = 'MAXREFDES103')
+            axs[list_koordinates[n]].plot(Dict_all_data[counter]['RRtime_Empatica_' + str(n)],Dict_all_data[counter]['RR_Empatica_' + str(n)], label = 'empatica')
+            axs[list_koordinates[n]].plot(Dict_all_data[counter]['RRtime_Hrmpro_' + str(n)], Dict_all_data[counter]['RR_Hrmpro_' + str(n)], label = 'HRM-Pro')
             #axs[list_koordinates[n]].plot(Dict_all_data[counter]['RR_Forerunner_' + str(n)], label = 'Forerunner 45')
             axs[list_koordinates[n]].set_xlabel('Nr af RR-værdier')
             axs[list_koordinates[n]].set_ylabel('Tid [ms]')
             axs[list_koordinates[n]].legend(loc = 'upper right')
             axs[list_koordinates[n]].set_title('Fase ' + str(n))
+            axs[list_koordinates[n]].set_ylim([y_lim_low, y_lim_high])
         fig.set_size_inches(20,10)
         fig.subplots_adjust(left=0.03, bottom=0.08, right=0.97, top=0.92, wspace=None, hspace=None)
         path = 'C:/Users/hah/Documents/VISUAL_STUDIO_CODE/Forsoeg_sammenligningsscript/Figurer/Alle_sensorer/'

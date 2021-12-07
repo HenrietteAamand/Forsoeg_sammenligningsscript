@@ -23,6 +23,7 @@ class extract_maxrefdes103_class():
         self.hr_list = []
         self.rr_list = []
         self.timestamp_list = []
+        self.timestamp_rr = []
 
         i = 0
         for row in data_list_of_dict:
@@ -32,7 +33,17 @@ class extract_maxrefdes103_class():
                 if row["rr"] != "0.0":                              # Gemmer kun RR-værdierne når der er beregnet en ny. 
                     rr_korr = float("{:.1f}".format(1*float(row["rr"]))) #korrigerer med den faktor (0.96) vi fandt i excel
                     self.rr_list.append(rr_korr)
+                    self.timestamp_rr.append(self.delta_time(row["timestmp"]))
             i +=1
+    def delta_time(self, timestamp: str):
+        current_time = str(datetime.datetime.now().date().strftime("%d/%m/%y")) + " " + timestamp
+        current_time_datetime = datetime.datetime.strptime(current_time, '%d/%m/%y %H:%M:%S.%f')
+        first_time = datetime.datetime.strptime(self.first_time, '%d/%m/%y %H:%M:%S.%f')
+        first_time_abs = datetime.datetime.timestamp(first_time)*1000 
+        absolute_time = datetime.datetime.timestamp(current_time_datetime)*1000
+        #absolute_time = (time.mktime(current_time_datetime.timetuple())*1000)
+        delta_time = (absolute_time - first_time_abs)/1000
+        return delta_time
 
     def get_rr(self):
         """Metoden er en standard get-metode, der returnerer alle RR-intervaller
@@ -49,6 +60,9 @@ class extract_maxrefdes103_class():
             List<int>: Listen med alle hr værdierne som intigers
         """
         return self.hr_list
+    
+    def get_time_rr(self):
+        return self.timestamp_rr
 
     def get_first_timestamp(self):
         """Metoen returnerer et timestamp, der er korrigeret til dags dato, men med det korrekte tidspunkt fra timestampet
