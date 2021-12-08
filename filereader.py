@@ -99,7 +99,7 @@ class filereader_class:
 
      
 
-    def save_hr_data(self, data):
+    def save_hr_data(self, data, filename: str):
         """Når alle HR data er indlæst, tidskorrigere og inddelt i faser, så gemmes de i en stor .csv fil, så næste gang programmet køres
         Dermed behøver man ikke indlæse samtlige data og tidskorrigere på ny. Dette tidsoptimerer processen, når data skal sammenlignes, og man dermed kører et program mange gange 
 
@@ -109,7 +109,7 @@ class filereader_class:
                                                 Udsnit: {1: {'Hr_Maxrefdes103_0': [...], 'RR_Maxrefdes103_0': [...], 'Hr_Hrmpro_0': [...], 'RR_Hrmpro_0': [...], 'Hr_Forerunner_0': [...], 'RR_Forerunner_0': [...], 'Hr_Empatica_0': [...], 'RR_Empatica_0': [...], 'Hr_Maxrefdes103_1': [...], ...}}
 
         """
-        full_path = 'C:/Users/hah/Documents/VISUAL_STUDIO_CODE/Forsoeg_sammenligningsscript/resluts_example.csv'
+        full_path = 'C:/Users/hah/Documents/VISUAL_STUDIO_CODE/Forsoeg_sammenligningsscript/' + filename
         data_file = open(full_path, 'w+', newline='') 
         csv_writer = csv.writer(data_file, delimiter=';')
         string = json.dumps(data[1], default=lambda o: o.__dict__, sort_keys=False, indent=4)
@@ -126,13 +126,13 @@ class filereader_class:
             i+=1
         data_file.close()
         
-    def read_hr_data(self):
+    def read_hr_data(self, filename : str):
         """I stedet for at indlæse data gennem samtlige af de originale datafiler, så kan data i stedet indlæses med denne metode, forudsat data på et tidspunkt er blev gemt med metoden 'save_hr_data' 
 
         Returns:
             dict_data (dict<dict<key,value>>): Der returneres et dictionary magen til det dictionary der er blevet oprettet, efter alle data er tidskorrigeret m.v. (se forklaring på format i save_hr())
         """
-        full_path = 'C:/Users/hah/Documents/VISUAL_STUDIO_CODE/Forsoeg_sammenligningsscript/resluts_example.csv'
+        full_path = 'C:/Users/hah/Documents/VISUAL_STUDIO_CODE/Forsoeg_sammenligningsscript/' + filename
         csv_file_original =  open(full_path, mode='r')
         lines_as_dict = csv.DictReader(csv_file_original, delimiter = ';')
         i = 1

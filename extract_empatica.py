@@ -23,11 +23,14 @@ class extract_empatica_class(IExtract):
         if(self.read_from_file):
             data_list_hr = self.filereader.read_empatica(testpersonnummer, "HR").copy()
             data_list_rr = self.filereader.read_empatica(testpersonnummer, "IBI").copy()
+            data_list_acc = self.filereader.read_empatica(testpersonnummer, "ACC").copy()
             self.read_from_file = False
         
             absolute_hr = self.correct_absolute(data_list_hr[0][0])  # ændre dato for Hr data til dags dato
             step_hr = float(data_list_hr[1][0]) # finder tiden mellem hvert datapunkt
             absolute_rr = self.correct_absolute(data_list_rr[0][0]) # ændre dato for RR data til dags dato
+            absolute_acc = self.correct_absolute(data_list_acc[0][0])
+            fs_acc = float(data_list_acc[1][0]) #Finder sampelfrekvensen
 
 
             # Laver timestamp til hr data
@@ -55,9 +58,43 @@ class extract_empatica_class(IExtract):
                 self.rr_full_timeperiod.append(self.dict_rr_and_time)
                 n += 1
                 i += 1
+            # Udtrækker accelerometerdata, men neddeler med en faktor 8, svarende til at fs = 4
+            self.accelerometerX = []
+            self.accelerometerY = []
+            self.accelerometerZ = []
+            self.time_accel_full_timeperiod = []
+            accel_limit = 1
+            to_g = 1/64
+            for i in range(len(data_list_acc)-1):
+                if(accel_limit >= 8): #Gemmer kun hver 5. datapunkt
+                    dict_accel = {}
+                    self.time_accel = {}
+                    # self.accelerometerX.append(float(data_list_acc[i][0])*to_g)
+                    # self.accelerometerY.append(float(data_list_acc[i][1])*to_g)
+                    # self.accelerometerZ.append(float(data_list_acc[i][2])*to_g)
+                    dict_accel['x'] = float(data_list_acc[i][0])*to_g
+                    dict_accel['y'] = float(data_list_acc[i][1])*to_g
+                    dict_accel['z'] = float(data_list_acc[i][2])*to_g
+                    self.time_accel["time"] = (absolute_acc + i*(1/fs_acc))*1000
+                    self.time_accel["accel"] = dict_accel
+                    self.time_accel_full_timeperiod.append(self.time_accel)
+                    accel_limit = 0
+                accel_limit +=1
+
+
         # Data tidskorrigeres i henhold til timelim_begin og timelim_end, der er givet af Maxrefdes103
         self.hr_list, self.time_hr = self.tidkorr.empatica(self.hr_full_timeperiod, timelim_begin, timelim_end, "hr")
         self.rr_list, self.time_rr = self.tidkorr.empatica(self.rr_full_timeperiod, timelim_begin, timelim_end, "rr")
+        self.accel_list, self.time_accel = self.tidkorr.empatica(self.time_accel_full_timeperiod, timelim_begin, timelim_end, "accel")
+    def get_accelerometerdata(self):
+        self.accelerometerX = []
+        self.accelerometerY = []
+        self.accelerometerZ = []
+        for accel_datapoint in self.accel_list:
+            self.accelerometerX.append(accel_datapoint['x'])
+            self.accelerometerY.append(accel_datapoint['y'])
+            self.accelerometerZ.append(accel_datapoint['z'])
+        return self.accelerometerX, self.accelerometerY, self.accelerometerZ
 
     def get_hr(self):
         """En standard get-metode der returnerer hr

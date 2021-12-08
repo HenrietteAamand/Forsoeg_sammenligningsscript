@@ -46,6 +46,8 @@ class main_class:
         # Dette dictionary med dictionaries bruges til at gemme samtlige data. Key for dict 1 er testpersonnummer, og key for 'under dict' er eks HR_SENSORNAVN_FASENUMMER
         Dict_with_obs = { }
         Dict_with_obs[counter] = {}
+        Dict_with_accel = { }
+        Dict_with_accel[counter] = {}
 
         #Dette loop indlæser de ønskede data. Sættes counter til 1 og antal_testpersoner til 14 så indlæses data fra samtlige testpersoner.
         while(counter <= antal_testpersoner):
@@ -68,6 +70,15 @@ class main_class:
             Dict_with_obs[counter]["Hr_Empatica_" + str(fasenummer)] =empatica.get_hr()
             Dict_with_obs[counter]["RR_Empatica_" + str(fasenummer)] =empatica.get_rr()
             Dict_with_obs[counter]["RRtime_Empatica_" + str(fasenummer)] =empatica.get_time_rr()
+            x_maxrefdes,y_maxrefdes,z_maxrefdes = maxrefdes103.get_accelerometerdata()
+            x_empatica, y_empatica, z_empatica = empatica.get_accelerometerdata()
+            
+            Dict_with_accel[counter]["Accel_Maxrefdes103_" + str(fasenummer) + '_X'] = x_maxrefdes
+            Dict_with_accel[counter]["Accel_Maxrefdes103_" + str(fasenummer) + '_Y'] = y_maxrefdes
+            Dict_with_accel[counter]["Accel_Maxrefdes103_" + str(fasenummer) + '_Z'] = z_maxrefdes
+            Dict_with_accel[counter]["Accel_Empatica_" + str(fasenummer) + '_X'] = x_empatica
+            Dict_with_accel[counter]["Accel_Empatica_" + str(fasenummer) + '_Y'] = y_empatica
+            Dict_with_accel[counter]["Accel_Empatica_" + str(fasenummer) + '_Z'] = z_empatica
             
             fasenummer += 1
             if(fasenummer > 3 and counter <= antal_testpersoner):
@@ -79,9 +90,11 @@ class main_class:
                 if(counter <=antal_testpersoner):
                     tk.set_birthtime_sensor(dict_sensorcount[counter-1]['Absolute_count'], dict_sensorcount[counter-1]['Sensor_count'])
                     Dict_with_obs[counter] = {}
+                    Dict_with_accel[counter] = {}
                 print(str(counter-1) + " new person extracted")
         # slutteligt gemmes data i en fil, så man ikke beøver hente og behandle data fra de oprindelige datafiler hver gang scriptet køres. 
-        fr.save_hr_data(Dict_with_obs)
+        fr.save_hr_data(Dict_with_obs, 'resluts_example.csv')
+        fr.save_hr_data(Dict_with_accel, 'results_accelerometer.csv')
 
 # Opsætter programmet
 antal_testpersoner = 14 #Indlæser fra alle forsøgspersoner
@@ -97,7 +110,7 @@ resultater = results_class(to_results)
 
 i = 0
 n = 0
-brugbare_datasaet = [1,2,3,4,5,6,7,8,9,10,11,12,13,14] #[1,5,8,9,11,12,13,14] # Lav ny liste, og tilføj kun de elementer som du skal bruge, altså dem der hører til de brugbare datasæt
+brugbare_datasaet = range(antal_testpersoner+1)[1:] #[1,2,3,4,5,6,7,8,9,10,11,12,13,14] #[1,5,8,9,11,12,13,14] # Lav ny liste, og tilføj kun de elementer som du skal bruge, altså dem der hører til de brugbare datasæt
 fase_intervention_brugbare = []
 
 # #Gemmer kun fase-interventyionssammenhæng for de brugbare dataslæt
@@ -115,8 +128,9 @@ fase_intervention_brugbare = []
 #     else:
 #         i+= 3
 
-main.extract_data() #indkommenteres hvis data skal indlæses på ny.
-Dict_with_obs_file = fr.read_hr_data() # Bruges i stedet for main.extract_data(), hvor data bare indlæses fra en fil.
+#main.extract_data() #indkommenteres hvis data skal indlæses på ny.
+Dict_with_obs_file = fr.read_hr_data('resluts_example.csv') # Bruges i stedet for main.extract_data(), hvor data bare indlæses fra en fil.
+Dict_with_accel_file = fr.read_hr_data('results_accelerometer.csv')
 counter = 1
 antal_testpersoner = 14
 emp = []
@@ -130,7 +144,6 @@ for n in range(len(brugbare_datasaet)):
     # for fasenummer in range(4):
     #     Dict_with_obs_file[brugbare_datasaet[n]]["RR_Empatica_" + str(fasenummer)]      = sammenligner.krydskorellation(Dict_with_obs_file[brugbare_datasaet[n]]["RR_Hrmpro_" + str(fasenummer)], Dict_with_obs_file[brugbare_datasaet[n]]["RR_Empatica_" + str(fasenummer)], fase=fasenummer, testperson = brugbare_datasaet[n], sensor = 'Empatica')
     #     Dict_with_obs_file[brugbare_datasaet[n]]["RR_Maxrefdes103_" + str(fasenummer)]  = sammenligner.krydskorellation(Dict_with_obs_file[brugbare_datasaet[n]]["RR_Hrmpro_" + str(fasenummer)],Dict_with_obs_file[brugbare_datasaet[n]]["RR_Maxrefdes103_" + str(fasenummer)], fase=fasenummer, testperson = brugbare_datasaet[n], sensor = 'Maxrefdes103')
-    plotter.plot_rr_subplot(Dict_all_data=Dict_with_obs_file, counter=brugbare_datasaet[n], show_bool=False)
     # sammenligner.plot_corellation(Dict_with_obs_file, counter=counter)
     # #sammenligner.plot_normal_distribution(Dict_with_obs_file, counter = counter, type='hist') #type = 'QQ'
     # sammenligner.plot_2_percentage_under(Dict_with_obs_file, counter)
@@ -139,6 +152,7 @@ for n in range(len(brugbare_datasaet)):
     # velocity_list_two_point = resultater.get_velocity_two_point()
     # velocity_list_lin_reg = resultater.get_coefs()
     # plotter.plot_limit_HRM_pro(Dict_with_obs_file, counter = brugbare_datasaet[n], index_list= indexlist, list_mean_std=list_mean_std, hastighed_lin_reg=velocity_list_lin_reg, fase_intervention_list=fase_intervention_brugbare, hastighed_two_points=velocity_list_two_point, show_bool=False)
+    plotter.plot_rr_subplot(Dict_all_data=Dict_with_obs_file, Dict_accel = Dict_with_accel_file, counter=brugbare_datasaet[n], show_bool=False)
 
     print(str(n+1) + " new figure(s) created")
 

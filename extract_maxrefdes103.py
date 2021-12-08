@@ -24,17 +24,28 @@ class extract_maxrefdes103_class():
         self.rr_list = []
         self.timestamp_list = []
         self.timestamp_rr = []
+        self.accelerometerX = []
+        self.accelerometerY = []
+        self.accelerometerZ = []
+
 
         i = 0
+        accel_limit = 1
         for row in data_list_of_dict:
             if i >= index_to_save_from:
                 self.hr_list.append(int(round(float(row["hr"]))))   #Gemmer alle hr værdier en af gangen
                 self.timestamp_list.append(row["timestmp"])         # Gemmer alle timestamps en af gangen
+                if(accel_limit >= 5): #Gemmer kun hver 5. datapunkt
+                    self.accelerometerX.append(float(row["accelX"]))
+                    self.accelerometerY.append(float(row["accelY"]))
+                    self.accelerometerZ.append(float(row["accelZ"]))
+                    accel_limit = 0
                 if row["rr"] != "0.0":                              # Gemmer kun RR-værdierne når der er beregnet en ny. 
                     rr_korr = float("{:.1f}".format(1*float(row["rr"]))) #korrigerer med den faktor (0.96) vi fandt i excel
                     self.rr_list.append(rr_korr)
                     self.timestamp_rr.append(self.delta_time(row["timestmp"]))
             i +=1
+            accel_limit +=1
     def delta_time(self, timestamp: str):
         current_time = str(datetime.datetime.now().date().strftime("%d/%m/%y")) + " " + timestamp
         current_time_datetime = datetime.datetime.strptime(current_time, '%d/%m/%y %H:%M:%S.%f')
@@ -44,6 +55,9 @@ class extract_maxrefdes103_class():
         #absolute_time = (time.mktime(current_time_datetime.timetuple())*1000)
         delta_time = (absolute_time - first_time_abs)/1000
         return delta_time
+
+    def get_accelerometerdata(self):
+        return self.accelerometerX, self.accelerometerY, self.accelerometerZ
 
     def get_rr(self):
         """Metoden er en standard get-metode, der returnerer alle RR-intervaller
