@@ -110,6 +110,7 @@ class extract_empatica_class(IExtract):
         Returns:
             list<float>: Rr returneres som et dictionary med både RR-værdi samt tidsstamp. Tidsstampet er i Unix epoch timestamp
         """
+        
         return self.rr_list
         
     def get_time_rr(self):

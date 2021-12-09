@@ -11,7 +11,7 @@ class plotter_class():
         self.velocities = []
         pass
 
-    def plot_rr_subplot(self, Dict_all_data: dict, Dict_accel: dict, counter: int, show_bool = True):
+    def plot_rr_subplot(self, Dict_all_data: dict, Dict_accel: dict, counter: int, show_bool = True, tidsforskydning = []):
         """Metoden plotter de givne RR-værdier
 
         Args:
@@ -24,11 +24,12 @@ class plotter_class():
             show_bool (bool, optional): Styrer om plottet vises eller ej. Defaults to True.
         """
 
-
+        # DU ER VED AT TIDSFORSKYDE!!!
 
         min_max = []
         list_timeaxes = []
         fs_maxrefdes = 25/5
+        time_corrected_dict = {}
         fs_empatica = 32/8
         for fasenummer in range(4):
             delta_tid_maxrefdes = 1/fs_maxrefdes
@@ -43,11 +44,26 @@ class plotter_class():
             # Laver tidsakse til de forskellige signaler så de kan plottes i samme figur
             tidsakse_maxrefdes = np.arange(0,tid_accel_max, delta_tid_maxrefdes)
             tidsakse_empatica = np.arange(0,tid_accel_empatica, delta_tid_empatica)
+            # for time in range(len(tidsakse_empatica)-1):
+            #     tidsakse_empatica[time] = tidsakse_empatica[time]+float(tidsforskydning[counter-1]['empatica_' + str(fasenummer)])
 
             dict_tidsakse = {}
             dict_tidsakse["Max"] = tidsakse_maxrefdes
             dict_tidsakse["Empatica"] = tidsakse_empatica
             list_timeaxes.append(dict_tidsakse)
+
+
+            time_emp = []
+            time_hrm = []
+            #print("Testperson: "+ str(counter) + " Fase: " + str( fasenummer) + " Tidsforskydning: " + str(tidsforskydning[counter-1]['empatica_' + str(fasenummer)]))
+            for time in Dict_all_data[counter]['RRtime_Empatica_' + str(fasenummer)]:
+                time_emp.append(time+float(tidsforskydning[counter-1]['empatica_' + str(fasenummer)]))
+            for time in Dict_all_data[counter]['RRtime_Hrmpro_' + str(fasenummer)]:
+                time_hrm.append(time+float(tidsforskydning[counter-1]['hrmpo_' + str(fasenummer)]))
+            time_corrected_dict[fasenummer] = {}
+            time_corrected_dict[fasenummer]['empatica'] = time_emp
+            time_corrected_dict[fasenummer]['hrmpro'] = time_hrm
+            
 
 
             # Bestemmer max omg minimumværdier til RR-værdi y-akse
@@ -71,21 +87,21 @@ class plotter_class():
         list_koordinates_accel = [(1,0), (1,1), (3,0), (3,1)]
         for n in range(len(list_koordinates_rr)):
             axs[list_koordinates_rr[n]].plot(Dict_all_data[counter]['RRtime_Maxrefdes103_' + str(n)],Dict_all_data[counter]['RR_Maxrefdes103_' + str(n)], label = 'MAXREFDES103')
-            axs[list_koordinates_rr[n]].plot(Dict_all_data[counter]['RRtime_Empatica_' + str(n)],Dict_all_data[counter]['RR_Empatica_' + str(n)], label = 'empatica')
-            axs[list_koordinates_rr[n]].plot(Dict_all_data[counter]['RRtime_Hrmpro_' + str(n)], Dict_all_data[counter]['RR_Hrmpro_' + str(n)], label = 'HRM-Pro')
+            axs[list_koordinates_rr[n]].plot(time_corrected_dict[n]['empatica'],Dict_all_data[counter]['RR_Empatica_' + str(n)], label = 'empatica')
+            axs[list_koordinates_rr[n]].plot(time_corrected_dict[n]['hrmpro'], Dict_all_data[counter]['RR_Hrmpro_' + str(n)], label = 'HRM-Pro')
             #axs[list_koordinates[n]].plot(Dict_all_data[counter]['RR_Forerunner_' + str(n)], label = 'Forerunner 45')
-            axs[list_koordinates_rr[n]].set_xlabel('tid( [s]')
+            axs[list_koordinates_rr[n]].set_xlabel('Tid [s]')
             axs[list_koordinates_rr[n]].set_ylabel('RR-værdier [ms]')
             axs[list_koordinates_rr[n]].legend(loc = 'upper right')
             axs[list_koordinates_rr[n]].set_title('Fase ' + str(n))
             axs[list_koordinates_rr[n]].set_ylim([y_lim_low, y_lim_high])
             #Accelerometerdata
-            axs[list_koordinates_accel[n]].plot(list_timeaxes[n]['Max'],Dict_accel[counter]['Accel_Maxrefdes103_' + str(n) + '_X'], label = 'X', color = 'indigo')
-            axs[list_koordinates_accel[n]].plot(list_timeaxes[n]['Max'],Dict_accel[counter]['Accel_Maxrefdes103_' + str(n) + '_Y'], label = 'Y', color = 'blueviolet')
-            axs[list_koordinates_accel[n]].plot(list_timeaxes[n]['Max'],Dict_accel[counter]['Accel_Maxrefdes103_' + str(n) + '_Z'], label = 'Z', color = 'mediumpurple')
-            axs[list_koordinates_accel[n]].plot(list_timeaxes[n]['Empatica'],Dict_accel[counter]['Accel_Empatica_' + str(n) + '_X'], label = 'X', color = 'darkgoldenrod')
-            axs[list_koordinates_accel[n]].plot(list_timeaxes[n]['Empatica'],Dict_accel[counter]['Accel_Empatica_' + str(n) + '_Y'], label = 'Y', color = 'gold')
-            axs[list_koordinates_accel[n]].plot(list_timeaxes[n]['Empatica'],Dict_accel[counter]['Accel_Empatica_' + str(n) + '_Z'], label = 'Z', color = 'tan')
+            axs[list_koordinates_accel[n]].plot(list_timeaxes[n]['Empatica'],Dict_accel[counter]['Accel_Empatica_' + str(n) + '_X'], label = 'X emp', color = 'darkgoldenrod')
+            axs[list_koordinates_accel[n]].plot(list_timeaxes[n]['Empatica'],Dict_accel[counter]['Accel_Empatica_' + str(n) + '_Y'], label = 'Y emp', color = 'gold')
+            axs[list_koordinates_accel[n]].plot(list_timeaxes[n]['Empatica'],Dict_accel[counter]['Accel_Empatica_' + str(n) + '_Z'], label = 'Z emp', color = 'tan')
+            axs[list_koordinates_accel[n]].plot(list_timeaxes[n]['Max'],Dict_accel[counter]['Accel_Maxrefdes103_' + str(n) + '_X'], label = 'X max', color = 'indigo')
+            axs[list_koordinates_accel[n]].plot(list_timeaxes[n]['Max'],Dict_accel[counter]['Accel_Maxrefdes103_' + str(n) + '_Y'], label = 'Y max', color = 'blueviolet')
+            axs[list_koordinates_accel[n]].plot(list_timeaxes[n]['Max'],Dict_accel[counter]['Accel_Maxrefdes103_' + str(n) + '_Z'], label = 'Z max', color = 'mediumpurple')
             axs[list_koordinates_accel[n]].set_xlabel('Tid [s]')
             axs[list_koordinates_accel[n]].set_ylabel('accel [g]')
             axs[list_koordinates_accel[n]].legend(loc = 'upper right')
@@ -96,7 +112,7 @@ class plotter_class():
         fig.subplots_adjust(left=0.05, bottom=0.08, right=0.97, top=0.92, wspace=None, hspace=None)
         path = 'C:/Users/hah/Documents/VISUAL_STUDIO_CODE/Forsoeg_sammenligningsscript/Figurer/Alle_sensorer/'
         title = 'Testperson ' + str(counter)
-        fig.savefig(path + " " + title) #, dpi = 200)
+        fig.savefig(path + " " + title, dpi = 300)
         if show_bool == True:
             plt.show()    
 

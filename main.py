@@ -110,7 +110,7 @@ resultater = results_class(to_results)
 
 i = 0
 n = 0
-brugbare_datasaet = range(antal_testpersoner+1)[1:] #[1,2,3,4,5,6,7,8,9,10,11,12,13,14] #[1,5,8,9,11,12,13,14] # Lav ny liste, og tilføj kun de elementer som du skal bruge, altså dem der hører til de brugbare datasæt
+brugbare_datasaet = range(antal_testpersoner+1)[counter:] #[1,2,3,4,5,6,7,8,9,10,11,12,13,14] #[1,5,8,9,11,12,13,14] # Lav ny liste, og tilføj kun de elementer som du skal bruge, altså dem der hører til de brugbare datasæt
 fase_intervention_brugbare = []
 
 # #Gemmer kun fase-interventyionssammenhæng for de brugbare dataslæt
@@ -131,6 +131,7 @@ fase_intervention_brugbare = []
 #main.extract_data() #indkommenteres hvis data skal indlæses på ny.
 Dict_with_obs_file = fr.read_hr_data('resluts_example.csv') # Bruges i stedet for main.extract_data(), hvor data bare indlæses fra en fil.
 Dict_with_accel_file = fr.read_hr_data('results_accelerometer.csv')
+tidsforskydning = fr.read_dict_to_list('/forskydning.csv')
 counter = 1
 antal_testpersoner = 14
 emp = []
@@ -152,7 +153,7 @@ for n in range(len(brugbare_datasaet)):
     # velocity_list_two_point = resultater.get_velocity_two_point()
     # velocity_list_lin_reg = resultater.get_coefs()
     # plotter.plot_limit_HRM_pro(Dict_with_obs_file, counter = brugbare_datasaet[n], index_list= indexlist, list_mean_std=list_mean_std, hastighed_lin_reg=velocity_list_lin_reg, fase_intervention_list=fase_intervention_brugbare, hastighed_two_points=velocity_list_two_point, show_bool=False)
-    plotter.plot_rr_subplot(Dict_all_data=Dict_with_obs_file, Dict_accel = Dict_with_accel_file, counter=brugbare_datasaet[n], show_bool=False)
+    plotter.plot_rr_subplot(Dict_all_data=Dict_with_obs_file, Dict_accel = Dict_with_accel_file, counter=brugbare_datasaet[n], show_bool=False, tidsforskydning = tidsforskydning)
 
     print(str(n+1) + " new figure(s) created")
 
