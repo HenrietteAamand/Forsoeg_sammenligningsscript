@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from statistics import mode
 from stabelisation import*
+import json
 
 
 class plotter_class():
@@ -9,6 +10,7 @@ class plotter_class():
         self.fase_variable = 0
         self.testperson = 1
         self.velocities = []
+        self.path = 'C:/Users/Bruger/Documents/GitHub/Praktik/Forsoeg_sammenligningsscript/Forsoeg_sammenligningsscript/Figurer/'
         pass
 
     def plot_rr_subplot(self, Dict_all_data: dict, Dict_accel: dict, counter: int, show_bool = True, tidsforskydning = []):
@@ -111,11 +113,11 @@ class plotter_class():
         #fig.set_size_inches(20,30)
         fig.subplots_adjust(left=0.05, bottom=0.08, right=0.97, top=0.92, wspace=None, hspace=None)
         path = 'C:/Users/hah/Documents/VISUAL_STUDIO_CODE/Forsoeg_sammenligningsscript/Figurer/Alle_sensorer/'
+        path = 'C:/Users/Bruger/Documents/GitHub/Praktik/Forsoeg_sammenligningsscript/Forsoeg_sammenligningsscript/Figurer/RR/'
         title = 'Testperson ' + str(counter)
         fig.savefig(path + " " + title, dpi = 300)
         if show_bool == True:
             plt.show()    
-
 
     def plot_hr_subplot(self, Dict_all_data: dict, counter: int, show_bool = True):
         """Plotter alle faser for en given testperson i det samme subplot. Dermed bliver der en figur på 2x2 med fase 0 - 3
@@ -338,6 +340,89 @@ class plotter_class():
         self.testperson+= 1
         if show_bool == True:
             plt.show()    
+
+    def plot_HRV(self, dict_hrv_data: dict, dict_usefull_data = dict, show_bool = True):
+        
+        plt.close('all')
+        # vlf: 0, lf: 1, hf: 2
+        l = 0
+        list_reorganized_hrv_results = []
+
+        for dataset in dict_usefull_data:
+            sensor = dataset['sensor']
+            testperson = dataset['testperson']
+            for fase in json.loads(dataset['faser']):
+                time = []
+                lf = []
+                hf = []
+                lf_hf = []
+                dict_reorganized_fase_results = {}
+                key = sensor + "_Testperson_" + testperson + '_Fase_' + str(fase)
+                for result in dict_hrv_data[key]:
+                    time.append(result['time'])
+                    lf.append(result['abs'][1])
+                    hf.append(result['abs'][2])
+                    lf_hf.append(result['lf_hf'])
+                dict_reorganized_fase_results['time'] = time
+                dict_reorganized_fase_results['lf'] = lf
+                dict_reorganized_fase_results['hf'] = hf
+                dict_reorganized_fase_results['lf_hf'] = lf_hf
+                list_reorganized_hrv_results.append(dict_reorganized_fase_results)
+                l+= 1
+
+        SMALL_SIZE = 6
+        MEDIUM_SIZE = 6 #18
+        MEDIUM_BIG_SIZE = 12 #22
+        BIGGER_SIZE = 16
+
+        plt.rc('font', size=MEDIUM_SIZE)         # controls default text sizes
+        plt.rc('axes', titlesize=SMALL_SIZE)     # fontsize of the axes title
+        plt.rc('axes', labelsize=MEDIUM_SIZE)    # fontsize of the x and y labels
+        plt.rc('xtick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
+        plt.rc('ytick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
+        plt.rc('legend', fontsize=MEDIUM_SIZE)   # legend fontsize
+        plt.rc('figure', titlesize=BIGGER_SIZE)  # fontsize of the figure title
+        rows = 8
+        columns = 3
+        fig, axs = plt.subplots(rows,columns)
+        fig.suptitle("HRV-parameters", fontweight='bold')
+
+        list_koordinates = []
+        for row in range(rows):
+            for column in range(columns):
+                koordinates = (row,column)
+                list_koordinates.append(koordinates)
+        n = 0
+        hrv_params = ['lf', 'hf', 'lf_hf']
+        axes_index = 0
+        for n in range(len(list_reorganized_hrv_results)):
+            for i in range(len(hrv_params)):
+                axs[list_koordinates[axes_index]].scatter(list_reorganized_hrv_results[n]['time'], list_reorganized_hrv_results[n][hrv_params[i]], s = 7)
+                y_low = min(list_reorganized_hrv_results[n][hrv_params[i]])
+                y_low = y_low - 1.3*y_low
+                y_max = max(list_reorganized_hrv_results[n][hrv_params[i]])
+                y_max = y_max + 0.3*y_max
+                axs[list_koordinates[axes_index]].set_ylim(y_low,y_max)
+                axs[list_koordinates[axes_index]].set_xlabel('time')
+                axs[list_koordinates[axes_index]].set_ylabel('Abs power [ms^2]')
+                #axs[list_koordinates[n]].legend(loc = 'upper right', facecolor="white")
+                axs[list_koordinates[axes_index]].set_facecolor('whitesmoke')
+                axs[list_koordinates[axes_index]].grid(color = 'lightgrey')
+                axes_index+=1
+        axs[list_koordinates[0]].set_title('LF', fontsize = MEDIUM_BIG_SIZE, fontweight='bold')
+        axs[list_koordinates[1]].set_title('HF', fontsize = MEDIUM_BIG_SIZE, fontweight='bold')
+        axs[list_koordinates[2]].set_title('LF/HF', fontsize = MEDIUM_BIG_SIZE, fontweight='bold')
+
+        fig.set_size_inches(5,8)
+        fig.set_tight_layout('tight')
+        fig.subplots_adjust(left=0.05, bottom=0.08, right=0.97, top=0.92, wspace=None, hspace=None)
+        path = self.path + '/hrv/'
+        title = 'HRV'
+        fig.savefig(path + " " + title) #, dpi = 200)
+        if show_bool == True:
+            plt.show()    
+        
+
 
     def get_velocities(self):
         return self.velocities

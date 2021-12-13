@@ -3,10 +3,12 @@ from csv import DictReader
 from Sammenligning import sammenligning_class
 from extract_forerunner import extract_forerunner_class
 import filereader, extract_hrmpro, extract_maxrefdes103, tidskorrigering, extract_empatica, datetime
+from hrv import HRV_class
 from results import results_class
 from plotter import plotter_class
 from Calculate_RR_class import Caculate_rr_class
 import numpy as np
+import json
 
 class main_class:
     def __init__(self, antal_testpersoner: int, counter: int, filereader : filereader.filereader_class) -> None:
@@ -100,9 +102,11 @@ class main_class:
 antal_testpersoner = 14 #Indlæser fra alle forsøgspersoner
 counter = 1
 plotter = plotter_class()
-path = "C:/Users/hah/Documents/VISUAL_STUDIO_CODE/Forsoeg_sammenligningsscript/Data"
+path = "C:/Users/hah/Documents/VISUAL_STUDIO_CODE/Forsoeg_sammenligningsscript/Data/"
+path = 'C:/Users/Bruger/Documents/GitHub/Praktik/Forsoeg_sammenligningsscript/Forsoeg_sammenligningsscript/Data/'
 fr = filereader.filereader_class(path=path)
 sammenligner = sammenligning_class()
+hrv = HRV_class()
 main = main_class(antal_testpersoner, counter, fr)
 fase_intervention = fr.read_dict_to_list('/testperson_fase_intervention.csv').copy()# fase_intervention er en list, der sammenkobler fasenummer og intervention for ghver enkelt forsøgsperson. Denne bruges til plotsne. 
 to_results = fase_intervention.copy()
@@ -139,8 +143,8 @@ mrd = []
 l = 0
 # Plotter alle hr afhængigt af tiden
 for n in range(len(brugbare_datasaet)):
+    pass
     # sammenligner.plot_differences(Dict_with_obs_file, counter=counter)
-    # plotter.plot_hr_subplot(Dict_all_data=Dict_with_obs_file, counter=brugbare_datasaet[n], show_bool=False)
     # # krydskorellation:
     # for fasenummer in range(4):
     #     Dict_with_obs_file[brugbare_datasaet[n]]["RR_Empatica_" + str(fasenummer)]      = sammenligner.krydskorellation(Dict_with_obs_file[brugbare_datasaet[n]]["RR_Hrmpro_" + str(fasenummer)], Dict_with_obs_file[brugbare_datasaet[n]]["RR_Empatica_" + str(fasenummer)], fase=fasenummer, testperson = brugbare_datasaet[n], sensor = 'Empatica')
@@ -148,14 +152,18 @@ for n in range(len(brugbare_datasaet)):
     # sammenligner.plot_corellation(Dict_with_obs_file, counter=counter)
     # #sammenligner.plot_normal_distribution(Dict_with_obs_file, counter = counter, type='hist') #type = 'QQ'
     # sammenligner.plot_2_percentage_under(Dict_with_obs_file, counter)
+    # # Plotter HR og RR
     # indexlist = resultater.process_results(Dict_with_obs_file, counter = brugbare_datasaet[n])
     # list_mean_std = resultater.get_mean_and_std_list()
     # velocity_list_two_point = resultater.get_velocity_two_point()
     # velocity_list_lin_reg = resultater.get_coefs()
     # plotter.plot_limit_HRM_pro(Dict_with_obs_file, counter = brugbare_datasaet[n], index_list= indexlist, list_mean_std=list_mean_std, hastighed_lin_reg=velocity_list_lin_reg, fase_intervention_list=fase_intervention_brugbare, hastighed_two_points=velocity_list_two_point, show_bool=False)
-    plotter.plot_rr_subplot(Dict_all_data=Dict_with_obs_file, Dict_accel = Dict_with_accel_file, counter=brugbare_datasaet[n], show_bool=False, tidsforskydning = tidsforskydning)
+    # plotter.plot_rr_subplot(Dict_all_data=Dict_with_obs_file, Dict_accel = Dict_with_accel_file, counter=brugbare_datasaet[n], show_bool=False, tidsforskydning = tidsforskydning)
+    # print(str(n+1) + " new figure(s) created")
 
-    print(str(n+1) + " new figure(s) created")
+dict_usefull_data = fr.read_dict_to_list('RR_raa.csv')
+dict_hrv_data = hrv.hrv_extract(Dict_with_obs_file,dict_usefull_data)
+plotter.plot_HRV(dict_hrv_data, dict_usefull_data=dict_usefull_data,show_bool=True)
 
 # # Gemmer resultater til en .csv fil, så de kan analyseres i et statistik program 
 # fr.save_results(resultater.Get_results_as_list(), 'results.csv')

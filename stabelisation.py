@@ -7,7 +7,7 @@ class stabelisation_class():
     def __init__(self) -> None:
         pass
         
-    def dispertion(self, signal, width = 5, fs = 4):
+    def dispertion(self, signal, width = 20 , fs = 4):
         """Metoden bruger dispertion til at vurdere hvornår signalet er stabilt. Disperstion bruges i tidsdomænet. 
 
         Args:
@@ -96,7 +96,7 @@ class stabelisation_class():
         return self.std_low, self.std_high
 
 
-    def sorens_method(self, signal2, filterlemngth, do_soren = False):
+    def soren(self, signal2, N, do_soren = False):
         if(do_soren == True):
             signal = self.__remove_X_percentages(signal2, 10)
             middle = self.__get_limit(signal)
@@ -113,11 +113,13 @@ class stabelisation_class():
                     hr_low.append(hr)
 
             # Beregner middelværdi og std for de lave værdier i det nu splittede signal
-            mean = round(np.mean(hr_low))
-            std = np.std(hr_low)
-            
+            self.mean_low = round(np.mean(hr_low))
+            self.std_low = np.std(hr_low)
+            self.mean_high = round(np.mean(hr_high))
+            self.std_high = np.std(hr_high)
+
             # Laver midling af hele signalet (Mooving average)
-            hr_avg = self.__get_filtered_signal(signal, filterlemngth)
+            hr_avg = self.__get_filtered_signal(signal, N)
 
             #Forlænger det midlede signal med data, til det er lige så langt som hr signalet
             # devider = int(round((len(signal)-len(hr_avg))/2))
@@ -136,11 +138,11 @@ class stabelisation_class():
 
             #Bestemmer hvornår signalet første gange rammer hhv mean, mean-std*faktor_under og mean+std*self.faktor_over 
             for hr in hr_avg: #for hr in signal:
-                if(round(hr) == mean and found_mean == False):
+                if(round(hr) == self.mean_low and found_mean == False):
                     found_mean = True
                     found_under = False
                     CI_mean = i
-                elif(round(hr) == round(mean-(std*faktor_under)) and found_under == False and found_mean == True):
+                elif(round(hr) == round(self.mean_low-(self.std_low*faktor_under)) and found_under == False and found_mean == True):
                     found_under = True
                     break
                 i+=1
