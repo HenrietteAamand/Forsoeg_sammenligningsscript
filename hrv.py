@@ -1,5 +1,6 @@
 import json
 import pyhrv.frequency_domain as fd
+import pyhrv.time_domain as td
 import pyhrv.tools as tools
 import matplotlib.pyplot as plt
 """
@@ -51,11 +52,13 @@ class HRV_class:
                 total_time = time_list[n]
                 returned = fd.frequency_domain(temp_rr_list, show=False)
                 dict_results = {}
-                dict_results['lf_hf'] = returned['fft_ratio']
+                dict_results['lf_hf'] = returned['fft_ratio'] #'lomb_', 'fft_', 'ar'
                 dict_results['abs'] = returned['fft_abs']
                 dict_results['rel'] = returned['fft_rel']
                 dict_results['total'] = returned['fft_total']
                 dict_results['time'] = total_time
+                sdnn = td.sdnn(temp_rr_list)
+                dict_results['sdnn'] = sdnn[0]
 
                 hrv_list.append(dict_results)
                 n = index_15-1

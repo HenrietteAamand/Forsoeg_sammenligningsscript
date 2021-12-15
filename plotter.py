@@ -3,6 +3,7 @@ import numpy as np
 from statistics import mode
 from stabelisation import*
 import json
+from sklearn.linear_model import LinearRegression
 
 
 class plotter_class():
@@ -356,6 +357,8 @@ class plotter_class():
                 lf = []
                 hf = []
                 lf_hf = []
+                sdnn = []
+
                 dict_reorganized_fase_results = {}
                 key = sensor + "_Testperson_" + testperson + '_Fase_' + str(fase)
                 for result in dict_hrv_data[key]:
@@ -363,17 +366,23 @@ class plotter_class():
                     lf.append(result['abs'][1])
                     hf.append(result['abs'][2])
                     lf_hf.append(result['lf_hf'])
+                    sdnn.append(result['sdnn'])
                 dict_reorganized_fase_results['time'] = time
                 dict_reorganized_fase_results['lf'] = lf
                 dict_reorganized_fase_results['hf'] = hf
                 dict_reorganized_fase_results['lf_hf'] = lf_hf
+                dict_reorganized_fase_results['sdnn'] = sdnn
+                dict_reorganized_fase_results['lf_linreg'] = self.lin_reg(time,lf)
+                dict_reorganized_fase_results['hf_linreg'] = self.lin_reg(time,hf)
+                dict_reorganized_fase_results['lf_hf_linreg'] = self.lin_reg(time,lf_hf)
+                dict_reorganized_fase_results['sdnn_linreg'] = self.lin_reg(time,sdnn)
                 list_reorganized_hrv_results.append(dict_reorganized_fase_results)
                 l+= 1
 
         SMALL_SIZE = 6
         MEDIUM_SIZE = 6 #18
-        MEDIUM_BIG_SIZE = 12 #22
-        BIGGER_SIZE = 16
+        MEDIUM_BIG_SIZE = 10 #22
+        BIGGER_SIZE = 14
 
         plt.rc('font', size=MEDIUM_SIZE)         # controls default text sizes
         plt.rc('axes', titlesize=SMALL_SIZE)     # fontsize of the axes title
@@ -382,8 +391,9 @@ class plotter_class():
         plt.rc('ytick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
         plt.rc('legend', fontsize=MEDIUM_SIZE)   # legend fontsize
         plt.rc('figure', titlesize=BIGGER_SIZE)  # fontsize of the figure title
+        hrv_params = ['lf', 'hf', 'lf_hf','sdnn']
         rows = 8
-        columns = 3
+        columns = len(hrv_params)
         fig, axs = plt.subplots(rows,columns)
         fig.suptitle("HRV-parameters", fontweight='bold')
 
@@ -393,27 +403,30 @@ class plotter_class():
                 koordinates = (row,column)
                 list_koordinates.append(koordinates)
         n = 0
-        hrv_params = ['lf', 'hf', 'lf_hf']
         axes_index = 0
         for n in range(len(list_reorganized_hrv_results)):
             for i in range(len(hrv_params)):
                 axs[list_koordinates[axes_index]].scatter(list_reorganized_hrv_results[n]['time'], list_reorganized_hrv_results[n][hrv_params[i]], s = 7)
+                string = hrv_params[i]+'_linreg'
+                axs[list_koordinates[axes_index]].plot(list_reorganized_hrv_results[n][string]['time'], list_reorganized_hrv_results[n][string]['hrv'], 'g', label = list_reorganized_hrv_results[n][string]['model'] )
                 y_low = min(list_reorganized_hrv_results[n][hrv_params[i]])
                 y_low = y_low - 1.3*y_low
                 y_max = max(list_reorganized_hrv_results[n][hrv_params[i]])
-                y_max = y_max + 0.3*y_max
+                y_max = y_max + 0.7*y_max
                 axs[list_koordinates[axes_index]].set_ylim(y_low,y_max)
                 axs[list_koordinates[axes_index]].set_xlabel('time')
                 axs[list_koordinates[axes_index]].set_ylabel('Abs power [ms^2]')
                 #axs[list_koordinates[n]].legend(loc = 'upper right', facecolor="white")
                 axs[list_koordinates[axes_index]].set_facecolor('whitesmoke')
                 axs[list_koordinates[axes_index]].grid(color = 'lightgrey')
+                axs[list_koordinates[axes_index]].legend(loc = 'upper right', facecolor="white")
                 axes_index+=1
-        axs[list_koordinates[0]].set_title('LF', fontsize = MEDIUM_BIG_SIZE, fontweight='bold')
-        axs[list_koordinates[1]].set_title('HF', fontsize = MEDIUM_BIG_SIZE, fontweight='bold')
-        axs[list_koordinates[2]].set_title('LF/HF', fontsize = MEDIUM_BIG_SIZE, fontweight='bold')
+        for index in range(len(hrv_params)):
+            axs[list_koordinates[index]].set_title(hrv_params[index], fontsize = MEDIUM_BIG_SIZE, fontweight='bold')
+        # axs[list_koordinates[1]].set_title('HF', fontsize = MEDIUM_BIG_SIZE, fontweight='bold')
+        # axs[list_koordinates[2]].set_title('LF/HF', fontsize = MEDIUM_BIG_SIZE, fontweight='bold')
 
-        fig.set_size_inches(5,8)
+        fig.set_size_inches(rows*2,columns)
         fig.set_tight_layout('tight')
         fig.subplots_adjust(left=0.05, bottom=0.08, right=0.97, top=0.92, wspace=None, hspace=None)
         path = self.path + '/hrv/'
@@ -422,7 +435,24 @@ class plotter_class():
         if show_bool == True:
             plt.show()    
         
+    def lin_reg(self, time: list, signal: list):
+        X = np.array(time).reshape(-1,1)
+        y = np.array(signal).reshape(-1,1)
+        reg = LinearRegression(copy_X=True).fit(X, y)
+        reg.score(X, y)
+        coef = reg.coef_
+        time_hrv = [time[0], time[len(time)-1]]
+        hrv = []
+        for n in range(2):
+            coordinate_y = round(coef[0][0],3)*time_hrv[n]+round(reg.intercept_[0],3)
+            hrv.append(coordinate_y)
+        model = 'y = '+ str(round(coef[0][0],3)) + 'x'
+        if(round(reg.intercept_[0])!=0):
+            model = model + ' + ' + str(round(reg.intercept_[0]))
+        dict_reg = {'time': time_hrv, 'hrv': hrv, 'model': model }
+        return dict_reg
 
+        
 
     def get_velocities(self):
         return self.velocities
