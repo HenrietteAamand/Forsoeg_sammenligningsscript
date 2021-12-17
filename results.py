@@ -14,8 +14,7 @@ class results_class():
         self.testperson = 1
         self.list_velocity = []
         
-        
-
+    
 
     def process_results(self, Dict_all_data: dict, counter: int):
         """Metoden styrer hvordan hr processeres, så der findes en stabiliseringshastighed og niveau. 
@@ -56,7 +55,7 @@ class results_class():
                 hr_avg = self.__get_filtered_signal(signal_original, N)
                 list_hr_avg.append(hr_avg)
                 index_gmm = self.stabel.gmm(hr_avg)
-                index_soren = self.stabel.sorens_method(signal_original, N)
+                index_soren = self.stabel.soren(signal_original, N)
                 dict_index = {}
                 dict_index['soren'] = index_soren
                 dict_index['gmm'] = index_gmm
@@ -71,21 +70,22 @@ class results_class():
                 dict_mean_std["std_high"] = std_high
                 dict_mean_std["mean_low"] = mean_low
                 dict_mean_std["mean_high"] = mean_high
-                two_point_high_mean = hr_avg[0] # self.mean_high_data(hr_avg, index_gmm) #mean_high # 
-                #dict_mean_std["mean_high"] = two_point_high_mean ### OBS SKAL SLETTES###
+                two_point_high_mean = hr_avg[0] # self.mean_high_data(hr_avg, index_gmm) #mean_high # Der er 3 forskellige forslag til hvordan man beregner hastigheden.  
+                # dict_mean_std["mean_high"] = two_point_high_mean #Dette bruges hvis man vil plotte med en anden metode end gmm. Så skal denne linje ændres til det 'max' datapunkt som man ønsker den rette linje skal plottes efter. 
                 self.list_mean_std.append(dict_mean_std)
-                # gemmer de resultater der skal laves statistik af, så de senere lan gemmes i en fil
+                
+                # gemmer de resultater der skal laves statistik af, så de senere kan gemmes i en fil
                 tid1 = index_gmm*delta_tid_garmin
                 maximum_hr = max(hr_avg)
-                hastighed = self.linear_regression(hr_avg,fs, index_gmm)[0][0]     # Der er to metoder til at finde hastigheden, her bruges lineær regression
+                hastighed = self.two_point_velocity(two_point_high_mean,mean_low, tid1) # Der er to metoder til at finde hastigheden, her bruges 'two point'
+                hastighed = self.linear_regression(hr_avg,fs, index_gmm)[0][0]     # Der er to metoder til at finde hastigheden, her bruges lineær regression, og det er den vi har brugt til at bestemme hastigheden i pilotforsøget
                 # hastighed = (mean_low-maximum_hr)/(tid1)
                 stabiliseringsniveau, denhoje = self.stabel.get_means()
-                hastighed = self.two_point_velocity(two_point_high_mean,mean_low, tid1)
                 
-                # Jeg vil gerne gemm hvilken intervention der hører til dette datasæt. Derfor skal jeg ind i interventionslisten og finde den intervention, hvor fasenumrene og testpersonnummmeret matcher
+                # Jeg vil gerne gemme hvilken intervention der hører til dette datasæt. Derfor skal jeg ind i interventionslisten og finde den intervention, hvor fasenumrene og testpersonnummmeret matcher
                 n=0
                 while(n < 3):
-                    index2 = testperson_nr*3+n-3 # Jeg trækker 3 fra, fordi jeg hver gang ganger med 3, og dermed lander 1c person for langt fremme
+                    index2 = testperson_nr*3+n-3 # Jeg trækker 3 fra, fordi jeg hver gang ganger med 3, og dermed lander 1 person for langt fremme
                     fasenummer = self.intervention[index2]['fase']
                     if(fasenummer == str(i)):
                         intervention = self.intervention[index2]['intervention']
@@ -148,12 +148,10 @@ class results_class():
 
         return new_returnlist
 
-
     def Empty_result_dict(self):
         """Tømmer resultatlisten. Skulle bruges på et tidligere tidspunkt, hvor databehandlingen blev lavet flere gange uden programmet sluttede. Bruges ikke mere
         """
         self.list_dict_results.clear()
-
 
     def plot_hist_and_gaussian(self, list_hr_data, list_mean_std, counter = 0):
         """Plotter et histogram med fordelingerne der er fundet med gmm metoden
@@ -204,7 +202,7 @@ class results_class():
         fig.set_size_inches(20,10)
         fig.set_tight_layout('tight')
         fig.subplots_adjust(left=0.05, bottom=0.08, right=0.97, top=0.92, wspace=None, hspace=None)
-        path = 'C:/Users/hah/Documents/VISUAL_STUDIO_CODE/Forsoeg_sammenligningsscript/Figurer/Histogrammer/'
+        path = 'C:/Users/hah/Documents/VISUAL_STUDIO_CODE/Forsoeg_sammenligningsscript/Figurer/HR/Histogrammer/'
         title = 'Gaussian distributions, Testperson ' + str(self.testperson)
         fig.savefig(path + " " + title) #, dpi = 200)
         self.testperson+=1

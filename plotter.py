@@ -12,6 +12,7 @@ class plotter_class():
         self.testperson = 1
         self.velocities = []
         self.path = 'C:/Users/Bruger/Documents/GitHub/Praktik/Forsoeg_sammenligningsscript/Forsoeg_sammenligningsscript/Figurer/'
+        self.path = 'C:/Users/hah/Documents/VISUAL_STUDIO_CODE/Forsoeg_sammenligningsscript/Figurer/'
         pass
 
     def plot_rr_subplot(self, Dict_all_data: dict, Dict_accel: dict, counter: int, show_bool = True, tidsforskydning = []):
@@ -58,14 +59,17 @@ class plotter_class():
 
             time_emp = []
             time_hrm = []
-            #print("Testperson: "+ str(counter) + " Fase: " + str( fasenummer) + " Tidsforskydning: " + str(tidsforskydning[counter-1]['empatica_' + str(fasenummer)]))
-            for time in Dict_all_data[counter]['RRtime_Empatica_' + str(fasenummer)]:
-                time_emp.append(time+float(tidsforskydning[counter-1]['empatica_' + str(fasenummer)]))
-            for time in Dict_all_data[counter]['RRtime_Hrmpro_' + str(fasenummer)]:
-                time_hrm.append(time+float(tidsforskydning[counter-1]['hrmpo_' + str(fasenummer)]))
             time_corrected_dict[fasenummer] = {}
-            time_corrected_dict[fasenummer]['empatica'] = time_emp
-            time_corrected_dict[fasenummer]['hrmpro'] = time_hrm
+            if(len(tidsforskydning) > 0):
+                for time in Dict_all_data[counter]['RRtime_Empatica_' + str(fasenummer)]:
+                    time_emp.append(time+float(tidsforskydning[counter-1]['empatica_' + str(fasenummer)]))
+                for time in Dict_all_data[counter]['RRtime_Hrmpro_' + str(fasenummer)]:
+                    time_hrm.append(time+float(tidsforskydning[counter-1]['hrmpo_' + str(fasenummer)]))
+                time_corrected_dict[fasenummer]['empatica'] = time_emp
+                time_corrected_dict[fasenummer]['hrmpro'] = time_hrm
+            else:
+                time_corrected_dict[fasenummer]['empatica'] = Dict_all_data[counter]['RRtime_Empatica_' + str(fasenummer)] 
+                time_corrected_dict[fasenummer]['hrmpro'] = Dict_all_data[counter]['RRtime_Hrmpro_' + str(fasenummer)]
             
 
 
@@ -91,7 +95,7 @@ class plotter_class():
         for n in range(len(list_koordinates_rr)):
             axs[list_koordinates_rr[n]].plot(Dict_all_data[counter]['RRtime_Maxrefdes103_' + str(n)],Dict_all_data[counter]['RR_Maxrefdes103_' + str(n)], label = 'MAXREFDES103')
             axs[list_koordinates_rr[n]].plot(time_corrected_dict[n]['empatica'],Dict_all_data[counter]['RR_Empatica_' + str(n)], label = 'empatica')
-            axs[list_koordinates_rr[n]].plot(time_corrected_dict[n]['hrmpro'], Dict_all_data[counter]['RR_Hrmpro_' + str(n)], label = 'HRM-Pro')
+            axs[list_koordinates_rr[n]].plot(time_corrected_dict[n]['hrmpro'], Dict_all_data[counter]['RR_Hrmpro_' + str(n)], label = 'HRM-Pro', color = 'g')
             #axs[list_koordinates[n]].plot(Dict_all_data[counter]['RR_Forerunner_' + str(n)], label = 'Forerunner 45')
             axs[list_koordinates_rr[n]].set_xlabel('Tid [s]')
             axs[list_koordinates_rr[n]].set_ylabel('RR-værdier [ms]')
@@ -113,10 +117,10 @@ class plotter_class():
         fig.set_tight_layout('tight')
         #fig.set_size_inches(20,30)
         fig.subplots_adjust(left=0.05, bottom=0.08, right=0.97, top=0.92, wspace=None, hspace=None)
-        path = 'C:/Users/hah/Documents/VISUAL_STUDIO_CODE/Forsoeg_sammenligningsscript/Figurer/Alle_sensorer/'
         path = 'C:/Users/Bruger/Documents/GitHub/Praktik/Forsoeg_sammenligningsscript/Forsoeg_sammenligningsscript/Figurer/RR/'
+        path = 'C:/Users/hah/Documents/VISUAL_STUDIO_CODE/Forsoeg_sammenligningsscript/Figurer/RR/'
         title = 'Testperson ' + str(counter)
-        fig.savefig(path + " " + title, dpi = 300)
+        fig.savefig(path + title, dpi = 300)
         if show_bool == True:
             plt.show()    
 
@@ -185,7 +189,7 @@ class plotter_class():
 
         fig.set_size_inches(20,10)
         fig.subplots_adjust(left=0.03, bottom=0.08, right=0.97, top=0.92, wspace=None, hspace=None)
-        path = 'C:/Users/hah/Documents/VISUAL_STUDIO_CODE/Forsoeg_sammenligningsscript/Figurer/Alle_sensorer/'
+        path = 'C:/Users/hah/Documents/VISUAL_STUDIO_CODE/Forsoeg_sammenligningsscript/Figurer/HR/Alle_sensorer/'
         title = 'Testperson ' + str(counter)
         fig.savefig(path + " " + title) #, dpi = 200)
         if show_bool == True:
@@ -273,6 +277,7 @@ class plotter_class():
                     list_regression.append((a*(tid)+b))
                 list_hastighed.append(list_regression)
 
+                # HR two point har flere måder at blive plottet. Hvis man gerne vil plotte mellem første hr og stabiliseringstidspunktet skal den udkmmenterede linje inkommenteres og linjen under indkommenteres. 
                 #hr_two_point = [signal_avg[0], signal_avg[index_list[i-1]['gmm']]]
                 hr_two_point = [list_mean_std[i-1]['mean_high'], list_mean_std[i-1]['mean_low']]
                 hr_two_point_list.append(hr_two_point)
@@ -287,9 +292,9 @@ class plotter_class():
 
         # Ændrer skriftstørrelsen, så plotsne bliver mere læsbare i artiklen
         SMALL_SIZE = 12
-        MEDIUM_SIZE = 12 #18
-        MEDIUM_BIG_SIZE = 12 #22
-        BIGGER_SIZE = 24
+        MEDIUM_SIZE = 12 #16
+        MEDIUM_BIG_SIZE = 14 #20
+        BIGGER_SIZE = 16 #22
 
         plt.rc('font', size=MEDIUM_SIZE)         # controls default text sizes
         plt.rc('axes', titlesize=SMALL_SIZE)     # fontsize of the axes title
@@ -307,18 +312,18 @@ class plotter_class():
         y_lim_high = max(max_and_min_values)+5
         for n in range(len(list_koordinates)):
             #axs[list_koordinates[n]].plot(list_timeaxes[n]["Signal"],  Dict_all_data[counter][signal_name + str(n)][N:len(Dict_all_data[counter][signal_name + str(n)])-N], label = 'Raw Hr data', color = 'g', linewidth = 0.8)
-            axs[list_koordinates[n]].plot(list_timeaxes[n]["Avg"],  list_avg[n], label = 'Averaged Hr data', color = 'g')
+            axs[list_koordinates[n]].plot(list_timeaxes[n]["Avg"],  list_avg[n], label = 'Averaged Hr data', color = 'g', linewidth = 2.5)
            
             if(list_indexes_time[n]['soren']) > 0:
-                markerline_mean_soren, stemlines_mean_soren, baseline = axs[list_koordinates[n]].stem(list_indexes_time[n]['soren'],max(Dict_all_data[counter][signal_name + str(n)]),'g', markerfmt='o', linewidth = 0.8,label = 'Time = ' + str(list_indexes_time[n]) + " sec", basefmt=" ")
+                markerline_mean_soren, stemlines_mean_soren, baseline = axs[list_koordinates[n]].stem(list_indexes_time[n]['soren'],max(Dict_all_data[counter][signal_name + str(n)]),'g', markerfmt='o', linewidth = 1.6 ,label = 'Time = ' + str(list_indexes_time[n]) + " sec", basefmt=" ")
                 plt.setp(markerline_mean_soren, 'color', plt.getp( stemlines_mean_soren,'color'))
             if(n > 0): # alle de ting der skal ske for alle andre end baseline
                 mean = list_mean_std[n-1]["mean_low"]
-                axs[list_koordinates[n]].axhline(y=mean, color='b', linestyle='-', label = 'Mean of low cluster = ' + str(round(mean,2)), linewidth = 0.8)
-                axs[list_koordinates[n]].axhline(y=mean + list_mean_std[n-1]["std_low"], color='k', linestyle='--', linewidth = 0.5, label = 'Mean of low cluster +/- 1*std ')
-                axs[list_koordinates[n]].axhline(y=mean - list_mean_std[n-1]["std_low"], color='k', linestyle='--', linewidth = 0.5)
-                axs[list_koordinates[n]].plot(list_timeaxes[n]["Avg"], list_hastighed[n-1], color = 'darkgoldenrod', label = 'Stabelization velocity = ' + str(hastighed_lin_reg[n-1]['coef']) + " bpm/s")   
-                axs[list_koordinates[n]].plot(tid_two_point_list[n-1], hr_two_point_list[n-1], color = 'purple', label = 'Stabelization velocity = ' + str(hastighed_two_points[n-1]) + " bpm/s")   
+                axs[list_koordinates[n]].axhline(y=mean, color='b', linestyle='-', label = 'Mean of low cluster = ' + str(round(mean,2)), linewidth = 1.6)
+                axs[list_koordinates[n]].axhline(y=mean + list_mean_std[n-1]["std_low"], color='k', linestyle='--', linewidth = 1, label = 'Mean of low cluster +/- 1*std ')
+                axs[list_koordinates[n]].axhline(y=mean - list_mean_std[n-1]["std_low"], color='k', linestyle='--', linewidth = 1)
+                axs[list_koordinates[n]].plot(list_timeaxes[n]["Avg"], list_hastighed[n-1], color = 'darkgoldenrod', label = 'Stabelization velocity = ' + str(hastighed_lin_reg[n-1]['coef']) + " bpm/s", linewidth = 2)   
+                #axs[list_koordinates[n]].plot(tid_two_point_list[n-1], hr_two_point_list[n-1], color = 'purple', label = 'Stabelization velocity = ' + str(hastighed_two_points[n-1]) + " bpm/s")   
 
                 markerline_mean, stemlines_mean, baseline = axs[list_koordinates[n]].stem(list_indexes_time[n]['gmm'],y_lim_high-10,'b', markerfmt='o', label = 'Stabilization time = ' + str(list_indexes_time[n]['gmm']) + " sec", basefmt=" ")
                 plt.setp(markerline_mean, 'color', plt.getp( stemlines_mean,'color'))
@@ -335,9 +340,9 @@ class plotter_class():
         fig.set_size_inches(20,10)
         fig.set_tight_layout('tight')
         fig.subplots_adjust(left=0.05, bottom=0.08, right=0.97, top=0.92, wspace=None, hspace=None)
-        path = 'C:/Users/hah/Documents/VISUAL_STUDIO_CODE/Forsoeg_sammenligningsscript/Figurer/gmm/'
+        path = 'C:/Users/hah/Documents/VISUAL_STUDIO_CODE/Forsoeg_sammenligningsscript/Figurer/HR/gmm/'
         title = 'Testperson ' + str(self.testperson)
-        fig.savefig(path + " " + title) #, dpi = 200)
+        fig.savefig(path + " " + title, dpi = 500)
         self.testperson+= 1
         if show_bool == True:
             plt.show()    
@@ -363,7 +368,7 @@ class plotter_class():
                 key = sensor + "_Testperson_" + testperson + '_Fase_' + str(fase)
                 for result in dict_hrv_data[key]:
                     time.append(result['time'])
-                    lf.append(result['abs'][1])
+                    lf.append(result['abs'][1]) #'abs' kan erstattes af 'rel' hvorved man får de relatve powers frem for absolutte
                     hf.append(result['abs'][2])
                     lf_hf.append(result['lf_hf'])
                     sdnn.append(result['sdnn'])
@@ -410,9 +415,9 @@ class plotter_class():
                 string = hrv_params[i]+'_linreg'
                 axs[list_koordinates[axes_index]].plot(list_reorganized_hrv_results[n][string]['time'], list_reorganized_hrv_results[n][string]['hrv'], 'g', label = list_reorganized_hrv_results[n][string]['model'] )
                 y_low = min(list_reorganized_hrv_results[n][hrv_params[i]])
-                y_low = y_low - 1.3*y_low
+                y_low = y_low - 0.5*y_low
                 y_max = max(list_reorganized_hrv_results[n][hrv_params[i]])
-                y_max = y_max + 0.7*y_max
+                y_max = y_max + 0.3*y_max
                 axs[list_koordinates[axes_index]].set_ylim(y_low,y_max)
                 axs[list_koordinates[axes_index]].set_xlabel('time')
                 axs[list_koordinates[axes_index]].set_ylabel('Abs power [ms^2]')
@@ -426,12 +431,12 @@ class plotter_class():
         # axs[list_koordinates[1]].set_title('HF', fontsize = MEDIUM_BIG_SIZE, fontweight='bold')
         # axs[list_koordinates[2]].set_title('LF/HF', fontsize = MEDIUM_BIG_SIZE, fontweight='bold')
 
-        fig.set_size_inches(rows*2,columns)
+        fig.set_size_inches(columns*2, rows*2)
         fig.set_tight_layout('tight')
         fig.subplots_adjust(left=0.05, bottom=0.08, right=0.97, top=0.92, wspace=None, hspace=None)
         path = self.path + '/hrv/'
         title = 'HRV'
-        fig.savefig(path + " " + title) #, dpi = 200)
+        fig.savefig(path + " " + title, dpi = 500)
         if show_bool == True:
             plt.show()    
         
@@ -450,9 +455,7 @@ class plotter_class():
         if(round(reg.intercept_[0])!=0):
             model = model + ' + ' + str(round(reg.intercept_[0]))
         dict_reg = {'time': time_hrv, 'hrv': hrv, 'model': model }
-        return dict_reg
-
-        
+        return dict_reg      
 
     def get_velocities(self):
         return self.velocities
